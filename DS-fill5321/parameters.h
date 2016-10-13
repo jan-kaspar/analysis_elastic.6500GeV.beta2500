@@ -46,6 +46,7 @@ void Init_base()
 	anal.t_min_fit = 0.027; // TODO
 #endif
 
+#if 0
 	// TODO
 	anal.alignment_t0 = 0.;			// beginning of the first time-slice
 	anal.alignment_ts = 5.*60.;		// time-slice in s
@@ -56,6 +57,7 @@ void Init_base()
 
 	anal.alignmentYRanges["R_1_F"] = Analysis::AlignmentYRange(-20.0, - 7.4, 8.4, 20.0);
 	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-23.0, - 8.2, 9.6, 24.0);
+#endif
 
 #if 0
 	// TODO

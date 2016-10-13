@@ -44,6 +44,16 @@ void Init_global()
 	// analysis settings
 	anal.th_x_lcut = -1.;	
 	anal.th_x_hcut = +1.;
+
+	// alignment-determination settings
+	anal.alignment_t0 = 0.;			// beginning of the first time-slice
+	anal.alignment_ts = 20.*60.;	// time-slice in s
+	
+	anal.alignmentYRanges["L_2_F"] = Analysis::AlignmentYRange(-24.0, -4.0, +4.0, +24.0);
+	anal.alignmentYRanges["L_1_F"] = Analysis::AlignmentYRange(-20.0, -3.0, +3.0, +20.0);
+
+	anal.alignmentYRanges["R_1_F"] = Analysis::AlignmentYRange(-20.0, -3.0, +3.0, +20.0);
+	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-24.0, -4.0, +4.0, +24.0);
 }
 
 //----------------------------------------------------------------------------------------------------
