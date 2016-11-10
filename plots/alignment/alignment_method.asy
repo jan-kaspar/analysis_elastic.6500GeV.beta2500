@@ -3,9 +3,9 @@ import pad_layout;
 
 string topDir = "../../";
 
-string dataset = "DS4";
-string period = "0";
-int period_idx = 0; // period index in global graph
+string dataset = "DS-fill5313";
+string period = "2";
+int period_idx = 2; // period index in global graph
 string unit = "R_2_F";
 
 string f = topDir + dataset + "/alignment.root";
@@ -14,13 +14,13 @@ string dir = "period "+period+"/unit "+unit;
 transform xyswitch = (0, 0, 0, 1, 1, 0);
 
 //TGraph_reducePoints = 10;
-TGraph_N_limit = 1000;
+TGraph_nPointsLimit = 10000;
 
 //----------------------------------------------------------------------------------------------------
 
 real GetYResult()
 {
-	rObject obj = rGetObj(f, "global/"+unit+"/c");
+	RootObject obj = RootGetObject(f, "global/"+unit+"/c");
 	real x[] = { 0. };
 	real y[] = { 0. };
 	obj.vExec("GetPoint", period_idx, x, y);
@@ -45,9 +45,9 @@ label("{\SetFontSizesXX vertical centre}");
 NewRow();
 
 NewPad("$x\ung{mm}$", "$y\ung{mm}$");
-//draw(xyswitch, rGetObj(f, dir+"/horizontal/horizontal graph fit/horizontal fit|merged"), "p");
-draw(rGetObj(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
-draw(rGetObj(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
+//draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|merged"), "p");
+draw(RootGetObject(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
+draw(RootGetObject(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
 
 limits((-3, -15), (+3, +15), Crop);
 
@@ -56,7 +56,7 @@ draw((0, 0)--(50, 0), EndArrow);
 
 
 NewPad("number of entries", "$y\ung{mm}$");
-draw(xyswitch, rGetObj(f, dir+"/vertical/y_hist"), "vl", black);
+draw(xyswitch, RootGetObject(f, dir+"/vertical/y_hist"), "vl", black);
 real y_beam = GetYResult();
 draw((0, y_beam)--(400, y_beam), blue+1pt);
 limits((0, -15), (60, +15), Crop);
@@ -87,18 +87,18 @@ label("{\SetFontSizesXX intersection: beam position}");
 NewRow();
 
 NewPad("$x\ung{mm}$", "$y\ung{mm}$");
-//draw(xyswitch, rGetObj(f, dir+"/horizontal/horizontal graph fit/horizontal fit|merged"), "p");
-draw(rGetObj(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
-draw(rGetObj(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
-//draw(xyswitch, rGetObj(f, dir+"/horizontal/horizontal profile/p"), "d0,eb", red+1pt);
-draw(xyswitch, rGetObj(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
+//draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|merged"), "p");
+draw(RootGetObject(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
+draw(RootGetObject(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
+//draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal profile/p"), "d0,eb", red+1pt);
+draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
 limits((-3, -15), (+3, +15), Crop);
 
 NewPad(false, autoSize=false);
 draw((0, 0)--(50, 0), EndArrow);
 
 NewPad("$x\ung{mm}$", "$y\ung{mm}$");
-draw(xyswitch, rGetObj(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
+draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
 draw((-10, y_beam)--(+10, y_beam), blue+1pt);
 limits((-3, -15), (+3, +15), Crop);
 
