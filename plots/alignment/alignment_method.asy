@@ -16,6 +16,11 @@ transform xyswitch = (0, 0, 0, 1, 1, 0);
 //TGraph_reducePoints = 10;
 TGraph_nPointsLimit = 10000;
 
+real x_min = -4, x_max = +4;
+real y_min = -25, y_max = +25;
+
+xTicksDef = LeftTicks(1., 0.5);
+
 //----------------------------------------------------------------------------------------------------
 
 real GetYResult()
@@ -48,18 +53,18 @@ NewPad("$x\ung{mm}$", "$y\ung{mm}$");
 //draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|merged"), "p");
 draw(RootGetObject(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
 draw(RootGetObject(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
-
-limits((-3, -15), (+3, +15), Crop);
+limits((x_min, y_min), (x_max, y_max), Crop);
 
 NewPad(false, autoSize=false);
 draw((0, 0)--(50, 0), EndArrow);
 
 
 NewPad("number of entries", "$y\ung{mm}$");
-draw(xyswitch, RootGetObject(f, dir+"/vertical/y_hist"), "vl", black);
+currentpad.xTicks = LeftTicks(100., 50.);
+draw(xyswitch, RootGetObject(f, dir+"/vertical/y_hist|y_hist_range"), "vl", black);
 real y_beam = GetYResult();
-draw((0, y_beam)--(400, y_beam), blue+1pt);
-limits((0, -15), (60, +15), Crop);
+draw((0, y_beam)--(500, y_beam), blue+1pt);
+limits((0, y_min), (500, y_max), Crop);
 
 //--------------------
 NewRow();
@@ -92,7 +97,7 @@ draw(RootGetObject(topDir+dataset+"/distributions_45b_56t.root", "alignment/"+pe
 draw(RootGetObject(topDir+dataset+"/distributions_45t_56b.root", "alignment/"+period+"/g_y_"+unit+"_vs_x_"+unit+"_sel"), "p");
 //draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal profile/p"), "d0,eb", red+1pt);
 draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
-limits((-3, -15), (+3, +15), Crop);
+limits((x_min, y_min), (x_max, y_max), Crop);
 
 NewPad(false, autoSize=false);
 draw((0, 0)--(50, 0), EndArrow);
@@ -100,6 +105,6 @@ draw((0, 0)--(50, 0), EndArrow);
 NewPad("$x\ung{mm}$", "$y\ung{mm}$");
 draw(xyswitch, RootGetObject(f, dir+"/horizontal/horizontal graph fit/horizontal fit|ff"), "l", red+1pt);
 draw((-10, y_beam)--(+10, y_beam), blue+1pt);
-limits((-3, -15), (+3, +15), Crop);
+limits((x_min, y_min), (x_max, y_max), Crop);
 
 GShipout(hSkip=2mm, vSkip=0mm);
