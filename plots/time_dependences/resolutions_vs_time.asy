@@ -31,7 +31,7 @@ real beta_st = 2500;
 
 void SetPadWidth()
 {
-	real factorHoursToSize = 8cm / 3;
+	real factorHoursToSize = 6cm / 3;
 
 	real timespan = currentpicture.userMax2().x - currentpicture.userMin2().x;
 	currentpad.xSize = timespan * factorHoursToSize;
