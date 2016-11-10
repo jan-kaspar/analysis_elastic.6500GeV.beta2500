@@ -7,20 +7,16 @@ string topDir = "../../";
 
 string datasets[];
 string periods[];
+datasets.push("DS-fill5313"); periods.push("2"); 		// 1 to 26
+//datasets.push("DS-fill5314"); periods.push("43");		// 42 to
+//datasets.push("DS-fill5317"); periods.push("88");		// 87 to
+//datasets.push("DS-fill5321"); periods.push("221");	// 221 to
 
-datasets.push("DS1"); periods.push("70");
-datasets.push("DS2"); periods.push("177");
-datasets.push("DS3"); periods.push("293");
-datasets.push("DS4"); periods.push("565");
-datasets.push("DS5"); periods.push("734");
-datasets.push("DS6"); periods.push("842");
-datasets.push("DS7"); periods.push("970");
-
-string units[] = { "L_2_F", "L_2_N", "L_1_F", "R_1_F", "R_2_N", "R_2_F" };
-string unit_labels[] = { "left, 220, far", "left, 220, near", "left, 210, far", "right, 210, far", "right, 220, near", "right, 220, far" };
-
-//string units[] = { "L_2_F", "L_2_N" };
-//string unit_labels[] = { "Left Far", "Left Near" };
+string units[], unit_labels[];
+units.push("L_2_F"); unit_labels.push("L-220-fr");
+units.push("L_1_F"); unit_labels.push("L-210-fr");
+units.push("R_1_F"); unit_labels.push("R-210-rf");
+units.push("R_2_F"); unit_labels.push("R-220-fr" );
 
 xSizeDef = 10cm;
 drawGridDef = true;
@@ -43,10 +39,10 @@ for (int dsi : datasets.keys)
 	{
 		NewPad("$y\ung{mm}$", "$\hbox{mean } x\ung{mm}$");
 	
-		draw(rGetObj(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/horizontal/horizontal profile/p"), "d0,eb", blue);
-		draw(rGetObj(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/horizontal/horizontal profile/p|ff"), "l", red+1pt);
+		draw(RootGetObject(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/horizontal/horizontal profile/p"), "d0,eb", blue);
+		draw(RootGetObject(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/horizontal/horizontal profile/p|ff"), "l", red+1pt);
 		
-		limits((-30, -0.2), (+30, +0.2), Crop);
+		limits((-30, -0.5), (+30, +0.5), Crop);
 		AttachLegend(unit_labels[ui], NE, NE);
 	}
 	
@@ -58,10 +54,10 @@ for (int dsi : datasets.keys)
 		NewPad("$y\ung{mm}$", "");
 		scale(Linear, Log);
 	
-		draw(rGetObj(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/y_hist|y_hist"), "d0,vl", blue);
-		draw(rGetObj(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/y_hist|y_hist_range"), "d0,vl", red+1pt);
+		draw(RootGetObject(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/y_hist|y_hist"), "d0,vl", blue);
+		draw(RootGetObject(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/y_hist|y_hist_range"), "d0,vl", red+1pt);
 	
-		limits((-30, 1), (+30, 5e4), Crop);
+		limits((-30, 1), (+30, 1e3), Crop);
 		AttachLegend(unit_labels[ui], NE, NE);
 	}
 	
@@ -73,9 +69,9 @@ for (int dsi : datasets.keys)
 		NewPad("bottom-RP $y$ shift$\ung{mm}$", "");
 		currentpad.xTicks = LeftTicks(0.5, 0.1);
 	
-		draw(rGetObj(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/g_max_diff"), "l,p", heavygreen, mCi+1pt+heavygreen);
+		draw(RootGetObject(topDir+dataset+"/alignment.root", period + "/unit "+units[ui]+"/vertical/g_max_diff"), "l,p", heavygreen, mCi+1pt+heavygreen);
 	
-		limits((-2.0, 0), (+2.0, 0.2), Crop);
+		limits((-1.0, 0), (+1.0, 0.2), Crop);
 		AttachLegend(unit_labels[ui], NE, NE);
 	}
 
