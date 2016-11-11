@@ -12,19 +12,17 @@ void Init_base()
 	//bunchMap[94882].push_back(0);
 
 	// alignment settings
-	/*
 	AlignmentSource alSrc;
 	alSrc.SetAlignmentA(atNone);
 	alSrc.SetAlignmentB(atNone);
 	alSrc.SetAlignmentC(atNone);
 
-	alSrc.cnst.a_L_F = 0E-3; alSrc.cnst.b_L_F = 0E-3; alSrc.cnst.c_L_F = 0E-3;
-	alSrc.cnst.a_L_N = 0E-3; alSrc.cnst.b_L_N = 0E-3; alSrc.cnst.c_L_N = 0E-3;
-	alSrc.cnst.a_R_N = 0E-3; alSrc.cnst.b_R_N = 0E-3; alSrc.cnst.c_R_N = 0E-3;
-	alSrc.cnst.a_R_F = 0E-3; alSrc.cnst.b_R_F = 0E-3; alSrc.cnst.c_R_F = 0E-3;
+	alSrc.cnst.a_L_2_F = -0.2E-3; alSrc.cnst.b_L_2_F = -273.3E-3; alSrc.cnst.c_L_2_F = -196.6E-3; 
+	alSrc.cnst.a_L_1_F = -0.3E-3; alSrc.cnst.b_L_1_F = -296.1E-3; alSrc.cnst.c_L_1_F = 57.4E-3; 
+	alSrc.cnst.a_R_1_F = -1.7E-3; alSrc.cnst.b_R_1_F = -940.0E-3; alSrc.cnst.c_R_1_F = 272.2E-3; 
+	alSrc.cnst.a_R_2_F = -1.6E-3; alSrc.cnst.b_R_2_F = -24.2E-3; alSrc.cnst.c_R_2_F = -62.4E-3; 
 	
 	alignmentSources.push_back(alSrc);
-	*/
 
 #if 0
 	anal.use_time_dependent_resolutions = false;

@@ -1,6 +1,5 @@
 #include "parameters_global.h"
 
-// TODO
 double timestamp_min = 104.5E3, timestamp_max = 206.5E3;
 
 void Init_base()
@@ -13,19 +12,17 @@ void Init_base()
 	//bunchMap[94882].push_back(0);
 
 	// alignment settings
-	/*
 	AlignmentSource alSrc;
 	alSrc.SetAlignmentA(atNone);
 	alSrc.SetAlignmentB(atNone);
 	alSrc.SetAlignmentC(atNone);
 
-	alSrc.cnst.a_L_F = 0E-3; alSrc.cnst.b_L_F = 0E-3; alSrc.cnst.c_L_F = 0E-3;
-	alSrc.cnst.a_L_N = 0E-3; alSrc.cnst.b_L_N = 0E-3; alSrc.cnst.c_L_N = 0E-3;
-	alSrc.cnst.a_R_N = 0E-3; alSrc.cnst.b_R_N = 0E-3; alSrc.cnst.c_R_N = 0E-3;
-	alSrc.cnst.a_R_F = 0E-3; alSrc.cnst.b_R_F = 0E-3; alSrc.cnst.c_R_F = 0E-3;
+	alSrc.cnst.a_L_2_F = -0.3E-3; alSrc.cnst.b_L_2_F = -271.3E-3; alSrc.cnst.c_L_2_F = -142.0E-3; 
+	alSrc.cnst.a_L_1_F = -0.7E-3; alSrc.cnst.b_L_1_F = -290.6E-3; alSrc.cnst.c_L_1_F = 108.9E-3; 
+	alSrc.cnst.a_R_1_F = -2.2E-3; alSrc.cnst.b_R_1_F = -1064.4E-3; alSrc.cnst.c_R_1_F = 251.8E-3; 
+	alSrc.cnst.a_R_2_F = -1.8E-3; alSrc.cnst.b_R_2_F = -132.6E-3; alSrc.cnst.c_R_2_F = -85.1E-3; 
 	
 	alignmentSources.push_back(alSrc);
-	*/
 
 #if 0
 	anal.use_time_dependent_resolutions = false;
