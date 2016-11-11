@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 		return rcIncompatibleDiagonal;
 
 	// default parameters
-	unsigned int detailsLevel = 2; 	// 0: no details, 1: some details, >= 2 all details
+	unsigned int detailsLevel = 0; 	// 0: no details, 1: some details, >= 2 all details
 	bool overrideCutSelection = false;	// whether the default cut selection should be overriden by the command-line selection
 	string cutSelectionString;
 	string outputDir = ".";
