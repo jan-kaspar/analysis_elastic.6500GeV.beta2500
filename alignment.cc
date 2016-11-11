@@ -813,7 +813,6 @@ int main(int argc, char **argv)
 			}
 
 			unsigned int effective_entries = g_t->GetN() + g_b->GetN();
-			// TODO: adjust
 			if (effective_entries < 200)
 			{
 				printf("too few entries: %u, skipping.\n", effective_entries);
@@ -846,9 +845,18 @@ int main(int argc, char **argv)
 
 			for (map<signed int, result>::iterator pit = qit->second.begin(); pit != qit->second.end(); ++pit)
 			{
-				int idx = g->GetN();
 				double t = (pit->first + 0.5) * anal.alignment_ts + anal.alignment_t0;
 				double et = 0.5 * anal.alignment_ts;
+
+				// exclude problematic periods
+				// TODO: try to solve this on the input
+				double t_in_h = t / 3600;
+				if (31.0 <= t_in_h && t_in_h <= 33.0)
+					continue;
+				if (36.6 <= t_in_h && t_in_h <= 37.4)
+					continue;
+
+				int idx = g->GetN();
 				g->SetPoint(idx, t, pit->second.value);
 				g->SetPointError(idx, et, pit->second.uncertainty);
 			}
