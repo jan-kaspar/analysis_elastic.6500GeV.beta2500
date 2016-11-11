@@ -72,6 +72,7 @@ void FitOneUnit(TDirectory *inDir, GraphSet &gs)
 		g_a->SetTitle(";time   (s);a   (mrad)");
 		printf(">> a\n");
 		ff = pol0;
+		ff->SetParameters(0., 0.);
 		g_a->Fit(ff);
 		g_a->Write();
 		gs.a = WriteFitGraph(g_a, ff);
@@ -82,6 +83,7 @@ void FitOneUnit(TDirectory *inDir, GraphSet &gs)
 		g_b->SetTitle(";time   (s);b   (#murad)");
 		printf(">> b\n");
 		ff = pol0;
+		ff->SetParameters(0., 0.);
 		g_b->Fit(ff);
 		g_b->Write();
 		WriteFitGraph(g_b, ff);
@@ -93,6 +95,7 @@ void FitOneUnit(TDirectory *inDir, GraphSet &gs)
 		g_c->SetTitle(";time   (s);c   (#murad)");
 		printf(">> c\n");
 		ff = pol0;
+		ff->SetParameters(0., 0.);
 		g_c->Fit(ff);
 		g_c->Write();
 		gs.c = WriteFitGraph(g_c, ff);
@@ -118,12 +121,10 @@ int main(int argc, char **argv)
 	char buf[1000];
 
 	vector<string> units;
-	units.push_back("L_1_F");
 	units.push_back("L_2_F");
-	units.push_back("L_2_N");
+	units.push_back("L_1_F");
 	units.push_back("R_1_F");
 	units.push_back("R_2_F");
-	units.push_back("R_2_N");
 
 	vector<GraphSet> graphs;
 
