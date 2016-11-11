@@ -2,3 +2,6 @@
 *.log*
 *.root
 *.pdf
+*.out
+
+alignment/print_fit
