@@ -7,3 +7,9 @@
 DS-merged/merge
 
 alignment/print_fit
+
+binning/get_acceptance_correction
+binning/make_fit
+binning/make_generators
+binning/simu
+

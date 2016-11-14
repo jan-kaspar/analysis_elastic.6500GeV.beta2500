@@ -290,8 +290,8 @@ int main(int argc, char **argv)
 	vector<string> binnings;
 	binnings.push_back("ub");
 	//binnings.push_back("eb");
-	//binnings.push_back("ob-1-10-0.2");
-	//binnings.push_back("ob-1-30-0.2");
+	//binnings.push_back("ob-1-10-0.1");
+	binnings.push_back("ob-1-30-0.05");
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
@@ -679,7 +679,7 @@ int main(int argc, char **argv)
 	{
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, binnings[bi], bin_edges, N_bins);
+		BuildBinning(anal, binnings[bi], bin_edges, N_bins, true);
 
 		bh_t_Nev_before[bi] = new TH1D("h_t_Nev_before", ";|t|;events per bin", N_bins, bin_edges); bh_t_Nev_before[bi]->Sumw2();
 		bh_t_Nev_after_no_corr[bi] = new TH1D("h_t_Nev_after_no_corr", ";|t|;events per bin", N_bins, bin_edges); bh_t_Nev_after_no_corr[bi]->Sumw2();
