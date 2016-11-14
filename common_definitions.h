@@ -584,11 +584,11 @@ void Environment::PrintOpticsUncertainties() const
 
 struct Kinematics
 {
-	double th_x_L_F, th_x_L_N, th_x_R_N, th_x_R_F, th_x_L, th_x_R, th_x;	//	rad
-	double th_y_L_F, th_y_L_N, th_y_R_N, th_y_R_F, th_y_L, th_y_R, th_y;	//	rad
+	double th_x_L_1_F, th_x_L_2_F, th_x_R_1_F, th_x_R_2_F, th_x_L, th_x_R, th_x;	//	rad
+	double th_y_L_1_F, th_y_L_2_F, th_y_R_1_F, th_y_R_2_F, th_y_L, th_y_R, th_y;	//	rad
 
-	double vtx_x_L_F, vtx_x_L_N, vtx_x_R_N, vtx_x_R_F, vtx_x_L, vtx_x_R, vtx_x;	// in mm
-	double vtx_y_L_F, vtx_y_L_N, vtx_y_R_N, vtx_y_R_F, vtx_y_L, vtx_y_R, vtx_y;	// in mm
+	double vtx_x_L_1_F, vtx_x_L_2_F, vtx_x_R_1_F, vtx_x_R_2_F, vtx_x_L, vtx_x_R, vtx_x;	// in mm
+	double vtx_y_L_1_F, vtx_y_L_2_F, vtx_y_R_1_F, vtx_y_R_2_F, vtx_y_L, vtx_y_R, vtx_y;	// in mm
 
 	double th;				// in rad
 	double phi;				// in rad
