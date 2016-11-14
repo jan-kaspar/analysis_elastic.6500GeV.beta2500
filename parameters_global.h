@@ -65,7 +65,7 @@ void Init_global_45b_56t()
 	anal.cut6_a = 0.105559; anal.cut6_c = -0.; anal.cut6_si = 0.019;
 
 	// TODO
-	anal.th_y_lcut_L = 30E-6; anal.th_y_lcut_R = 33.5E-6; anal.th_y_lcut = 34.5E-6;
+	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 5E-6;
 	anal.th_y_hcut_L = 102E-6; anal.th_y_hcut_R = 102E-6; anal.th_y_hcut = 100E-6;
 }
 
@@ -78,6 +78,6 @@ void Init_global_45t_56b()
 	anal.cut6_a = 0.10564; anal.cut6_c = 0.; anal.cut6_si = 0.018;
 
 	// TODO
-	anal.th_y_lcut_L = 27E-6; anal.th_y_lcut_R = 27.5E-6; anal.th_y_lcut = 28.5E-6;
+	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 5E-6;
 	anal.th_y_hcut_L = 102E-6; anal.th_y_hcut_R = 102E-6; anal.th_y_hcut = 100E-6;
 }
