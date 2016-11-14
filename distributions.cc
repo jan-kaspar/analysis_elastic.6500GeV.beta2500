@@ -496,10 +496,10 @@ int main(int argc, char **argv)
 	
 	TH2D *h_th_x_diffLR_vs_vtx_x = new TH2D("h_th_x_diffLR_vs_vtx_x", ";vtx_{x};#theta_{x}^{R} - #theta_{x}^{L}", 100, -300E-3, +300E-3, 120, -120E-6, +120E-6);
 	
-	TProfile *p_th_x_diffLR_vs_th_x = new TProfile("p_th_x_diffLR_vs_th_x", ";#theta_{x};#theta_{x}^{R} - #theta_{x}^{L}", 500, -100E-6, +100E-6);
-	TProfile *p_th_y_diffLR_vs_th_y = new TProfile("p_th_y_diffLR_vs_th_y", ";#theta_{y};#theta_{y}^{R} - #theta_{y}^{L}", 500, -100E-6, +100E-6);
-	TProfile *p_th_y_L_diff12_vs_th_y_L = new TProfile("p_th_y_L_diff12_vs_th_y_L", ";#theta_{y}^{L};#theta_{y}^{L2F} - #theta_{y}^{L1F}", 500, -500E-6, +500E-6);
-	TProfile *p_th_y_R_diff12_vs_th_y_R = new TProfile("p_th_y_R_diff12_vs_th_y_R", ";#theta_{y}^{R};#theta_{y}^{R2F} - #theta_{y}^{R1F}", 500, -500E-6, +500E-6);
+	TProfile *p_th_x_diffLR_vs_th_x = new TProfile("p_th_x_diffLR_vs_th_x", ";#theta_{x};#theta_{x}^{R} - #theta_{x}^{L}", 200, -100E-6, +100E-6);
+	TProfile *p_th_y_diffLR_vs_th_y = new TProfile("p_th_y_diffLR_vs_th_y", ";#theta_{y};#theta_{y}^{R} - #theta_{y}^{L}", 200, -100E-6, +100E-6);
+	TProfile *p_th_y_L_diff12_vs_th_y_L = new TProfile("p_th_y_L_diff12_vs_th_y_L", ";#theta_{y}^{L};#theta_{y}^{L2F} - #theta_{y}^{L1F}", 200, -500E-6, +500E-6);
+	TProfile *p_th_y_R_diff12_vs_th_y_R = new TProfile("p_th_y_R_diff12_vs_th_y_R", ";#theta_{y}^{R};#theta_{y}^{R2F} - #theta_{y}^{R1F}", 200, -500E-6, +500E-6);
 	
 	TProfile *p_th_x_diffLR_vs_vtx_x = new TProfile("p_th_x_diffLR_vs_vtx_x", ";vtx_{x};#theta_{x}^{R} - #theta_{x}^{L}", 200, -400E-3, +400E-3);
 	
@@ -1412,7 +1412,7 @@ int main(int argc, char **argv)
 	printf("\n* th_y fit bounds: from %E to %E\n", th_y_low_bound, th_y_high_bound);
 
 	printf("\n* fitting p_th_x_diffLR_vs_th_x\n");
-	p_th_x_diffLR_vs_th_x->Fit("pol1", "", "", -100E-6, +100E-6);
+	p_th_x_diffLR_vs_th_x->Fit("pol1", "", "", -80E-6, +80E-6);
 	printf("\n* fitting p_th_y_diffLR_vs_th_y\n");
 	p_th_y_diffLR_vs_th_y->Fit("pol1", "", "", th_y_low_bound, th_y_high_bound);
 	printf("\n* fitting p_th_y_L_diff12_vs_th_y_L\n");
