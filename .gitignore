@@ -4,4 +4,6 @@
 *.pdf
 *.out
 
+DS-merged/merge
+
 alignment/print_fit
