@@ -107,8 +107,7 @@ int main()
 
 	vector<string> binnings;
 	binnings.push_back("ub");
-	//binnings.push_back("ob-1-10-0.2");
-	//binnings.push_back("ob-1-30-0.2");
+	binnings.push_back("ob-1-30-0.05");
 
 	// prepare output
 	TFile *f_out = new TFile("merged.root", "recreate");

@@ -26,18 +26,18 @@ void Init_global()
 	anal.t_min_full = 0.; anal.t_max_full = 1.1;
 
 	// approximate (time independent) resolutions
-	// TODO
-	anal.si_th_y_1arm = 3.1E-6 / sqrt(2.);
-	anal.si_th_y_1arm_unc = 0.E-6 / sqrt(2.);
+	anal.si_th_y_1arm = 0.37E-6 / sqrt(2.);
+	anal.si_th_y_1arm_unc = 0.02E-6 / sqrt(2.);
 
-	// TODO
 	anal.si_th_y_2arm = anal.si_th_y_1arm / sqrt(2.);
 	anal.si_th_y_2arm_unc = 0E-6;
 
+	// TODO
 	anal.si_th_x_1arm_L = 0E-6;
 	anal.si_th_x_1arm_R = 0E-6;
 	anal.si_th_x_1arm_unc = 0E-6;
 
+	// TODO
 	anal.si_th_x_2arm = 0E-6;
 	anal.si_th_x_2arm_unc = 0E-6;
 
@@ -78,6 +78,6 @@ void Init_global_45t_56b()
 	anal.cut6_a = 0.10564; anal.cut6_c = 0.; anal.cut6_si = 0.018;
 
 	// TODO
-	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 5E-6;
+	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 4.5E-6;
 	anal.th_y_hcut_L = 102E-6; anal.th_y_hcut_R = 102E-6; anal.th_y_hcut = 100E-6;
 }
