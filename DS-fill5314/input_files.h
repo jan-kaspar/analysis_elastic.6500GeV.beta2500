@@ -9,18 +9,20 @@ void InitInputFiles()
 {
 	input_files.clear();
 
-	std::string prefix = "root://eostotem.cern.ch//eos/totem/user/j/jkaspar/reco/alignment_sr/";
+	std::string prefix = "root://eostotem.cern.ch//eos/totem/data/offline/2016/2500m/version1/";
 
 	input_files.push_back(prefix + "run_10208.0_ntuple.root");
 	input_files.push_back(prefix + "run_10208.1_ntuple.root");
 	input_files.push_back(prefix + "run_10208.2_ntuple.root");
 	input_files.push_back(prefix + "run_10208.3_ntuple.root");
+	input_files.push_back(prefix + "run_10208.4_ntuple.root");
 	input_files.push_back(prefix + "run_10209.0_ntuple.root");
 	input_files.push_back(prefix + "run_10209.1_ntuple.root");
 	input_files.push_back(prefix + "run_10209.2_ntuple.root");
 	input_files.push_back(prefix + "run_10210.0_ntuple.root");
 	input_files.push_back(prefix + "run_10210.1_ntuple.root");
 	input_files.push_back(prefix + "run_10210.2_ntuple.root");
+	input_files.push_back(prefix + "run_10212.0_ntuple.root");
 	input_files.push_back(prefix + "run_10212.1_ntuple.root");
 	input_files.push_back(prefix + "run_10212.2_ntuple.root");
 	input_files.push_back(prefix + "run_10212.3_ntuple.root");
@@ -37,6 +39,7 @@ void InitInputFiles()
 	input_files.push_back(prefix + "run_10218.2_ntuple.root");
 	input_files.push_back(prefix + "run_10218.3_ntuple.root");
 	input_files.push_back(prefix + "run_10218.4_ntuple.root");
+	input_files.push_back(prefix + "run_10218.5_ntuple.root");
 	input_files.push_back(prefix + "run_10220.0_ntuple.root");
 	input_files.push_back(prefix + "run_10220.1_ntuple.root");
 	input_files.push_back(prefix + "run_10220.2_ntuple.root");

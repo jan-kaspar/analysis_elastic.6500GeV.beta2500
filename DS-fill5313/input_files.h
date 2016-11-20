@@ -9,7 +9,7 @@ void InitInputFiles()
 {
 	input_files.clear();
 
-	std::string prefix = "root://eostotem.cern.ch//eos/totem/user/j/jkaspar/reco/alignment_sr/";
+	std::string prefix = "root://eostotem.cern.ch//eos/totem/data/offline/2016/2500m/version1/";
 
 	input_files.push_back(prefix + "run_10190.0_ntuple.root");
 	input_files.push_back(prefix + "run_10190.1_ntuple.root");
@@ -26,6 +26,7 @@ void InitInputFiles()
 	input_files.push_back(prefix + "run_10196.1_ntuple.root");
 	input_files.push_back(prefix + "run_10196.2_ntuple.root");
 	input_files.push_back(prefix + "run_10196.3_ntuple.root");
+	input_files.push_back(prefix + "run_10196.4_ntuple.root");
 	input_files.push_back(prefix + "run_10198.0_ntuple.root");
 	input_files.push_back(prefix + "run_10198.1_ntuple.root");
 	input_files.push_back(prefix + "run_10198.2_ntuple.root");
@@ -35,10 +36,12 @@ void InitInputFiles()
 	input_files.push_back(prefix + "run_10200.1_ntuple.root");
 	input_files.push_back(prefix + "run_10200.2_ntuple.root");
 	input_files.push_back(prefix + "run_10200.3_ntuple.root");
+	input_files.push_back(prefix + "run_10200.4_ntuple.root");
 	input_files.push_back(prefix + "run_10202.0_ntuple.root");
 	input_files.push_back(prefix + "run_10202.1_ntuple.root");
 	input_files.push_back(prefix + "run_10202.2_ntuple.root");
 	input_files.push_back(prefix + "run_10202.3_ntuple.root");
+	input_files.push_back(prefix + "run_10204.0_ntuple.root");
 	input_files.push_back(prefix + "run_10204.1_ntuple.root");
 	input_files.push_back(prefix + "run_10204.2_ntuple.root");
 	input_files.push_back(prefix + "run_10204.3_ntuple.root");
