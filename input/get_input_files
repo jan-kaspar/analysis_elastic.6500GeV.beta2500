@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# load EOS configuration
+source "/afs/cern.ch/project/eos/installation/totem/etc/setup.sh"
+shopt -s expand_aliases
+
+#----------------------------------------------------------------------------------------------------
+
+#input_dir="/eos/totem/user/j/jkaspar/reco/alignment_sr"
+input_dir="/eos/totem/data/offline/2016/2500m/version1"
+
+function GetFiles()
+{
+	local run="$1"
+
+	eos ls "$input_dir" | grep "run_${run}" | grep "_ntuple.root" | while read f
+	do
+		echo "	input_files.push_back(prefix + \"$f\");"
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+echo "--------------------------------------------------"
+echo "fill 5313"
+echo "--------------------------------------------------"
+
+GetFiles 10190
+GetFiles 10192
+GetFiles 10194
+GetFiles 10196
+GetFiles 10198
+GetFiles 10200
+GetFiles 10202
+GetFiles 10204
+GetFiles 10206
+
+echo "--------------------------------------------------"
+echo "fill 5314"
+echo "--------------------------------------------------"
+
+GetFiles 10208
+GetFiles 10209
+GetFiles 10210
+GetFiles 10212
+GetFiles 10214
+GetFiles 10216
+GetFiles 10218
+GetFiles 10220
+GetFiles 10222
+GetFiles 10224
+
+echo "--------------------------------------------------"
+echo "fill 5317"
+echo "--------------------------------------------------"
+
+GetFiles 10225
+GetFiles 10227
+GetFiles 10229
+GetFiles 10231
+GetFiles 10233
+GetFiles 10234
+GetFiles 10236
+GetFiles 10238
+GetFiles 10240
+GetFiles 10242
+GetFiles 10243
+GetFiles 10245
+GetFiles 10246
+GetFiles 10248
+GetFiles 10249
+GetFiles 10250
+GetFiles 10252
+GetFiles 10254
+GetFiles 10256
+GetFiles 10258
+GetFiles 10260
+GetFiles 10262
+GetFiles 10264
+GetFiles 10266
+GetFiles 10268
+GetFiles 10270
+GetFiles 10272
+
+echo "--------------------------------------------------"
+echo "fill 5321"
+echo "--------------------------------------------------"
+
+GetFiles 10281
+GetFiles 10283
+GetFiles 10285
+GetFiles 10286
+GetFiles 10288
+GetFiles 10289
+GetFiles 10292
+GetFiles 10293
+GetFiles 10294
+GetFiles 10295
+GetFiles 10297
+GetFiles 10298
+GetFiles 10299
+GetFiles 10301
+GetFiles 10302
+GetFiles 10303
+GetFiles 10305
