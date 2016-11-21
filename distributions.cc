@@ -295,8 +295,9 @@ int main(int argc, char **argv)
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
+	printf("* distilled chain\n");
 	ch_in->Add((inputDir + "/distill_" + argv[1] + ".root").c_str());
-	printf("%llu entries\n", ch_in->GetEntries());
+	printf("    %llu entries\n", ch_in->GetEntries());
 
 	// init output file
 	TFile *outF = TFile::Open((outputDir+"/distributions_" + argv[1] + ".root").c_str(), "recreate");

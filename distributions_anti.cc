@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	string cutSelectionString;
 	string outputDir = ".";
 	string inputDir = ".";
-	double input_n_si = 5.0;
+	double input_n_si = 4.0;
 
 	// parse command line arguments, starting from index 2
 	for (int i = 2; i < argc; i++)
@@ -153,28 +153,19 @@ int main(int argc, char **argv)
 	// binnings
 	vector<string> binnings;
 	binnings.push_back("ub");
-	//binnings.push_back("eb");
-	binnings.push_back("ob-1-10-0.2");
-	binnings.push_back("ob-1-30-0.2");
+	binnings.push_back("ob-1-30-0.05");
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
-	printf(">> input chain\n");
-	for (const auto &ntupleDir : distilledNtuples)
-	{
-		string f = storageDir + "/" + ntupleDir + "/distill_" + argv[1] + ".root";
-		printf("+ %s\n", f.c_str());
-		ch_in->Add(f.c_str());
-	}
-	printf("%llu entries\n", ch_in->GetEntries());
+	printf("* distilled chain\n");
+	ch_in->Add((inputDir + "/distill_" + argv[1] + ".root").c_str());
+	printf("    %llu entries\n", ch_in->GetEntries());
 
 	EventRed ev;
 	ch_in->SetBranchAddress("v_L_1_F", &ev.h.L_1_F.v); ch_in->SetBranchAddress("x_L_1_F", &ev.h.L_1_F.x); ch_in->SetBranchAddress("y_L_1_F", &ev.h.L_1_F.y);
-	ch_in->SetBranchAddress("v_L_2_N", &ev.h.L_2_N.v); ch_in->SetBranchAddress("x_L_2_N", &ev.h.L_2_N.x); ch_in->SetBranchAddress("y_L_2_N", &ev.h.L_2_N.y);
 	ch_in->SetBranchAddress("v_L_2_F", &ev.h.L_2_F.v); ch_in->SetBranchAddress("x_L_2_F", &ev.h.L_2_F.x); ch_in->SetBranchAddress("y_L_2_F", &ev.h.L_2_F.y);
 
 	ch_in->SetBranchAddress("v_R_1_F", &ev.h.R_1_F.v); ch_in->SetBranchAddress("x_R_1_F", &ev.h.R_1_F.x); ch_in->SetBranchAddress("y_R_1_F", &ev.h.R_1_F.y);
-	ch_in->SetBranchAddress("v_R_2_N", &ev.h.R_2_N.v); ch_in->SetBranchAddress("x_R_2_N", &ev.h.R_2_N.x); ch_in->SetBranchAddress("y_R_2_N", &ev.h.R_2_N.y);
 	ch_in->SetBranchAddress("v_R_2_F", &ev.h.R_2_F.v); ch_in->SetBranchAddress("x_R_2_F", &ev.h.R_2_F.x); ch_in->SetBranchAddress("y_R_2_F", &ev.h.R_2_F.y);	
 
 	ch_in->SetBranchAddress("timestamp", &ev.timestamp);
@@ -199,17 +190,13 @@ int main(int argc, char **argv)
 
 	// book hit-distribution histograms
 	TH2D *h_y_L_1_F_vs_x_L_1_F_al_nosel = new TH2D("h_y_L_1_F_vs_x_L_1_F_al_nosel", ";x^{L,1,F};y^{L,1,F}", 150, -15., 15., 300, -30., +30.);
-	TH2D *h_y_L_2_N_vs_x_L_2_N_al_nosel = new TH2D("h_y_L_2_N_vs_x_L_2_N_al_nosel", ";x^{L,2,N};y^{L,2,N}", 150, -15., 15., 300, -30., +30.);
 	TH2D *h_y_L_2_F_vs_x_L_2_F_al_nosel = new TH2D("h_y_L_2_F_vs_x_L_2_F_al_nosel", ";x^{L,2,F};y^{L,2,F}", 150, -15., 15., 300, -30., +30.);
 	TH2D *h_y_R_1_F_vs_x_R_1_F_al_nosel = new TH2D("h_y_R_1_F_vs_x_R_1_F_al_nosel", ";x^{R,1,F};y^{R,1,F}", 150, -15., 15., 300, -30., +30.);
-	TH2D *h_y_R_2_N_vs_x_R_2_N_al_nosel = new TH2D("h_y_R_2_N_vs_x_R_2_N_al_nosel", ";x^{R,2,N};y^{R,2,N}", 150, -15., 15., 300, -30., +30.);
 	TH2D *h_y_R_2_F_vs_x_R_2_F_al_nosel = new TH2D("h_y_R_2_F_vs_x_R_2_F_al_nosel", ";x^{R,2,F};y^{R,2,F}", 150, -15., 15., 300, -30., +30.);
 	
 	TH2D *h_y_L_1_F_vs_x_L_1_F_al_sel = new TH2D("h_y_L_1_F_vs_x_L_1_F_al_sel", ";x^{L,1,F};y^{L,1,F}", 100, -3., +3., 300, -30., +30.);
-	TH2D *h_y_L_2_N_vs_x_L_2_N_al_sel = new TH2D("h_y_L_2_N_vs_x_L_2_N_al_sel", ";x^{L,2,N};y^{L,2,N}", 100, -3., +3., 300, -30., +30.);
 	TH2D *h_y_L_2_F_vs_x_L_2_F_al_sel = new TH2D("h_y_L_2_F_vs_x_L_2_F_al_sel", ";x^{L,2,F};y^{L,2,F}", 100, -3., +3., 300, -30., +30.);
 	TH2D *h_y_R_1_F_vs_x_R_1_F_al_sel = new TH2D("h_y_R_1_F_vs_x_R_1_F_al_sel", ";x^{R,1,F};y^{R,1,F}", 100, -3., +3., 300, -30., +30.);
-	TH2D *h_y_R_2_N_vs_x_R_2_N_al_sel = new TH2D("h_y_R_2_N_vs_x_R_2_N_al_sel", ";x^{R,2,N};y^{R,2,N}", 100, -3., +3., 300, -30., +30.);
 	TH2D *h_y_R_2_F_vs_x_R_2_F_al_sel = new TH2D("h_y_R_2_F_vs_x_R_2_F_al_sel", ";x^{R,2,F};y^{R,2,F}", 100, -3., +3., 300, -30., +30.);
 
 	// book cut histograms
@@ -329,7 +316,7 @@ int main(int argc, char **argv)
 			continue;
 
 		// diagonal cut
-		bool allDiagonalRPs = (ev.h.L_2_N.v && ev.h.L_2_F.v && ev.h.R_2_N.v && ev.h.R_2_F.v);
+		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.L_2_F.v && ev.h.R_2_F.v && ev.h.R_2_F.v);
 		if (!allDiagonalRPs)
 			continue;
 		
@@ -352,10 +339,8 @@ int main(int argc, char **argv)
 
 		// fill pre-selection histograms
 		h_y_L_1_F_vs_x_L_1_F_al_nosel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
-		h_y_L_2_N_vs_x_L_2_N_al_nosel->Fill(h_al.L_2_N.x, h_al.L_2_N.y);
 		h_y_L_2_F_vs_x_L_2_F_al_nosel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
 		h_y_R_1_F_vs_x_R_1_F_al_nosel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
-		h_y_R_2_N_vs_x_R_2_N_al_nosel->Fill(h_al.R_2_N.x, h_al.R_2_N.y);
 		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
 
 		if (detailsLevel >= 2)
@@ -367,11 +352,10 @@ int main(int argc, char **argv)
 		}
 
 		// coordinate inversion in sector 45
-		//h_al.x_L_N = - h_al.x_L_N;
-        //h_al.x_L_F = - h_al.x_L_F;
+		//h_al.x_L_1_F = - h_al.x_L_1_F;
+        //h_al.x_L_2_F = - h_al.x_L_2_F;
 
 		h_al.L_1_F.y = - h_al.L_1_F.y;
-		h_al.L_2_N.y = - h_al.L_2_N.y;
         h_al.L_2_F.y = - h_al.L_2_F.y;
 
 		// run reconstruction
@@ -416,10 +400,8 @@ int main(int argc, char **argv)
 		}
 
 		h_y_L_1_F_vs_x_L_1_F_al_sel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
-		h_y_L_2_N_vs_x_L_2_N_al_sel->Fill(h_al.L_2_N.x, h_al.L_2_N.y);
 		h_y_L_2_F_vs_x_L_2_F_al_sel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
 		h_y_R_1_F_vs_x_R_1_F_al_sel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
-		h_y_R_2_N_vs_x_R_2_N_al_sel->Fill(h_al.R_2_N.x, h_al.R_2_N.y);
 		h_y_R_2_F_vs_x_R_2_F_al_sel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
 
 		/*
@@ -604,18 +586,14 @@ int main(int argc, char **argv)
 	TDirectory *hitDistDir = outF->mkdir("hit distributions");
 	gDirectory = hitDistDir->mkdir("vertical, aligned, before selection");
 	h_y_L_1_F_vs_x_L_1_F_al_nosel->Write();
-	h_y_L_2_N_vs_x_L_2_N_al_nosel->Write();
 	h_y_L_2_F_vs_x_L_2_F_al_nosel->Write();
 	h_y_R_1_F_vs_x_R_1_F_al_nosel->Write();
-	h_y_R_2_N_vs_x_R_2_N_al_nosel->Write();
 	h_y_R_2_F_vs_x_R_2_F_al_nosel->Write();
 	
 	gDirectory->Write();
 	h_y_L_1_F_vs_x_L_1_F_al_sel->Write();
-	h_y_L_2_N_vs_x_L_2_N_al_sel->Write();
 	h_y_L_2_F_vs_x_L_2_F_al_sel->Write();
 	h_y_R_1_F_vs_x_R_1_F_al_sel->Write();
-	h_y_R_2_N_vs_x_R_2_N_al_sel->Write();
 	h_y_R_2_F_vs_x_R_2_F_al_sel->Write();
 
 	TDirectory *cutDir = outF->mkdir("elastic cuts");
