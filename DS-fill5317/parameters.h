@@ -13,9 +13,9 @@ void Init_base()
 
 	// alignment settings
 	AlignmentSource alSrc;
-	alSrc.SetAlignmentA(atConstant);
-	alSrc.SetAlignmentB(atConstant);
-	alSrc.SetAlignmentC(atConstant);
+	alSrc.SetAlignmentA(atNone);
+	alSrc.SetAlignmentB(atNone);
+	alSrc.SetAlignmentC(atNone);
 
 	alSrc.cnst.a_L_2_F = -0.3E-3; alSrc.cnst.b_L_2_F = -271.3E-3; alSrc.cnst.c_L_2_F = -142.0E-3; 
 	alSrc.cnst.a_L_1_F = -0.7E-3; alSrc.cnst.b_L_1_F = -290.6E-3; alSrc.cnst.c_L_1_F = 108.9E-3; 
