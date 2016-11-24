@@ -16,6 +16,8 @@ function PrintUsage()
 	echo -e "	-danti			run the program in anti-diagonals"
 	echo -e "	-O <option>		pass the option to the program"
 	echo -e "	-no-bckg		do no run compilation and programs in background"
+	echo -e "	-lxbatch		prepare job for LXBATCH instead of executing locally"
+	echo -e "	-submit			submit job to LXBATCH, implies -lxbatch option"
 }
 
 #----------------------------------------------------------------------------------------------------
@@ -29,7 +31,13 @@ diag_45t_56t="n"
 
 runInBackground="y"
 
+lxbatch="n"
+submit="n"
+
 rcIncompatibleDiagonal=123
+
+bsub_options="pool>5000"
+bsub_queue="8nh"
 
 #----------------------------------------------------------------------------------------------------
 
@@ -50,23 +58,46 @@ function RunOneDiagonal()
 	label="$tag @ $dir:$diag"
 	log="${tag}_${diag}.log_run"
 
-	echo "$label > running$optionsStr"
-	{ time "./$exe_file" "$diag" $options ; } &> "$log"
-	errCode="$?"
-	case "$errCode" in
-		0)
-			echo "$label > done"
-			;;
+	if [ "$lxbatch" == "y" ]
+	then
+		local cwd=`pwd -P`
+		local job_dir="$cwd"
+		local job_file=".${tag}_${diag}.job"
+		local job_log_file=".${tag}_${diag}.log_job"
 
-		$rcIncompatibleDiagonal)
-			rm "$log"
-			;;
+		cat "$top_dir/job_template" | sed "\
+				s|\$JOB_DIR|$job_dir|; \
+				s|\$JOB_LOG_FILE|$job_log_file|; \
+				s|\$COMMAND|{ time \"./$exe_file\" \"$diag\" $options ; } \&> \"$log\"|; \
+			" > "$job_file"
+		chmod u+x "$job_file"
 
-		*)
-			echo "$label > run error ($errCode)"
-			if [ "$par_more" -eq 1 ]; then tail -n 5 "$log"; fi
-			;;
-	esac
+		if [ "$submit" == "y" ]
+		then
+			result=`bsub -R "$bsub_options" -q "$bsub_queue" -o /dev/null -e /dev/null "$cwd/$job_file"`
+			echo "$label > $result"
+		else
+			echo "$label > would be submitted (use -submit option)"
+		fi
+	else
+		echo "$label > running$optionsStr"
+		{ time "./$exe_file" "$diag" $options ; } &> "$log"
+		errCode="$?"
+		case "$errCode" in
+			0)
+				echo "$label > done"
+				;;
+	
+			$rcIncompatibleDiagonal)
+				rm "$log"
+				;;
+	
+			*)
+				echo "$label > run error ($errCode)"
+				if [ "$par_more" -eq 1 ]; then tail -n 5 "$log"; fi
+				;;
+		esac
+	fi
 }
 
 #----------------------------------------------------------------------------------------------------
@@ -81,7 +112,7 @@ function RunOneDir()
 	local par_more="$3"
 	local options="$4"
 
-	local top_dir=`pwd`
+	top_dir=`pwd`
 
 	cp "$input" "$dir/$src_file"
 	cd "$dir"
@@ -136,6 +167,8 @@ function RunOneDir()
 	then
 		RunOneDiagonal "$tag" "$dir" "$par_more" "45t_56t" "$options" &
 	fi
+
+	cd - &> /dev/null
 }
 
 #----------------------------------------------------------------------------------------------------
@@ -201,6 +234,15 @@ do
 
 		"-no-bckg")
 			runInBackground="n"
+			;;
+
+		"-lxbatch")
+			lxbatch="y"
+			;;
+
+		"-submit")
+			lxbatch="y"
+			submit="y"
 			;;
 
 		*)
