@@ -289,7 +289,6 @@ int main(int argc, char **argv)
 	// binnings
 	vector<string> binnings;
 	binnings.push_back("ub");
-	//binnings.push_back("eb");
 	//binnings.push_back("ob-1-10-0.1");
 	binnings.push_back("ob-1-30-0.05");
 
@@ -390,6 +389,8 @@ int main(int argc, char **argv)
 	TH1D *h_timestamp_dgn = new TH1D("h_timestamp_dgn", ";timestamp;rate   (Hz)", timestamp_bins, timestamp_min-0.5, timestamp_max+0.5);
 	TH1D *h_timestamp_B0 = new TH1D("h_timestamp_B0", ";timestamp;rate   (Hz)", timestamp_bins, timestamp_min-0.5, timestamp_max+0.5);
 	TH1D *h_timestamp_sel = new TH1D("h_timestamp_sel", ";timestamp;rate   (Hz)", timestamp_bins, timestamp_min-0.5, timestamp_max+0.5);
+
+	TH1D *h_trigger_bit = new TH1D("h_trigger_bit", ";trigger bit", 16, -0.5, 15.5);
 
 	TGraph *g_run_vs_timestamp = new TGraph(); g_run_vs_timestamp->SetName("g_run_vs_timestamp"); g_run_vs_timestamp->SetTitle(";timestamp;run");
 	TGraph *g_ev_num_vs_timestamp = new TGraph(); g_ev_num_vs_timestamp->SetName("g_ev_num_vs_timestamp"); g_ev_num_vs_timestamp->SetTitle(";timestamp;ev_num");
@@ -789,6 +790,17 @@ int main(int argc, char **argv)
 			int time_group = int(ev.timestamp / time_group_interval);
 			if ( (time_group % time_group_divisor) != time_group_remainder)
 				continue;
+		}
+
+		// fill trigger-bit histogram
+		if (detailsLevel >= 2)
+		{	
+			for (unsigned int bit = 0; bit <= 15; bit++)
+			{
+				unsigned int val = (ev.trigger_bits >> bit) % 2;
+				if (val)
+					h_trigger_bit->Fill(bit);
+			}
 		}
 
 		// diagonal cut
@@ -1579,6 +1591,8 @@ int main(int argc, char **argv)
 
 	if (detailsLevel >= 2)
 	{	
+		h_trigger_bit->Write();
+
 		//g_timestamp_vs_ev_idx_dgn->Write();
 		g_timestamp_vs_ev_idx_sel->Write();
 
