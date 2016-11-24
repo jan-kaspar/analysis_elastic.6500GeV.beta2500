@@ -78,7 +78,7 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 	// same as in the low-|t| analysis
 	if (type.compare("ub") == 0)
 	{
-		w = 2E-3;
+		w = 0.02;
 		double t = 0.;
 		while (t < anal.t_max_full)
 		{

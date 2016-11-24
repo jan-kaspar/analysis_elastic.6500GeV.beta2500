@@ -54,6 +54,13 @@ void Init_global()
 
 	anal.alignmentYRanges["R_1_F"] = Analysis::AlignmentYRange(-16.0, -3.0, +3.0, +16.0);
 	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-20.0, -4.0, +4.0, +20.0);
+
+	// efficiency settings
+	anal.inefficiency_3outof4 = 0.;
+	anal.inefficiency_shower_near = 0.;
+	anal.inefficiency_pile_up = 0.;
+	anal.inefficiency_trigger = 0.;
+	anal.L_int = 1.;
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -8,6 +8,8 @@ DS-merged/merge
 
 alignment/print_fit
 
+background_studies/DS-*
+
 binning/get_acceptance_correction
 binning/make_fit
 binning/make_generators
