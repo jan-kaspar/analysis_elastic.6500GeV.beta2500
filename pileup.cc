@@ -42,8 +42,8 @@ struct RPStruct
 		sprintf(buf, "digi_rp_%u.", id); ch->SetBranchAddress(buf, &digi);
 
 		pat = new RPRootDumpPatternInfo();
-		sprintf(buf, "nonpar_patterns_rp_%u.*", id); ch->SetBranchStatus(buf, 1);
-		sprintf(buf, "nonpar_patterns_rp_%u.", id); ch->SetBranchAddress(buf, &pat);
+		sprintf(buf, "patterns_rp_%u.*", id); ch->SetBranchStatus(buf, 1);
+		sprintf(buf, "patterns_rp_%u.", id); ch->SetBranchAddress(buf, &pat);
 
 		tr = new RPRootDumpTrackInfo();
 		sprintf(buf, "track_rp_%u.*", id); ch->SetBranchStatus(buf, 1);
@@ -90,17 +90,24 @@ typedef map<string, map<string, map<unsigned int, unsigned long> > > CounterMap;
 
 //----------------------------------------------------------------------------------------------------
 
+/* 
+reconstruction settings:
+  process.NonParallelTrackFinder.maxHitsPerPlaneToSearch = 5
+  process.NonParallelTrackFinder.minPlanesPerProjectionToSearch = 2
+  process.NonParallelTrackFinder.minPlanesPerProjectionToFit = 3
+*/
+
+//----------------------------------------------------------------------------------------------------
+
 bool RPTooFullU(const RPStruct &rp)
 {
 	unsigned N_too_full = 0;
-	// TODO: tune
 	for (unsigned int i = 1; i < 10; i += 2)
 	{
-		if (rp.digi->numberOfClusters[i] >= 10)
+		if (rp.digi->numberOfClusters[i] > 5)
 			N_too_full++;
 	}
 
-	// TODO: tune
 	return (N_too_full >= 3);
 }
 
@@ -109,14 +116,12 @@ bool RPTooFullU(const RPStruct &rp)
 bool RPTooFullV(const RPStruct &rp)
 {
 	unsigned N_too_full = 0;
-	// TODO: tune
 	for (unsigned int i = 0; i < 10; i += 2)
 	{
-		if (rp.digi->numberOfClusters[i] >= 10)
+		if (rp.digi->numberOfClusters[i] > 5)
 			N_too_full++;
 	}
 
-	// TODO: tune
 	return (N_too_full >= 3);
 }
 
@@ -279,8 +284,8 @@ int main(int argc, char **argv)
 	ch->SetBranchAddress("trigger_data.", &triggerData);
 
 	DiagStruct diag_45b, diag_45t;
-	diag_45b.AssignBranches(ch, 25, 4, 104, 124);
-	diag_45t.AssignBranches(ch, 24, 5, 105, 125);
+	diag_45b.AssignBranches(ch, 25, 5, 104, 124);
+	diag_45t.AssignBranches(ch, 24, 4, 105, 125);
 
 	// prepare counters and histograms
 	map<string, CounterMap> counters;	// map: diagonal label -> CounterMap
@@ -288,10 +293,6 @@ int main(int argc, char **argv)
 	// loop over events
 	for (unsigned int ev = 0; ev < ch->GetEntries(); ev++)
 	{
-		// TODO
-		if (ev >= 1000)
-			break;
-		
 		ch->GetEvent(ev);
 		
 		// zero-bias selection
@@ -299,8 +300,8 @@ int main(int argc, char **argv)
 			continue;
 
 		// skip troublesome runs
-		unsigned int run = metaData->run_no / 10000;
-		unsigned int file = metaData->run_no % 10000;
+		unsigned int run = metaData->run_no / 100000;
+		unsigned int file = metaData->run_no % 100000;
 		if (SkipRun(run, file, false))
 			continue;
 
