@@ -5,7 +5,13 @@ string topDir = "../../";
 
 TH2_palette = Gradient(blue, heavygreen, yellow, red);
 
-string datasets[] = { "DS-fill5313" };
+string datasets[] = {
+	"DS-fill5313",
+	"DS-fill5314",
+	"DS-fill5317",
+	"DS-fill5321",
+};
+
 string dgns[] = { "45b_56t", "45t_56b" };
 
 //int cuts[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -21,8 +27,8 @@ string label_cut[] = { "$\De^{R-L} \th_x^{*}\ung{\mu rad}$", "$\De^{R-L} \th_y^{
 real lim_x_low[] = { -200, -150, -1000, -1000, -15, -15, -200, -600 };
 real lim_x_high[] = { +200, 150, +1000, +1000, +15, +15, +200, +600 };
 
-real lim_y_low[] = { -200, -150, -0.8, -0.8, -0.5, -0.5, -0.2, -4 };
-real lim_y_high[] = { +200, 150, +0.8, +0.8, +0.5, +0.5, +0.2, +4 };
+real lim_y_low[] = { -200, -150, -0.8, -0.8, -0.5, -0.5, -2, -4 };
+real lim_y_high[] = { +200, 150, +0.8, +0.8, +0.5, +0.5, +2, +4 };
 
 for (int ci : cuts.keys)
 {
