@@ -38,18 +38,18 @@ struct HistGroup
 
 	void Init()
 	{
-		de_th_x = new TH1D("", ";#Delta #theta_{x}", 1000, 0., 0.);
-		de_th_y = new TH1D("", ";#Delta #theta_{y}", 1000, 0., 0.);
+		de_th_x = new TH1D("", ";#Delta #theta_{x}", 200, -100E-6, +100E-6);
+		de_th_y = new TH1D("", ";#Delta #theta_{y}", 200, -5E-6, +5E-6);
 
-		th_x = new TH1D("", ";#theta_{x}", 200, -200E-6, 200E-6);
-		th_y = new TH1D("", ";#theta_{y}", 100, 0E-6, 200E-6);
-		th_y_xcut = new TH1D("", ";#theta_{y}", 100, 0E-6, 200E-6);
+		th_x = new TH1D("", ";#theta_{x}", 150, -150E-6, 150E-6);
+		th_y = new TH1D("", ";#theta_{y}", 120, 0E-6, 120E-6);
+		th_y_xcut = new TH1D("", ";#theta_{y}", 120, 0E-6, 120E-6);
 
-		th_x_th_y = new TH2D("", ";#theta_{x};#theta_{y}", 400, -200E-6, 200E-6, 400, 0E-6, 200E-6);
+		th_x_th_y = new TH2D("", ";#theta_{x};#theta_{y}", 300, -150E-6, 150E-6, 100, 0E-6, 100E-6);
 
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, "ob-1-10", bin_edges, N_bins);
+		BuildBinning(anal, "ob-1-30-0.05", bin_edges, N_bins);
 		t = new TH1D("", ";|t|", N_bins, bin_edges);
 	}
 
@@ -77,7 +77,7 @@ struct HistGroup
 			it->second->Fill(fabs(thy));
 		}
 
-		double p = 4E3;
+		double p = 6.5E3;
 		double t_val = p*p * (thx*thx + thy*thy);
 
 		t->Fill(t_val);
@@ -216,9 +216,8 @@ int main(int argc, char **argv)
 	inT->SetBranchAddress("v_R_2_F", &ev.h.R_2_F.v); inT->SetBranchAddress("x_R_2_F", &ev.h.R_2_F.x); inT->SetBranchAddress("y_R_2_F", &ev.h.R_2_F.y);	
 
 	// tolerances (= 1 sigma of left-right difference)
-	// TODO
-	double si_de_th_x = 20E-6;
-	double si_de_th_y = 1.0E-6;
+	double si_de_th_x = 12E-6;
+	double si_de_th_y = 0.4E-6;
 
 	// vector of cut sigma multiples
 	vector<double> n_si;
@@ -233,10 +232,10 @@ int main(int argc, char **argv)
 	rps.push_back("R_1_F");
 	rps.push_back("R_2_F");
 
-	rps.push_back("L_2_F,R_1_F");
-	rps.push_back("L_2_F,R_2_F");
 	rps.push_back("L_1_F,R_1_F");
 	rps.push_back("L_1_F,R_2_F");
+	rps.push_back("L_2_F,R_1_F");
+	rps.push_back("L_2_F,R_2_F");
 
 	// book histograms
 	vector< vector<HistGroup> > h_sel(rps.size(), vector<HistGroup>(n_si.size())), h_full(rps.size(), vector<HistGroup>(n_si.size()));
@@ -246,26 +245,19 @@ int main(int argc, char **argv)
 	{
 		inT->GetEntry(ev_idx);
 		
-		// TODO: check it is correct
 		// choose the desired trigger
-		if ((ev.trigger_bits & 3) == 0)	// RP trigger only
+		if ((ev.trigger_bits & 7) == 0)	// RP trigger only
 			continue;
 
 		// remove troublesome runs
-		unsigned int run = ev.run_num / 10000;
-		unsigned int file = ev.run_num % 10000;
+		unsigned int run = ev.run_num / 100000;
+		unsigned int file = ev.run_num % 100000;
 		if (SkipRun(run, file, true))
 			continue;
 
 		// select the elastic-trigger bunch(es) only
 		if (SkipBunch(run, ev.bunch_num))
 			continue;
-
-		// time selection
-		/*
-		if (ev.timestamp < 16700 || ev.timestamp > 17300)
-			continue;
-			*/
 
 		// apply fine alignment
 		HitData h_al = ev.h;
@@ -281,6 +273,7 @@ int main(int argc, char **argv)
 		// loop over tested RP combinations
 		for (unsigned int rpi = 0; rpi < rps.size(); rpi++)
 		{
+			// determine which pots are selected for event definition
 			bool L_2_F = (rps[rpi].find("L_2_F") == string::npos);
 			bool L_1_F = (rps[rpi].find("L_1_F") == string::npos);
 			bool R_1_F = (rps[rpi].find("R_1_F") == string::npos);
@@ -309,12 +302,12 @@ int main(int argc, char **argv)
 
 			double de_th_x_sel = th_x_R_sel - th_x_L_sel;
 			double de_th_y_sel = th_y_R_sel - th_y_L_sel;
-		
+	
 			// cuts on elastic kinematics at various sigma-levels
 			for (unsigned int nsi = 0; nsi < n_si.size(); nsi++)
 			{
 				h_sel[rpi][nsi].FillDelta(de_th_x_sel, de_th_y_sel);
-
+			
 				bool cut_th_x = (fabs(de_th_x_sel) < n_si[nsi] * si_de_th_x);
 				bool cut_th_y = (fabs(de_th_y_sel) < n_si[nsi] * si_de_th_y);
 
@@ -368,12 +361,10 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_x->Draw("same");
 			c->Write("th_x comparison");
 
-			// TODO: ranges
 			TH1D *h_simple_ratio_vs_th_x = MakeSimpleRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -20E-6, 20E-6, false);
 			h_simple_ratio_vs_th_x->SetName("h_simple_ratio.th_x");
 			h_simple_ratio_vs_th_x->Write();
 
-			// TODO: ranges
 			TH1D *h_refined_ratio_vs_th_x = MakeRefinedRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -20E-6, 20E-6, false);
 			h_refined_ratio_vs_th_x->SetName("h_refined_ratio.th_x");
 			h_refined_ratio_vs_th_x->Write();
@@ -393,12 +384,10 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_y->Draw("same");
 			c->Write("th_y comparison");
 
-			// TODO: ranges
 			TH1D *h_simple_ratio_vs_th_y = MakeSimpleRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, anal.eff_th_y_min, 100E-6, false);
 			h_simple_ratio_vs_th_y->SetName("h_simple_ratio.th_y");
 			h_simple_ratio_vs_th_y->Write();
 
-			// TODO: ranges
 			TH1D *h_refined_ratio_vs_th_y = MakeRefinedRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, anal.eff_th_y_min, 100E-6, false);
 			h_refined_ratio_vs_th_y->SetName("h_refined_ratio.th_y");
 			h_refined_ratio_vs_th_y->Write();
@@ -418,12 +407,10 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_y_xcut->Draw("same");
 			c->Write("th_y comparison");
 
-			// TODO: ranges
 			TH1D *h_simple_ratio_vs_th_y_cut = MakeSimpleRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, anal.eff_th_y_min, 100E-6, true);
 			h_simple_ratio_vs_th_y_cut->SetName("h_simple_ratio.th_y");
 			h_simple_ratio_vs_th_y_cut->Write();
 
-			// TODO: ranges
 			TH1D *h_refined_ratio_vs_th_y_cut = MakeRefinedRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, anal.eff_th_y_min, 100E-6, true);
 			h_refined_ratio_vs_th_y_cut->SetName("h_refined_ratio.th_y");
 			h_refined_ratio_vs_th_y_cut->Write();

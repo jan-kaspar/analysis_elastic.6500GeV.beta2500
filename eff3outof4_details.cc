@@ -101,7 +101,7 @@ struct HistGroup
 		h_th_x = new TH1D("", ";#theta_{x}   (#murad)", 200, -200., +200.);
 		h_th_y = new TH1D("", ";#theta_{y}   (#murad)", 100, -120., +120.);
 
-		h_th_x_th_y = new TH2D("", ";#theta_{x}   (#murad);#theta_{y}   (#murad)", 60, -200, 200, 60, -200, 200);
+		h_th_x_th_y = new TH2D("", ";#theta_{x}   (#murad);#theta_{y}   (#murad)", 40, -200., 200., 60, -120., 120.);
 	}
 
 	void Fill(double y, double th_x, double th_y)
@@ -166,13 +166,13 @@ bool RPTooFullV(const RPStruct &rp)
 
 //----------------------------------------------------------------------------------------------------
 
-void AnalyzeOnePot(const string &pot, const DiagStruct &dgn, const vector<AlignmentData> &alignment, CounterMap &c)
+void AnalyzeOnePot(const string &pot_excl, const DiagStruct &dgn, const vector<AlignmentData> &alignment, CounterMap &c)
 {
 	// which pots are selected for track/event definition
-	bool sel_L_2_F = (pot.find("L_2_F") == string::npos);
-	bool sel_L_1_F = (pot.find("L_1_F") == string::npos);
-	bool sel_R_1_F = (pot.find("R_1_F") == string::npos);
-	bool sel_R_2_F = (pot.find("R_2_F") == string::npos);
+	bool sel_L_2_F = (pot_excl.find("L_2_F") == string::npos);
+	bool sel_L_1_F = (pot_excl.find("L_1_F") == string::npos);
+	bool sel_R_1_F = (pot_excl.find("R_1_F") == string::npos);
+	bool sel_R_2_F = (pot_excl.find("R_2_F") == string::npos);
 
 	// do all selected pots have tracks?
 	bool skip = (sel_L_2_F && !dgn.L_2_F.tr->valid) || (sel_L_1_F && !dgn.L_1_F.tr->valid)
@@ -210,10 +210,10 @@ void AnalyzeOnePot(const string &pot, const DiagStruct &dgn, const vector<Alignm
 	double de_th_y_sel = th_y_R_sel - th_y_L_sel;
 
 	// can this be elastic event
-	// TODO: update
+	// si_de_... determined by eff3outof4.cc
+	double si_de_th_x = 12E-6;
+	double si_de_th_y = 0.4E-6;
 	double n_si = 3.;
-	double si_de_th_x = 20E-6;
-	double si_de_th_y = 1E-6;
 
 	bool cut_th_x = (fabs(de_th_x_sel) < n_si * si_de_th_x);
 	bool cut_th_y = (fabs(de_th_y_sel) < n_si * si_de_th_y);
@@ -224,10 +224,10 @@ void AnalyzeOnePot(const string &pot, const DiagStruct &dgn, const vector<Alignm
 	// pot under test
 	RPStruct rp_test;
 	double y_test = 0., th_x_test = 0., th_y_test = 0.;
-	if (pot.compare("L_2_F") == 0) { rp_test = dgn.L_2_F; y_test = - h_al.L_2_F.y; th_x_test = - h_al.L_2_F.x / env.L_x_L_2_F; th_y_test = - h_al.L_2_F.y / env.L_y_L_2_F; }
-	if (pot.compare("L_1_F") == 0) { rp_test = dgn.L_1_F; y_test = - h_al.L_1_F.y; th_x_test = - h_al.L_1_F.x / env.L_x_L_1_F; th_y_test = - h_al.L_1_F.y / env.L_y_L_1_F; }
-	if (pot.compare("R_1_F") == 0) { rp_test = dgn.R_1_F; y_test = + h_al.R_1_F.y; th_x_test = + h_al.R_1_F.x / env.L_x_R_1_F; th_y_test = + h_al.R_1_F.y / env.L_y_R_1_F; }
-	if (pot.compare("R_2_F") == 0) { rp_test = dgn.R_2_F; y_test = + h_al.R_2_F.y; th_x_test = + h_al.R_2_F.x / env.L_x_R_2_F; th_y_test = + h_al.R_2_F.y / env.L_y_R_2_F; }
+	if (pot_excl.compare("L_2_F") == 0) { rp_test = dgn.L_2_F; y_test = - h_al.L_2_F.y; th_x_test = - h_al.L_2_F.x / env.L_x_L_2_F; th_y_test = - h_al.L_2_F.y / env.L_y_L_2_F; }
+	if (pot_excl.compare("L_1_F") == 0) { rp_test = dgn.L_1_F; y_test = - h_al.L_1_F.y; th_x_test = - h_al.L_1_F.x / env.L_x_L_1_F; th_y_test = - h_al.L_1_F.y / env.L_y_L_1_F; }
+	if (pot_excl.compare("R_1_F") == 0) { rp_test = dgn.R_1_F; y_test = + h_al.R_1_F.y; th_x_test = + h_al.R_1_F.x / env.L_x_R_1_F; th_y_test = + h_al.R_1_F.y / env.L_y_R_1_F; }
+	if (pot_excl.compare("R_2_F") == 0) { rp_test = dgn.R_2_F; y_test = + h_al.R_2_F.y; th_x_test = + h_al.R_2_F.x / env.L_x_R_2_F; th_y_test = + h_al.R_2_F.y / env.L_y_R_2_F; }
 
 	// reference quantities
 	double th_x_ref = th_x_sel;
@@ -246,18 +246,18 @@ void AnalyzeOnePot(const string &pot, const DiagStruct &dgn, const vector<Alignm
 		&& (fabs(th_x_test - th_x_ref) < n_si * si_de_th_x)
 		&& (fabs(th_y_test - th_y_ref) < n_si * si_de_th_y);
 
-	c[pot]["anything"].Fill(y_ref, th_x_ref, th_y_ref);
+	c[pot_excl]["anything"].Fill(y_ref, th_x_ref, th_y_ref);
 	
 	if (rp_test_pl_insuff)
-		c[pot]["pl_insuff"].Fill(y_ref, th_x_ref, th_y_ref);
+		c[pot_excl]["pl_insuff"].Fill(y_ref, th_x_ref, th_y_ref);
 	if (rp_test_pl_suff_no_track)
-		c[pot]["pl_suff_no_track"].Fill(y_ref, th_x_ref, th_y_ref);
+		c[pot_excl]["pl_suff_no_track"].Fill(y_ref, th_x_ref, th_y_ref);
 	if (rp_test_pat_more)
-		c[pot]["pat_more"].Fill(y_ref, th_x_ref, th_y_ref);
+		c[pot_excl]["pat_more"].Fill(y_ref, th_x_ref, th_y_ref);
 	if (rp_test_track)
-		c[pot]["track"].Fill(y_ref, th_x_ref, th_y_ref);
+		c[pot_excl]["track"].Fill(y_ref, th_x_ref, th_y_ref);
 	if (rp_test_track_compatible)
-		c[pot]["track_compatible"].Fill(y_ref, th_x_ref, th_y_ref);
+		c[pot_excl]["track_compatible"].Fill(y_ref, th_x_ref, th_y_ref);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -361,8 +361,8 @@ int main(int argc, char **argv)
 	ch->SetBranchAddress("trigger_data.", &triggerData);
 
 	DiagStruct diag_45b, diag_45t;
-	diag_45b.AssignBranches(ch, 25, 4, 104, 124);
-	diag_45t.AssignBranches(ch, 24, 5, 105, 125);
+	diag_45b.AssignBranches(ch, 25, 5, 104, 124);
+	diag_45t.AssignBranches(ch, 24, 4, 105, 125);
 
 	// prepare counters and histograms
 	map<string, CounterMap> counters;	// map: diagonal label -> CounterMap
@@ -370,20 +370,15 @@ int main(int argc, char **argv)
 	// loop over events
 	for (unsigned int ev = 0; ev < ch->GetEntries(); ev++)
 	{
-		// TODO
-		if (ev >= 1000)
-			break;
-		
 		ch->GetEvent(ev);
 		
-		// TODO: check this is correct
-		// select RP trigger only
-		if ((triggerData->input_status_bits & 3) == 0)
+		// select RP trigger only 
+		if ((triggerData->input_status_bits & 7) == 0)
 			continue;
 
 		// skip troublesome runs
-		unsigned int run = metaData->run_no / 10000;
-		unsigned int file = metaData->run_no % 10000;
+		unsigned int run = metaData->run_no / 100000;
+		unsigned int file = metaData->run_no % 100000;
 		if (SkipRun(run, file, false))
 			continue;
 
