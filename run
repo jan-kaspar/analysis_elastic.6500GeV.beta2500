@@ -118,7 +118,7 @@ function RunOneDir()
 	cd "$dir"
 	
 	echo "$tag @ $dir > compiling"
-	g++ -O3 -Wall -Wextra -Werror --std=c++11\
+	g++ -O3 -g -Wall -Wextra -Werror --std=c++11\
 			-I"$top_dir" \
 			`root-config --libs` -lMinuit -lMinuit2 `root-config --cflags` \
 			-I"$CMSSW_BASE/src" \
