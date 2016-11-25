@@ -41,16 +41,21 @@ struct HistGroup
 		de_th_x = new TH1D("", ";#Delta #theta_{x}", 200, -100E-6, +100E-6);
 		de_th_y = new TH1D("", ";#Delta #theta_{y}", 200, -5E-6, +5E-6);
 
-		th_x = new TH1D("", ";#theta_{x}", 150, -150E-6, 150E-6);
-		th_y = new TH1D("", ";#theta_{y}", 120, 0E-6, 120E-6);
-		th_y_xcut = new TH1D("", ";#theta_{y}", 120, 0E-6, 120E-6);
+		if (th_x_binning_edges_1d == NULL)
+			BuildThBinning();
 
-		th_x_th_y = new TH2D("", ";#theta_{x};#theta_{y}", 300, -150E-6, 150E-6, 100, 0E-6, 100E-6);
+		th_x = new TH1D("", ";#theta_{x}", th_x_binning_n_1d, th_x_binning_edges_1d);
+		th_y = new TH1D("", ";#theta_{y}", th_y_binning_n_1d, th_y_binning_edges_1d);
+		th_y_xcut = new TH1D("", ";#theta_{y}", th_y_binning_n_1d, th_y_binning_edges_1d);
+
+		th_x_th_y = new TH2D("", ";#theta_{x};#theta_{y}", th_x_binning_n_2d, th_x_binning_edges_2d,
+			th_y_binning_n_2d, th_y_binning_edges_2d);
 
 		unsigned int N_bins;
 		double *bin_edges;
 		BuildBinning(anal, "ob-1-30-0.05", bin_edges, N_bins);
 		t = new TH1D("", ";|t|", N_bins, bin_edges);
+		delete [] bin_edges;
 	}
 
 	void Fill(double thx, double thy, signed int period)
