@@ -50,7 +50,9 @@ for (int rpi : rps.keys)
 	for (int dsi : datasets.keys)
 	{
 		NewPad("time $\ung{h}$", "efficiency\ung{\%}");
-		//DrawRunBands(65, 105);
+		real y_min = 95, y_max = 100;
+
+		DrawRunBands(dataset_fills[dsi], y_min, y_max);
 
 		for (int dgi : diagonals.keys)
 		{
@@ -65,7 +67,7 @@ for (int rpi : rps.keys)
 				"p", p, mCi+2pt+p, label);
 		}
 
-		ylimits(95., 100., Crop);
+		ylimits(y_min, y_max, Crop);
 
 		SetPadWidth();
 	}
