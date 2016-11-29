@@ -630,6 +630,74 @@ struct CutData
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
+struct FiducialCut
+{
+	double th_x_0, th_y_0;	// rad
+	double al_m, al_p; 		// slope th_y vs. th_x, 1
+
+	FiducialCut(double _tx0=0., double _ty0=0., double _alm=0., double _alp=0.) :
+		th_x_0(_tx0), th_y_0(_ty0), al_m(_alm), al_p(_alp)
+	{
+	}
+
+	double GetThYLimit(double th_x) const
+	{
+		return (th_x > th_x_0) ? (th_y_0 + al_p * (th_x - th_x_0)) : (th_y_0 + al_m * (th_x - th_x_0));
+	}
+
+	void Print() const
+	{
+		printf("th_x_0=%E, th_y_0=%E, al_m=%E, al_p=%E\n", th_x_0, th_y_0, al_m, al_p);
+	}
+
+	vector<double> GetIntersectionPhis(double th) const
+	{
+		vector<double> phis;
+	
+		double A, B, C, D, p, phi;
+	
+		// try positve side
+		A = 1. + al_p * al_p;
+		B = 2. * th_x_0 + 2. * th_y_0 * al_p;
+		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		D = B*B - 4.*A*C;
+		if (D > 0.)
+		{
+			p = (-B + sqrt(D)) / 2. / A;
+			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			if (p > 0.)
+				phis.push_back(phi);
+	
+			p = (-B - sqrt(D)) / 2. / A;
+			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			if (p > 0.)
+				phis.push_back(phi);
+		}
+	
+		// try negative side
+		A = 1. + al_m * al_m;
+		B = 2. * th_x_0 + 2. * th_y_0 * al_m;
+		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		D = B*B - 4.*A*C;
+		if (D > 0.)
+		{
+			p = (-B + sqrt(D)) / 2. / A;
+			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			if (p < 0.)
+				phis.push_back(phi);
+	
+			p = (-B - sqrt(D)) / 2. / A;
+			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			if (p < 0.)
+				phis.push_back(phi);
+		}
+	
+		return phis;
+	}
+};
+
+//----------------------------------------------------------------------------------------------------
+
 struct Analysis
 {
 	// binning, |t| in GeV^2
@@ -657,11 +725,17 @@ struct Analysis
 	std::vector<unsigned int> cuts;	// list of active cuts
 
 	// analysis cuts (rad)
+	// TODO: eventually remove
 	double th_y_lcut_L, th_y_lcut_R, th_y_lcut;
 	double th_y_hcut_L, th_y_hcut_R, th_y_hcut;
 	
 	double th_x_lcut;
 	double th_x_hcut;
+
+	// fiducial cuts
+	FiducialCut fc_L_l, fc_L_h;
+	FiducialCut fc_R_l, fc_R_h;
+	FiducialCut fc_G_l, fc_G_h;
 
 	// (un)-smearing parameters
 	double si_th_x_1arm_L;
@@ -768,20 +842,32 @@ struct Analysis
 		printf("%lu enabled cuts: ", cuts.size());
 		for (unsigned int i = 0; i < cuts.size(); i++)
 			printf((i == 0) ? "%i" : ", %i", cuts[i]);
+		printf("\n");
 
 		printf("\n");
+		printf("fiducial cuts:\n");
+		printf("fc_L_l: "); fc_L_l.Print();
+		printf("fc_L_h: "); fc_L_h.Print();
+		printf("fc_R_l: "); fc_R_l.Print();
+		printf("fc_R_h: "); fc_R_h.Print();
+		printf("fc_G_l: "); fc_G_l.Print();
+		printf("fc_G_h: "); fc_G_h.Print();
+		
+		// TODO: remove
 		printf("th_x_lcut=%E\n", th_x_lcut);
 		printf("th_x_hcut=%E\n", th_x_hcut);
 		printf("th_y_lcut_L=%E, th_y_lcut_R=%E, th_y_lcut=%E\n", th_y_lcut_L, th_y_lcut_R, th_y_lcut);
 		printf("th_y_hcut_L=%E, th_y_hcut_R=%E, th_y_hcut=%E\n", th_y_hcut_L, th_y_hcut_R, th_y_hcut);
 
 		printf("\n");
+		printf("smearing parameters:\n");
 		printf("si_th_x_1arm_L=%E, si_th_x_1arm_R=%E, si_th_x_1arm_unc=%E\n", si_th_x_1arm_L, si_th_x_1arm_R, si_th_x_1arm_unc);
 		printf("si_th_x_2arm=%E, si_th_x_2arm_unc=%E\n", si_th_x_2arm, si_th_x_2arm_unc);
 		printf("si_th_y_1arm=%E, si_th_y_1arm_unc=%E\n", si_th_y_1arm, si_th_y_1arm_unc);
 		printf("si_th_y_2arm=%E, si_th_y_2arm_unc=%E\n", si_th_y_2arm, si_th_y_2arm_unc);
 	
 		printf("\n");
+		printf("normalisation parameters:\n");
 		printf("use_3outof4_efficiency_fits = %i\n", use_3outof4_efficiency_fits);
 		printf("use_pileup_efficiency_fits= %i\n", use_pileup_efficiency_fits);
 		printf("inefficiency_3outof4 = %.3f\n", inefficiency_3outof4);
