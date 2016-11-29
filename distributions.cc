@@ -803,6 +803,20 @@ int main(int argc, char **argv)
 			}
 		}
 
+		// apply fine alignment
+		HitData h_al = ev.h;
+		for (unsigned int i = 0; i < alignmentSources.size(); ++i)
+		{
+			AlignmentData alData = alignmentSources[i].Eval(ev.timestamp);
+			h_al = h_al.ApplyAlignment(alData);
+		}
+
+		// fill pre-selection histograms
+		h_y_L_1_F_vs_x_L_1_F_al_nosel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
+		h_y_L_2_F_vs_x_L_2_F_al_nosel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
+		h_y_R_1_F_vs_x_R_1_F_al_nosel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
+		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
+
 		// diagonal cut
 		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.L_1_F.v && ev.h.R_1_F.v && ev.h.R_2_F.v);
 		if (!allDiagonalRPs)
@@ -824,20 +838,6 @@ int main(int argc, char **argv)
 		N_anal++;
 		if (zero_bias_event)
 			N_anal_zeroBias++;
-
-		// apply fine alignment
-		HitData h_al = ev.h;
-		for (unsigned int i = 0; i < alignmentSources.size(); ++i)
-		{
-			AlignmentData alData = alignmentSources[i].Eval(ev.timestamp);
-			h_al = h_al.ApplyAlignment(alData);
-		}
-
-		// fill pre-selection histograms
-		h_y_L_1_F_vs_x_L_1_F_al_nosel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
-		h_y_L_2_F_vs_x_L_2_F_al_nosel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
-		h_y_R_1_F_vs_x_R_1_F_al_nosel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
-		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
 		
 		h_timestamp_B0->Fill(ev.timestamp);
 
