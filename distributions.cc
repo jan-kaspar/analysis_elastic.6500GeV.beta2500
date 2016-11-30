@@ -934,7 +934,8 @@ int main(int argc, char **argv)
 		if (zero_bias_event)
 		{
 			N_zeroBias_el++;
-			if ((ev.trigger_bits & 3) != 0)
+			// TODO
+			if ((ev.trigger_bits & 7) != 0)
 				N_zeroBias_el_RP_trig++;
 		}
 
@@ -943,8 +944,9 @@ int main(int argc, char **argv)
 			N_el_T2trig++;
 		
 		// enforce the RP trigger (vertical OR horizontal)
+		// TODO
 		/*
-		if ((ev.trigger_bits & 3) == 0)
+		if ((ev.trigger_bits & 7) == 0)
 			continue;
 		*/
 
