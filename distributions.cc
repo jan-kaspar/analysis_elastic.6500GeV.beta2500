@@ -1,5 +1,6 @@
 #include "common_definitions.h"
 #include "common_algorithms.h"
+#include "AcceptanceCalculator.h"
 #include "parameters.h"
 #include "common.h"
 
@@ -99,6 +100,23 @@ void HideLowTBins(TH1D *h, double threshold)
 			h->SetBinError(bi, 0.);
 		}
 	}
+}
+	
+//----------------------------------------------------------------------------------------------------
+
+TGraph* PlotFiductialCut(const FiducialCut &fc, double th_y_sign)
+{
+	TGraph *g = new TGraph();
+
+	vector<double> de_th_x_values = { -200E-6, 0E-6, +200E-6 };
+
+	for (const double &de_th_x : de_th_x_values)
+	{
+		double th_x = fc.th_x_0 + de_th_x;
+		g->SetPoint(g->GetN(), th_x, th_y_sign * fc.GetThYLimit(th_x));
+	}
+
+	return g;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -291,6 +309,10 @@ int main(int argc, char **argv)
 	binnings.push_back("ub");
 	//binnings.push_back("ob-1-10-0.1");
 	binnings.push_back("ob-1-30-0.05");
+
+	// initialise acceptance calculation
+	AcceptanceCalculator accCalc;
+	accCalc.Init(th_y_sign, anal);
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
@@ -512,9 +534,9 @@ int main(int argc, char **argv)
 	TProfile *p_th_x_L_vs_th_y_L = new TProfile("p_th_x_L_vs_th_y_L", ";#theta_{y}^{L};#theta_{x}^{L}", 100, -500E-6, +500E-6);
 	TProfile *p_th_x_R_vs_th_y_R = new TProfile("p_th_x_R_vs_th_y_R", ";#theta_{y}^{R};#theta_{x}^{R}", 100, -500E-6, +500E-6);
 
-	TH2D *h_th_y_L_vs_th_x_L = new TH2D("h_th_y_L_vs_th_x_L", ";#theta_{x}^{L};#theta_{y}^{L}", 80, -200E-6, +200E-6, 480, -120E-6, +120E-6);
-	TH2D *h_th_y_R_vs_th_x_R = new TH2D("h_th_y_R_vs_th_x_R", ";#theta_{x}^{R};#theta_{y}^{R}", 80, -200E-6, +200E-6, 480, -120E-6, +120E-6);
-	TH2D *h_th_y_vs_th_x = new TH2D("h_th_y_vs_th_x", ";#theta_{x};#theta_{y}", 80, -200E-6, +200E-6, 480, -120E-6, +120E-6);
+	TH2D *h_th_y_L_vs_th_x_L = new TH2D("h_th_y_L_vs_th_x_L", ";#theta_{x}^{L};#theta_{y}^{L}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
+	TH2D *h_th_y_R_vs_th_x_R = new TH2D("h_th_y_R_vs_th_x_R", ";#theta_{x}^{R};#theta_{y}^{R}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
+	TH2D *h_th_y_vs_th_x = new TH2D("h_th_y_vs_th_x", ";#theta_{x};#theta_{y}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
 	
 	TGraph *g_th_y_L_vs_th_x_L = new TGraph(); g_th_y_L_vs_th_x_L->SetName("g_th_y_L_vs_th_x_L"); g_th_y_L_vs_th_x_L->SetTitle(";#theta_{x}^{L};#theta_{y}^{L}");
 	TGraph *g_th_y_R_vs_th_x_R = new TGraph(); g_th_y_R_vs_th_x_R->SetName("g_th_y_R_vs_th_x_R"); g_th_y_R_vs_th_x_R->SetTitle(";#theta_{x}^{R};#theta_{y}^{R}");
@@ -1312,7 +1334,10 @@ int main(int argc, char **argv)
 		// calculate acceptance divergence correction
 		double phi_corr = 0., div_corr = 0.;
 		
-		bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
+		// TODO: decide
+		// TODO: compatible with time-dependent sigmas ??
+		//bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
+		bool skip = accCalc.Calculate(k, phi_corr, div_corr);
 
 		for (unsigned int bi = 0; bi < binnings.size(); bi++)
 		{
@@ -1857,14 +1882,6 @@ int main(int argc, char **argv)
 	h_th_y_R_1_F->Write();
 	h_th_y_R_2_F->Write();
 
-	{
-		double x[] = {0, 1, 2, 3};
-		double y[] = {anal.th_y_lcut_L, anal.th_y_hcut_L, anal.th_y_lcut_R, anal.th_y_hcut_R};
-		TGraph *g = new TGraph(4, x, y);
-		g->SetName("g_th_y_cuts");
-		g->Write();
-	}
-
 	/*
 	gDirectory = outF->mkdir("selected - angles, alternative");
 
@@ -2029,6 +2046,15 @@ int main(int argc, char **argv)
 
 	g_L_L_F_vs_time->Write();
 	g_L_R_F_vs_time->Write();
+
+	TDirectory *fidCutDir = outF->mkdir("fiducial cuts");
+	gDirectory = fidCutDir;
+	PlotFiductialCut(anal.fc_L_l, th_y_sign)->Write("fc_L_l");
+	PlotFiductialCut(anal.fc_L_h, th_y_sign)->Write("fc_L_h");
+	PlotFiductialCut(anal.fc_R_l, th_y_sign)->Write("fc_R_l");
+	PlotFiductialCut(anal.fc_R_h, th_y_sign)->Write("fc_R_h");
+	PlotFiductialCut(anal.fc_G_l, th_y_sign)->Write("fc_G_l");
+	PlotFiductialCut(anal.fc_G_h, th_y_sign)->Write("fc_G_h");
 
 	TDirectory *accDir = outF->mkdir("acceptance correction");
 	for (unsigned int bi = 0; bi < binnings.size(); bi++)

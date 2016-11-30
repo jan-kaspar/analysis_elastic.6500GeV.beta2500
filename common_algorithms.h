@@ -97,7 +97,7 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 	}
 
 	// between t_min_full and t_min
-	unsigned int N_bins_low = 4;
+	unsigned int N_bins_low = 10;
 	w = (anal.t_min - anal.t_min_full) / N_bins_low;
 	for (unsigned int i = 0; i < N_bins_low; i++)
 		be.push_back(anal.t_min_full + w * i);
