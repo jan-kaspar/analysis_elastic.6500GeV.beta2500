@@ -16,13 +16,16 @@ string binning = "ob-1-30-0.05";
 
 drawGridDef = true;
 
-xTicksDef = LeftTicks(0.2, 0.1);
+xSizeDef = 8cm;
+ySizeDef = 8cm;
 
 //----------------------------------------------------------------------------------------------------
 
 for (int dsi : datasets.keys)
 {
-	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{a.~u.}$", 10cm, 8cm);
+	xTicksDef = LeftTicks(0.2, 0.1);
+
+	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{a.~u.}$");
 	scale(Linear, Log);
 
 	for (int dgni : diagonals.keys)
@@ -33,7 +36,29 @@ for (int dsi : datasets.keys)
 	}
 
 	limits((0, 1e1), (1.0, 1e9), Crop);
-	//limits((0, 1e7), (0.1, 1e9), Crop);
 
-	AttachLegend(datasets[dsi] + " -- fill " + dataset_fills[dsi]);
+	AttachLegend(datasets[dsi]);
+}
+
+//----------------------------------------------------------------------------------------------------
+
+NewRow();
+
+for (int dsi : datasets.keys)
+{
+	xTicksDef = LeftTicks(0.002, 0.001);
+
+	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{a.~u.}$");
+	scale(Linear, Log);
+
+	for (int dgni : diagonals.keys)
+	{
+		pen p = StdPen(dgni + 1);
+		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "acceptance correction/"+binning+"/h_t_after"),
+			"d0,eb", p, diagLabels[dgni]);
+	}
+
+	limits((0, 1e7), (0.01, 2e8), Crop);
+
+	AttachLegend(datasets[dsi]);
 }
