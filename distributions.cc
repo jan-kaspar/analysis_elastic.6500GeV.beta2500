@@ -866,8 +866,8 @@ int main(int argc, char **argv)
 		if (detailsLevel >= 2)
 		{
 			g_run_vs_timestamp->SetPoint(g_run_vs_timestamp->GetN(), ev.timestamp, ev.run_num);
-			//g_ev_num_vs_timestamp->SetPoint(g_ev_num_vs_timestamp->GetN(), ev.timestamp, ev.event_num);
-			//g_tr_num_vs_timestamp->SetPoint(g_tr_num_vs_timestamp->GetN(), ev.timestamp, ev.trigger_num);
+			g_ev_num_vs_timestamp->SetPoint(g_ev_num_vs_timestamp->GetN(), ev.timestamp, ev.event_num);
+			g_tr_num_vs_timestamp->SetPoint(g_tr_num_vs_timestamp->GetN(), ev.timestamp, ev.trigger_num);
 		}
 
 		// run reconstruction
@@ -1624,8 +1624,8 @@ int main(int argc, char **argv)
 		g_timestamp_vs_ev_idx_sel->Write();
 
 		g_run_vs_timestamp->Write();
-		//g_ev_num_vs_timestamp->Write();
-		//g_tr_num_vs_timestamp->Write();
+		g_ev_num_vs_timestamp->Write();
+		g_tr_num_vs_timestamp->Write();
 		g_bunch_num_vs_timestamp->Write();
 		g_selected_bunch_num_vs_timestamp->Write();
 	}
