@@ -428,6 +428,8 @@ struct Environment
 
 void Environment::ApplyRandomOpticsPerturbations(TVectorD & /*de*/)
 {
+	printf("Environment::ApplyRandomOpticsPerturbations: not yet implemented\n");
+
 	/*
 	TVectorD r(16);
 
@@ -459,6 +461,8 @@ void Environment::ApplyRandomOpticsPerturbations(TVectorD & /*de*/)
 
 void Environment::ApplyOpticsPerturbationMode(int /*mode*/, double /*coef*/)
 {
+	printf("Environment::ApplyOpticsPerturbationMode: not yet implemented\n");
+
 	/*
 	printf(">> Environment::ApplyOpticsPerturbationMode\n");
 
@@ -514,6 +518,8 @@ void Environment::ApplyOpticsPerturbationMode(int /*mode*/, double /*coef*/)
 
 void Environment::ApplyEffectiveLengthPerturbationMode(int /*mode*/, double /*coef*/)
 {
+	printf("Environment::ApplyEffectiveLengthPerturbationMode: not yet implemented\n");
+
 	/*
 
 	printf(">> Environment::ApplyEffectiveLengthPerturbationMode\n");
