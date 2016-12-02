@@ -59,7 +59,7 @@ void Analysis::BuildCuts()
 	ccb[7] = 1.;
 	ccc[7] = cut7_c;
 	csi[7] = cut7_si;
-	cuts.push_back(7);
+	//cuts.push_back(7);
 	
 	// a: th_y, b: vtx_y_R - vtx_y_L
 	cqaN[8] = "#theta_{y}"; cqbN[8] = "vtx_{y}^{R} - vtx_{y}^{L}";
