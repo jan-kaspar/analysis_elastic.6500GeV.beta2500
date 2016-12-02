@@ -4,21 +4,17 @@ void Environment::InitNominal()
 	p = p_L = p_R = 6500.;
 
 	// momentum uncertainty
-	// TODO: update
 	si_de_p = 1E-3 * p;
 
-	// angular (one-side) beam smearing (rad)
-	// TODO: update
-	si_th_x_L = si_th_x_R = 0.88E-6;
-	si_th_y_L = si_th_y_R = 0.95E-6 / sqrt(2.);
+	// beam divergence (one-arm angular smearing without detector effects) (rad)
+	si_th_x_L = si_th_x_R = 0.35E-6;
+	si_th_y_L = si_th_y_R = 0.37E-6 / sqrt(2.);
 
 	// vertex smearing (mm)
-	// TODO: update
 	si_vtx_x = si_vtx_y = 600E-3;
 
 	// pitch-induced error (mm), later adjusted by parameters.h
-	// TODO: update
-	si_de_P_L = si_de_P_R = 13E-3;
+	si_de_P_L = si_de_P_R = 12E-3;
 
 	// optics: v_x and v_y [1], L_x and L_y [mm]
 	v_x_R_1_F = -0.63263562078653; L_x_R_1_F = 71.181685562871E3; v_y_R_1_F = 0.0509593091754162; L_y_R_1_F = 250.978239123353E3;
@@ -63,16 +59,18 @@ void Environment::InitNominal()
 	for (unsigned int i = 0; i < 16; i++)
 		S(i, i) = (eig_values(i) >= 0.) ? sqrt(eig_values(i)) : 0.;
 	opt_per_gen = eig_decomp.GetEigenVectors() * S;
+	*/
 
 	// alignment uncertainties
-	si_de_x = 30E-3;
-	si_de_y_R = 70E-3;
-	si_de_y_D = 20E-3;
-	si_tilt = 2E-3;
+	// TODO
+	si_de_x = 0E-3;
+	si_de_y_R = 0E-3;
+	si_de_y_D = 0E-3;
+	si_tilt = 0E-3;
 
 	// other uncertainties
-	si_th_y_RL_assym_unc = 0.25;
-	*/
+	// TODO
+	si_th_y_RL_assym_unc = 0.;
 }
 
 //----------------------------------------------------------------------------------------------------
