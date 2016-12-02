@@ -840,7 +840,7 @@ int main(int argc, char **argv)
 		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
 
 		// diagonal cut
-		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.L_1_F.v && ev.h.R_1_F.v && ev.h.R_2_F.v);
+		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.R_2_F.v);
 		if (!allDiagonalRPs)
 			continue;
 		
@@ -934,7 +934,6 @@ int main(int argc, char **argv)
 		if (zero_bias_event)
 		{
 			N_zeroBias_el++;
-			// TODO
 			if ((ev.trigger_bits & 7) != 0)
 				N_zeroBias_el_RP_trig++;
 		}
@@ -944,7 +943,6 @@ int main(int argc, char **argv)
 			N_el_T2trig++;
 		
 		// enforce the RP trigger (vertical OR horizontal)
-		// TODO
 		/*
 		if ((ev.trigger_bits & 7) == 0)
 			continue;
@@ -1106,8 +1104,8 @@ int main(int argc, char **argv)
 
 		p_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
 		
-		double safe_th_y_min = (anal.th_y_lcut_L + anal.th_y_lcut_R)/2. + 5E-6;
-		double safe_th_y_max = (anal.th_y_hcut_L + anal.th_y_hcut_R)/2. - 5E-6;
+		double safe_th_y_min = anal.fc_G_l.th_y_0 + 5E-6;
+		double safe_th_y_max = anal.fc_G_h.th_y_0 - 5E-6;
 		bool safe = fabs(k.th_y) > safe_th_y_min && fabs(k.th_y) < safe_th_y_max;
 
 		if (safe)
@@ -1338,8 +1336,8 @@ int main(int argc, char **argv)
 		
 		// TODO: decide
 		// TODO: compatible with time-dependent sigmas ??
-		//bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
-		bool skip = accCalc.Calculate(k, phi_corr, div_corr);
+		bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
+		//bool skip = accCalc.Calculate(k, phi_corr, div_corr);
 
 		for (unsigned int bi = 0; bi < binnings.size(); bi++)
 		{

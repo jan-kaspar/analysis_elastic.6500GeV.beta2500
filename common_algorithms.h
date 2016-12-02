@@ -14,44 +14,31 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 	Kinematics k;
 
 	// single-arm kinematics reconstruction
-	// th_x: linear regression
-	// th_y: from hit positions
-	// vtx_x: linear regression
-
-	double D_x_L = - env.v_x_L_1_F * env.L_x_L_2_F + env.v_x_L_2_F * env.L_x_L_1_F;
-	k.th_x_L = (env.v_x_L_1_F * h.L_2_F.x - env.v_x_L_2_F * h.L_1_F.x) / D_x_L;
-	k.vtx_x_L = (- h.L_1_F.x * env.L_x_L_2_F + h.L_2_F.x * env.L_x_L_1_F) / D_x_L;
-
-	double D_x_R = + env.v_x_R_1_F * env.L_x_R_2_F - env.v_x_R_2_F * env.L_x_R_1_F;
-	k.th_x_R = (env.v_x_R_1_F * h.R_2_F.x - env.v_x_R_2_F * h.R_1_F.x) / D_x_R;
-	k.vtx_x_R = (+ h.R_1_F.x * env.L_x_R_2_F - h.R_2_F.x * env.L_x_R_1_F) / D_x_R;
-	
-	k.th_y_L_1_F = - h.L_1_F.y / env.L_y_L_1_F;
-  	k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
-  	k.th_y_L = (k.th_y_L_1_F + k.th_y_L_2_F) / 2.;
+	k.th_x_L_1_F = 0.;
+  	k.th_x_L_2_F = - h.L_2_F.x / env.L_x_L_2_F;
+  	k.th_x_L = k.th_x_L_2_F;
   	
-	k.th_y_R_1_F = + h.R_1_F.y / env.L_y_R_1_F;
-  	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
-  	k.th_y_R = (k.th_y_R_1_F + k.th_y_R_2_F) / 2.;
-	
-	double D_y_L = - env.v_y_L_1_F * env.L_y_L_2_F + env.v_y_L_2_F * env.L_y_L_1_F;
-	//k.th_y_L = (env.v_y_L_1_F * h.L_2_F.y - env.v_y_L_2_F * h.L_1_F.y) / D_y_L;
-	k.vtx_y_L = (- h.L_1_F.y * env.L_y_L_2_F + h.L_2_F.y * env.L_y_L_1_F) / D_y_L;
+	k.th_x_R_1_F = 0.;
+  	k.th_x_R_2_F = + h.R_2_F.x / env.L_x_R_2_F;
+  	k.th_x_R = k.th_x_R_2_F;
 
-	double D_y_R = + env.v_y_R_1_F * env.L_y_R_2_F - env.v_y_R_2_F * env.L_y_R_1_F;
-	//k.th_y_R = (env.v_y_R_1_F * h.R_2_F.y - env.v_y_R_2_F * h.R_1_F.y) / D_y_R;
-	k.vtx_y_R = (+ h.R_1_F.y * env.L_y_R_2_F - h.R_2_F.y * env.L_y_R_1_F) / D_y_R;
+	k.th_y_L_1_F = 0.;
+  	k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
+  	k.th_y_L = k.th_y_L_2_F;
+  	
+	k.th_y_R_1_F = 0.;
+  	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
+  	k.th_y_R = k.th_y_R_2_F;
+
+  	k.vtx_x_L = k.vtx_x_R = 0.;
+  	k.vtx_y_L = k.vtx_y_R = 0.;
 
 	// double-arm kinematics reconstruction
-	// th_x: from hit positions, L-R average
-	// th_y: from hit positions, L-R average
-	// vtx_x: from hit positions, L-R average
-	
 	k.th_x = (k.th_x_L + k.th_x_R) / 2.;
 	k.th_y = (k.th_y_L + k.th_y_R) / 2.;
 	
-	k.vtx_x = (k.vtx_x_L + k.vtx_x_R) / 2.;
-	k.vtx_y = (k.vtx_y_L + k.vtx_y_R) / 2.;
+	k.vtx_x = 0.;
+	k.vtx_y = 0.;
 
 	// theta reconstruction
 	double th_sq = k.th_x*k.th_x + k.th_y*k.th_y;
@@ -171,48 +158,24 @@ bool CalculateAcceptanceCorrections(double th_y_sign,
 {
 	// ---------- smearing component ----------
 
-	/*
-	if ((k.th_x_L < anal.th_x_lcut_L) || (k.th_x_R < anal.th_x_lcut_R) || (k.th_x_L > anal.th_x_hcut_L) || (k.th_x_R > anal.th_x_hcut_R))
-		return true;
-	*/
-
-	if ((th_y_sign * k.th_y_L < anal.th_y_lcut_L) || (th_y_sign * k.th_y_R < anal.th_y_lcut_R)
-		|| (th_y_sign * k.th_y_L > anal.th_y_hcut_L) || (th_y_sign * k.th_y_R > anal.th_y_hcut_R))
+	if ((th_y_sign * k.th_y_L < anal.fc_L_l.th_y_0) || (th_y_sign * k.th_y_R < anal.fc_R_l.th_y_0)
+		|| (th_y_sign * k.th_y_L > anal.fc_L_h.th_y_0) || (th_y_sign * k.th_y_R > anal.fc_R_h.th_y_0))
 		return true;
 	
-	/*
-	double LB_x_L = anal.th_x_lcut_L - k.th_x, UB_x_L = anal.th_x_hcut_L - k.th_x;
-	double LB_x_R = anal.th_x_lcut_R - k.th_x, UB_x_R = anal.th_x_hcut_R - k.th_x;
-	double F_x_L = (UB_x_L > LB_x_L) ? ( TMath::Erf(UB_x_L / anal.si_th_x_1arm_L / sqrt(2.)) - TMath::Erf(LB_x_L / anal.si_th_x_1arm_L / sqrt(2.)) ) / 2. : 0.;
-	double F_x_R = (UB_x_R > LB_x_R) ? ( TMath::Erf(UB_x_R / anal.si_th_x_1arm_R / sqrt(2.)) - TMath::Erf(LB_x_R / anal.si_th_x_1arm_R / sqrt(2.)) ) / 2. : 0.;
-	double F_x = F_x_L * F_x_R;
-	*/
-	double F_x = 1.;
-
 	double th_y_abs = th_y_sign * k.th_y;
 
-	double UB_y = min(anal.th_y_hcut_R - th_y_abs, th_y_abs - anal.th_y_lcut_L);
-	double LB_y = max(anal.th_y_lcut_R - th_y_abs, th_y_abs - anal.th_y_hcut_L);
+	double UB_y = min(anal.fc_R_h.th_y_0 - th_y_abs, th_y_abs - anal.fc_L_l.th_y_0);
+	double LB_y = max(anal.fc_R_l.th_y_0 - th_y_abs, th_y_abs - anal.fc_L_h.th_y_0);
 	double F_y = (UB_y > LB_y) ? ( TMath::Erf(UB_y / anal.si_th_y_1arm) - TMath::Erf(LB_y / anal.si_th_y_1arm) ) / 2. : 0.;
 
-	//printf(">> F_x_L = %E, F_x_R = %E, F_y = %E\n", F_x_L, F_x_R, F_y);
-
-	div_corr = 1./(F_x * F_y);
+	div_corr = 1./ F_y;
 
 	// ---------- phi component ----------
 	
-	// apply safety margins to avoid excessive smearing component
-	//double th_x_lcut = max(anal.th_x_lcut_L, anal.th_x_lcut_R) + 3.0E-6;
-	//double th_x_hcut = min(anal.th_x_hcut_L, anal.th_x_hcut_R) - 3.0E-6;
-	double th_x_lcut = anal.th_x_lcut;
-	double th_x_hcut = anal.th_x_hcut;
+	double th_y_lcut = anal.fc_G_l.th_y_0;
+	double th_y_hcut = anal.fc_G_h.th_y_0;
 
-	//double th_y_lcut = max(anal.th_y_lcut_L, anal.th_y_lcut_R) + 0.2E-6;
-	//double th_y_hcut = min(anal.th_y_hcut_L, anal.th_y_hcut_R) - 1.0E-6;
-	double th_y_lcut = anal.th_y_lcut;
-	double th_y_hcut = anal.th_y_hcut;
-
-	if (k.th_x <= th_x_lcut || k.th_x >= th_x_hcut || th_y_abs <= th_y_lcut || th_y_abs >= th_y_hcut)
+	if (th_y_abs <= th_y_lcut || th_y_abs >= th_y_hcut)
 		return true;
 
 	// get all intersections
@@ -221,37 +184,15 @@ bool CalculateAcceptanceCorrections(double th_y_sign,
 	if (k.th > th_y_lcut)
 	{
 		double phi = asin(th_y_lcut / k.th);
-		double ta_x = k.th * cos(phi);
-		if (th_x_lcut < ta_x && ta_x < th_x_hcut)
-			phis.insert(phi);
-		if (th_x_lcut < -ta_x && -ta_x < th_x_hcut)
-			phis.insert(M_PI - phi);
+		phis.insert(phi);
+		phis.insert(M_PI - phi);
 	}
 	
 	if (k.th > th_y_hcut)
 	{
 		double phi = asin(th_y_hcut / k.th);
-		double ta_x = k.th * cos(phi);
-		if (th_x_lcut < ta_x && ta_x < th_x_hcut)
-			phis.insert(phi);
-		if (th_x_lcut < -ta_x && -ta_x < th_x_hcut)
-			phis.insert(M_PI - phi);
-	}
-
-	if (k.th > fabs(th_x_hcut))
-	{
-		double phi = acos(fabs(th_x_hcut) / k.th);
-		double ta_y = k.th * sin(phi);
-		if (th_y_lcut < ta_y && ta_y < th_y_hcut)
-			phis.insert(phi);
-	}
-
-	if (k.th > fabs(th_x_lcut))
-	{
-		double phi = acos(fabs(th_x_lcut) / k.th);
-		double ta_y = k.th * sin(phi);
-		if (th_y_lcut < ta_y && ta_y < th_y_hcut)
-			phis.insert(M_PI - phi);
+		phis.insert(phi);
+		phis.insert(M_PI - phi);
 	}
 
 	// the number of intersections must be even

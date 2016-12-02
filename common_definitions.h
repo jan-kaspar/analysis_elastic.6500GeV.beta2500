@@ -730,14 +730,6 @@ struct Analysis
 	double cca[9], ccb[9], ccc[9], csi[9];
 	std::vector<unsigned int> cuts;	// list of active cuts
 
-	// analysis cuts (rad)
-	// TODO: eventually remove
-	double th_y_lcut_L, th_y_lcut_R, th_y_lcut;
-	double th_y_hcut_L, th_y_hcut_R, th_y_hcut;
-	
-	double th_x_lcut;
-	double th_x_hcut;
-
 	// fiducial cuts
 	FiducialCut fc_L_l, fc_L_h;
 	FiducialCut fc_R_l, fc_R_h;
@@ -859,12 +851,6 @@ struct Analysis
 		printf("fc_G_l: "); fc_G_l.Print();
 		printf("fc_G_h: "); fc_G_h.Print();
 		
-		// TODO: remove
-		printf("th_x_lcut=%E\n", th_x_lcut);
-		printf("th_x_hcut=%E\n", th_x_hcut);
-		printf("th_y_lcut_L=%E, th_y_lcut_R=%E, th_y_lcut=%E\n", th_y_lcut_L, th_y_lcut_R, th_y_lcut);
-		printf("th_y_hcut_L=%E, th_y_hcut_R=%E, th_y_hcut=%E\n", th_y_hcut_L, th_y_hcut_R, th_y_hcut);
-
 		printf("\n");
 		printf("smearing parameters:\n");
 		printf("si_th_x_1arm_L=%E, si_th_x_1arm_R=%E, si_th_x_1arm_unc=%E\n", si_th_x_1arm_L, si_th_x_1arm_R, si_th_x_1arm_unc);
