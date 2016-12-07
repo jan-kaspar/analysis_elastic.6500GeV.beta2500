@@ -20,7 +20,7 @@ string topDir = "../../";
 xSizeDef = 8cm;
 ySizeDef = 6cm;
 
-A_ref = 3.1e8;
+A_ref = 3.35e8;
 B_ref = 20.6;
 ref_str = MakeRefStr("");
 
