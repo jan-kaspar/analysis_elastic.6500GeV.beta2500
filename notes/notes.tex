@@ -1,0 +1,279 @@
+\input article
+\input macros
+
+\def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/standard/}
+\def\release{}
+
+%----------------------------------------------------------------------------------------------------
+
+\centerline{\SetFontSizesXX Elastic analysis, $\sqrt s = 13\un{TeV}$, $\be^* = 2500\un{m}$ }
+\vskip2mm
+\centerline{version: {\it \number\day. \number\month. \number\year}}
+
+%----------------------------------------------------------------------------------------------------
+\section{Datasets}
+
+\> fills: 5313, 5314, 5317, 5321
+
+%----------------------------------------------------------------------------------------------------
+\section{Beam conditions}
+
+\> naming
+\>> ``unresolved'' activity: event where RP has sufficient number of planes on, but no track is reconstructed
+
+\> plots of rates vs.~time
+\>> \plot{common/rates_vs_time.pdf}: basic rates
+\>> \plot{common/multitrack_rates_vs_time.pdf}: details for the unresolved category
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Ntuples}
+
+\> current: /eos/totem/data/offline/2016/2500m/version1/
+
+%----------------------------------------------------------------------------------------------------
+\section{Hit distributions}
+
+\> \plot{hit_distributions/hit_distributions.pdf}: hit distribution after elastic event selection
+
+%----------------------------------------------------------------------------------------------------
+\section{Reconstruction formulae}
+
+\> \plot{reconstruction_formulae/plot_formulae_graphs.pdf} : study of performance of various reconstruction formulae
+\>> formulae
+\>>> using different RPs as input
+\>>> combining the input in various ways
+\>> studying the impact of various effects: beam divergence, vertex, pitch, ...
+
+%----------------------------------------------------------------------------------------------------
+\section{Cuts/elastic tagging}
+
+\> event selection
+\>> track in all 4 RPs of a diagonal
+\>> elastic tagging, see below
+\>> RP trigger flag: non zero (ev.trigger\_bits \& 7)
+
+\> elastic tagging: general cut structure $| a q_a + b q_b + c| < n_\si  \si$
+\>> cut 1: $q_a = \th_x^{*R}$, $q_b = \th_x^{*L}$; \plot{cuts/cut_1.pdf}
+\>> cut 2: $q_a = \th_y^{*R}$, $q_b = \th_y^{*L}$; \plot{cuts/cut_2.pdf}
+\>> cut 7: $q_a = \th_x^*$, $q_b = x^{*R} - x^{*L}$; \plot{cuts/cut_7.pdf}
+
+\> all cuts applied at $n_\si = 4$ level
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Efficiency and purity of cuts, background}
+
+\> background studies
+\>> \plot{background,cut_efficiency/cut_distributions.pdf}: distributions of cut discriminators under various cut combinations
+
+\>> \plot{background,cut_efficiency/cut_dist_antidgn_cmp.pdf}: distributions of cut discriminators, after all available cuts, comparison between diagonal and anti-diagonal configurations
+
+\>> \plot{background,cut_efficiency/t_distributions_cuts.pdf}: $t$-distributions under various cut combinations
+
+\>> \plot{background,cut_efficiency/t_dist_antidgn_cmp.pdf}: $t$-distributions, after all available cuts, comparison between diagonal (mostly signal) and anti-diagonal (background) configurations
+
+
+\> study of signal loss due to cuts
+\>> \plot{background,cut_efficiency/t_distributions_n_si.pdf}: $t$ distribution at different cut levels
+
+%----------------------------------------------------------------------------------------------------
+\section{Efficiency studies, pile-up, ...}
+
+\subsection{DAQ efficiency}
+
+\> method: per time slice calculate from the trigger block:
+$$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
+
+\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
+
+\subsection{Trigger efficiency}
+
+\> method:
+\>> take zero-bias (BX) data
+\>> select elastic events (standard tagging) $\rightarrow$ number of events $N(BX,elastic)$
+\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N(BX,elastic,trigger)$
+\>> efficiency = $N(BX,elastic,trigger) / N(BX,elastic)$
+
+\> results:
+\>> fill 5317, diagonal 45 bot -- 56 top: $N(BX,elastic) = N(BX,elastic,trigger) = 7280$
+
+\subsection{3-out-of-4 efficiencies}
+
+\> method
+\>> remove a RP from the elastic selection
+\>> redo a simplified analysis without the RP
+\>> for tagged events, look how often the studied RP has a track (compatible with the tagged event)
+
+\> study with tracks
+\>> \plot{efficiencies/eff3outof4_fits.pdf}: efficiency as function of $\th_y^*$
+\>> \plot{efficiencies/eff3outof4_2D.pdf}: efficiency as function of $\th_x^*$ and $\th_y^*$
+\>> \plot{efficiencies/eff3outof4_n_si_cmp.pdf}: efficiency as function of $\th_y^*$, for different choices of the selection $n_\si$
+\>> \plot{efficiencies/eff3outof4_vs_time.pdf}: efficiency as function of time
+
+\> study with lower-level signals (patterns, hits, ...)
+\>> \plot{efficiencies/eff3outof4_details.pdf}: (in)efficiencies as function of $\th_y^*$
+\>> \plot{efficiencies/eff3outof4_details_2D.pdf}: (in)efficiencies as function of $\th_x^*$ and $\th_y^*$
+
+
+
+
+\iffalse
+\> \plot{efficiencies/eff3outof4.pdf} : single RP inefficiencies WITHOUT the cut in $\th_x^*$
+
+\> \plot{efficiencies/eff3outof4_2D.pdf} : single RP inefficiencies as function of $\th_x^*$ and $\th_y^*$
+\>> clearly indicates the inefficiency due to the horizontal RPs
+\>> vertical dashed lines show the $\th_x^*$ cut to select only region with reasonable efficiency
+
+\> \plot{efficiencies/eff3outof4_afterCut.pdf} : single RP inefficiencies WITH the cut in $\th_x^*$
+\>> red: with the $\th_x^*$ cut, green: without
+\>> with cut: plateau flat
+\fi
+
+\subsection{Pile-up}
+
+\> method
+\>> take BX sample
+\>> evaluate probability of signal that could ``hide'' elastic event, typical conditions:
+\>>> ``pl\_suff'': sufficient number of planes is on
+\>>> ``pat\_suff'': U or V pattern is recognised 
+
+\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
+
+\> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
+
+%----------------------------------------------------------------------------------------------------
+\section{Alignment verification}
+
+\subsection{(Re)determination}
+
+\> assumption: track-based (relative) alignment already performed
+
+\> method: applied per unit, applied per time slice, illustrated in \plot{alignment/alignment_method.pdf}
+\>> hits in the top and bottom RP fitted with a ~vertical line $\rightarrow$ horizontal alignment and tilt
+\>> build $y$ histograms from top and bottom RPs, find the centre of symmetry $\rightarrow$ vertical alignment
+
+\> current n-tuples contain alignment $\rightarrow$ expect corrections compatible with 0
+
+\> \plot{alignment/alignment_details_DS-fill5313.pdf}: detailed example of the method
+
+\> summary of (re)alignment results per fill
+\>> \plot{alignment/alignment_DS-fill5313.pdf}
+\>> \plot{alignment/alignment_DS-fill5314.pdf}
+\>> \plot{alignment/alignment_DS-fill5317.pdf}
+\>> \plot{alignment/alignment_DS-fill5321.pdf}
+
+
+\subsection{Validation}
+
+\> \plot{angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
+
+\> \plot{mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
+
+\> \plot{mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Optics}
+
+\subsection{Validation}
+
+\> \plot{optics/optics_test_summary.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles plotted as a function of the scattering angle
+\>> shifts (fit extrapolated to 0): due to misalignments
+\>> tilts (slope): due to optics
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Resolutions}
+
+\> method
+\>> horizontal plane
+\>>> left-right difference of $\th_x^*$ sensitive to beam divergence and detector (RP) resolution
+\>>> beam divergence determined from $\si(x^*)$
+\>>> detector resolution then deconvolved from $\De^{R-L} \th_x^*$ and $\si(x^*)$ and is checked to be time-independent
+\>> vertical plane
+\>>> left-right difference of $\th_y^*$ directly probes the vertical beam divergence (the detector component is negligible)
+
+\> \plot{resolutions/resolutions_vs_time.pdf}: summary of resolution components as a function of time
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Acceptance correction}
+
+\> method
+\>> known acceptance limitations: sensor edges (low $|\th_y^*|$), LHC apertures (high $|\th_y^*|$)
+\>> acceptance region determined empirically by looking at the reconstructed $\th_y^*$ vs.~$\th_x^*$ distributions, separately in the left and right arm
+\>> due to the presence of the tilted RPs (210-far), the acceptance limitations due to the sensors edges are both $\th_y^*$ and $\th_x^*$ dependent
+\>> assuming that the smearing in $\th_{x, y}^*$ is independent and has the same sigma left and right, then:
+$$h_{\rm observed}(\th_x^*, \th_y^*) = A_{\rm sm}(\th_x^*, \th_y^*)\ h_{\rm smeared}(\th_x^*, \th_y^*)$$
+where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scattering angles reconstructed via left-right average and $A_{\rm sm}$ is the ``smearing'' contribution to the acceptance
+\>> $A_{\rm sm}$ is calculated as the probability that any of the two protons leaves the fiducial region due to smearing -- this time it requires two-fold integral
+\>> another acceptance factor, $A_{\rm geom}$, is given by the fraction of const-$\th^*$ arc within the fiducial region
+\>>> for this, another set of fiducial cuts, ``global'', is used -- in order to avoid to corners with high smearing correction
+
+\> \plot{acceptance_correction/acc_cmp_fill.pdf}: shows the region of acceptance in $\th_x^*$ vs.~$\th_y^*$, per fill
+
+\> \plot{acceptance_correction/acc_cmp_fill_details.pdf}: shows the details of acceptance limitations due to the sensor edges and the corresponding fiducial cuts
+
+\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts in the left and right arm and the global cuts
+
+
+%\> \plot{acceptance_correction/acc_phi_lab.pdf}
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Unfolding of resolution effects}
+
+\> not done yet
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Binning}
+
+\> method
+\>> at $|t| \approx 10^{-3}\un{GeV^2}$: very fine binning
+\>> at $|t| \approx 10^{-1}\un{GeV^2}$: bin size about $1\un{\si}$ of the $t$ smearing
+\>> at $|t| \approx 0.25\un{GeV^2}$: bin size for a fixed statistical uncertainty
+\>> at $|t| \gs 0.3\un{GeV^2}$: constant bin size to avoid excessively large bins
+
+\> \plot{binning/bin_size_vs_t.pdf} : visualisation of binning determinants vs.~several binnings used in
+the analysis
+
+\> currently the ``ob-1-30-0.05'' binning used
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Normalisation}
+
+\> not done yet
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Systematic uncertainties}
+
+\subsection{Effects one by one}
+
+\> not studied yet
+
+\subsection{Multiple effects}
+
+\> not studied yet
+
+
+%----------------------------------------------------------------------------------------------------
+\section{$t$-distributions}
+
+\> \plot{t_distributions/t_dist_fill_cmp.pdf}: comparison of $t$-distributions from different fills and diagonals
+
+\> \plot{t_distributions/t_dist_merged.pdf}: full and low-$t$ plots of the merged $t$-distribution
+
+\> \plot{t_distributions/t_dist_rel.pdf}: merged $t$-distribution in a relative frame
+
+
+
+\bye
