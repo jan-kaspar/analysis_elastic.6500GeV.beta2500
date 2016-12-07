@@ -758,11 +758,11 @@ int main(int argc, char **argv)
 
 	vector<string> units;
 	vector<double> deYExp;	// expected value of de_y in mm
-	units.push_back("L_2_F"); deYExp.push_back(-0.200);
-	units.push_back("L_1_F"); deYExp.push_back(+0.050);
+	units.push_back("L_2_F"); deYExp.push_back(0.);
+	units.push_back("L_1_F"); deYExp.push_back(0.);
 
-	units.push_back("R_1_F"); deYExp.push_back(+0.300);
-	units.push_back("R_2_F"); deYExp.push_back(-0.050);
+	units.push_back("R_1_F"); deYExp.push_back(0.);
+	units.push_back("R_2_F"); deYExp.push_back(0.);
 
 	// get list of periods
 	vector<signed int> periods;
