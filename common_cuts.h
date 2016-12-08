@@ -1,6 +1,6 @@
 void Analysis::BuildCuts()
 {
-	N_cuts = 8;
+	N_cuts = 9;
 
 	// cut structure:
 	//	| a*qa + b*qb + c| < n_si * si
@@ -67,6 +67,14 @@ void Analysis::BuildCuts()
 	ccb[8] = 1.;
 	ccc[8] = cut8_c;
 	csi[8] = cut8_si;
+
+	// also collinearity in th_x, but with input available in the 2-RP analysis
+	// a: th_x_R_2_F, b: th_x_L_2_F
+	cqaN[9] = "#theta_{x}^{R2F}"; cqbN[1] = "#theta_{x}^{L2F}";
+	cca[9] = -cut1_a;
+	ccb[9] = 1.;
+	ccc[9] = cut1_c;
+	csi[9] = 14E-6;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -81,6 +89,8 @@ bool Analysis::EvaluateCuts(const HitData & h, const Kinematics &k, CutData &cd)
 	cd.cqa[6] = h.L_1_F.y;	cd.cqb[6] = h.L_2_F.y - h.L_1_F.y;
 	cd.cqa[7] = k.th_x;		cd.cqb[7] = k.vtx_x_R - k.vtx_x_L;
 	cd.cqa[8] = k.th_y;		cd.cqb[8] = k.vtx_y_R - k.vtx_y_L;
+
+	cd.cqa[9] = k.th_x_R_2_F;	cd.cqb[9] = k.th_x_L_2_F;
 
 	for (unsigned int ci = 1; ci <= N_cuts; ++ci)
 	{

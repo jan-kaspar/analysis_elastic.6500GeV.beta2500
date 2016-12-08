@@ -14,9 +14,11 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 	Kinematics k;
 
 	// single-arm kinematics reconstruction
-	// th_x: linear regression
-	// th_y: from hit positions
-	// vtx_x: linear regression
+	k.th_x_L_1_F = - h.L_1_F.x / env.L_x_L_1_F;
+	k.th_x_L_2_F = - h.L_2_F.x / env.L_x_L_2_F;
+
+	k.th_x_R_1_F = + h.R_1_F.x / env.L_x_R_1_F;
+	k.th_x_R_2_F = + h.R_2_F.x / env.L_x_R_2_F;
 
 	double D_x_L = - env.v_x_L_1_F * env.L_x_L_2_F + env.v_x_L_2_F * env.L_x_L_1_F;
 	k.th_x_L = (env.v_x_L_1_F * h.L_2_F.x - env.v_x_L_2_F * h.L_1_F.x) / D_x_L;
@@ -43,9 +45,6 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 	k.vtx_y_R = (+ h.R_1_F.y * env.L_y_R_2_F - h.R_2_F.y * env.L_y_R_1_F) / D_y_R;
 
 	// double-arm kinematics reconstruction
-	// th_x: from hit positions, L-R average
-	// th_y: from hit positions, L-R average
-	// vtx_x: from hit positions, L-R average
 	
 	k.th_x = (k.th_x_L + k.th_x_R) / 2.;
 	k.th_y = (k.th_y_L + k.th_y_R) / 2.;

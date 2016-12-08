@@ -276,7 +276,7 @@ int main(int argc, char **argv)
 			while (pch != NULL)
 			{
 				unsigned int cut = atoi(pch);
-				if (cut < 1 || cut > 7)
+				if (cut < 1 || cut > 9)
 				{
 					printf("ERROR: invalid cut number %u.\n", cut);
 					return 2;
@@ -476,6 +476,8 @@ int main(int argc, char **argv)
 		if (i == 6) { x_min = -30.; x_max = +30.; y_min = -3.; y_max = 3.; q_max = 150E-3; }
 		if (i == 7) { x_min = -200E-6; x_max = +200E-6; y_min = -20.; y_max = +20.; q_max = 10.; }
 		if (i == 8) { x_min = -600E-6; x_max = +600E-6; y_min = -4.; y_max = +4.; q_max = 500E-3; }
+
+		if (i == 9) { x_min = -200E-6; x_max = +200E-6; y_min = -200E-6; y_max = 200E-6; q_max = 80E-6; }
 		
 		sprintf(name, "h_cq%i", i); sprintf(title, ";cq%i", i); h_cq[i] = new TH1D(name, title, 200, -q_max, +q_max);
 
