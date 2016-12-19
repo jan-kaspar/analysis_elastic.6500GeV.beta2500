@@ -12,10 +12,10 @@ string dgn_labels[] = { "45 bot -- 56 top", "45 top -- 56 bot", "45 bot -- 56 bo
 
 string topDir = "../../";
 
-string cut_str = "cuts:1,2,7";
+string cut_str = "cuts:1,2";
 
-//string binning = "ob-1-30-0.05";
-string binning = "ub";
+string binning = "ob-1-30-0.05";
+//string binning = "ub";
 
 xSizeDef = 8cm;
 

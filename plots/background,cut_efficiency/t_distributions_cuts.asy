@@ -21,11 +21,8 @@ pen comb_pens[];
 combinations.push("no_cuts"); comb_pens.push(gray);
 combinations.push("cuts:1"); comb_pens.push(black);
 combinations.push("cuts:1,2"); comb_pens.push(red);
-//combinations.push("cuts:1,7"); comb_pens.push(green);
-//combinations.push("cuts:2,7"); comb_pens.push(magenta);
-combinations.push("cuts:1,2,7"); comb_pens.push(blue);
 
-string ref_comb = "cuts:1,2,7";
+string ref_comb = "cuts:1,2";
 
 xSizeDef = 10cm;
 xTicksDef=LeftTicks(0.05, 0.01);

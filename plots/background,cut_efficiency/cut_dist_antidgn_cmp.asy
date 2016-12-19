@@ -53,9 +53,8 @@ for (int dsi : datasets.keys)
 	NewPad(false);
 	label(replace("{\SetFontSizesXX\vbox{\hbox{"+dataset+"}}}", "_", "\_"));
 
-	MakeComparison("cuts:2,7", "discriminator 1: $\De\th_x^*$", 1e6, "\mu rad", "cut 1/h_cq1", 80, 3.0, 20, 10);
+	// TODO: update sigma
+	MakeComparison("cuts:2", "discriminator 1: $\De\th_x^*$", 1e6, "\mu rad", "cut 1/h_cq1", 80, 14.0, 20, 10);
 	
-	MakeComparison("cuts:1,7", "discriminator 2: $\De\th_y^*$", 1e6, "\mu rad", "cut 2/h_cq2", 15, 0.5, 5, 1);
-		
-	MakeComparison("cuts:1,2", "discriminator 7: $\De x^*$", 1., "\mu m", "cut 7/h_cq7", 10., 0.3, 2, 1);
+	MakeComparison("cuts:1", "discriminator 2: $\De\th_y^*$", 1e6, "\mu rad", "cut 2/h_cq2", 15, 0.5, 5, 1);
 }
