@@ -92,17 +92,14 @@ void Init_45b_56t()
 	anal.cut7_a = 0.; anal.cut7_c = -0.007; anal.cut7_si = 0.3;
 
 	// fiducial cuts
-	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 5E-6;
-	anal.th_y_hcut_L = 102E-6; anal.th_y_hcut_R = 102E-6; anal.th_y_hcut = 100E-6;
+	anal.fc_L_l = FiducialCut(4.1E-6, -20E-6, -0.01, +10E-6, +0.05);
+	anal.fc_L_h = FiducialCut(102E-6, 0E-6, 0., 0E-6, 0.);
 
-	anal.fc_L_l = FiducialCut(-25E-6, 4E-6, 0., 0.05);
-	anal.fc_L_h = FiducialCut(0., 102E-6, 0., 0.);
+	anal.fc_R_l = FiducialCut(4.2E-6, -20E-6, -0.01, +20E-6, 0.05);
+	anal.fc_R_h = FiducialCut(102E-6, 0E-6, 0., 0E-6, 0.);
 
-	anal.fc_R_l = FiducialCut(-5E-6, 4.5E-6, 0., 0.05);
-	anal.fc_R_h = FiducialCut(0., 102E-6, 0., 0.);
-
-	anal.fc_G_l = FiducialCut(-25E-6, 4.8E-6, 0., 0.05);
-	anal.fc_G_h = FiducialCut(0., 100E-6, 0., 0.);
+	anal.fc_G_l = FiducialCut(4.3E-6, -20E-6, -0.01, +10E-6, +0.05);
+	anal.fc_G_h = FiducialCut(100E-6, 0E-6, 0., 0E-6, 0.);
 
 #if 0
 	// TODO
@@ -134,20 +131,14 @@ void Init_45t_56b()
 	anal.cut7_a = 0.; anal.cut7_c = 0.02; anal.cut7_si = 0.3;
 
 	// fiducial cuts
-	anal.th_y_lcut_L = 4E-6; anal.th_y_lcut_R = 4E-6; anal.th_y_lcut = 4.5E-6;
-	anal.th_y_hcut_L = 102E-6; anal.th_y_hcut_R = 102E-6; anal.th_y_hcut = 100E-6;
+	anal.fc_L_l = FiducialCut(4.1E-6, -12E-6, -0.05, +20E-6, +0.01);
+	anal.fc_L_h = FiducialCut(102E-6, 0E-6, 0., 0E-6, 0.);
 
-	//anal.fc_L_l = FiducialCut(0., 4E-6, 0., 0.);
-	anal.fc_L_l = FiducialCut(+15E-6, 4E-6, -0.05, 0.);
-	anal.fc_L_h = FiducialCut(0., 102E-6, 0., 0.);
+	anal.fc_R_l = FiducialCut(4.1E-6, -20E-6, -0.05, +15E-6, +0.04);
+	anal.fc_R_h = FiducialCut(102E-6, 0E-6, 0., 0E-6, 0.);
 
-	//anal.fc_R_l = FiducialCut(0., 4E-6, 0., 0.);
-	anal.fc_R_l = FiducialCut(0E-6, 4.5E-6, -0.05, 0.);
-	anal.fc_R_h = FiducialCut(0., 102E-6, 0., 0.);
-
-	//anal.fc_G_l = FiducialCut(0., 4.5E-6, 0., 0.);
-	anal.fc_G_l = FiducialCut(0E-6, 4.8E-6, -0.05, 0.);
-	anal.fc_G_h = FiducialCut(0., 100E-6, 0., 0.);
+	anal.fc_G_l = FiducialCut(4.2E-6, -12E-6, -0.05, +15E-6, +0.04);
+	anal.fc_G_h = FiducialCut(100E-6, 0E-6, 0., 0E-6, 0.);
 
 #if 0
 	// TODO

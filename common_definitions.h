@@ -638,22 +638,29 @@ struct CutData
 
 struct FiducialCut
 {
-	double th_x_0, th_y_0;	// rad
+	double th_y_0;			// rad
+	double th_x_m, th_x_p;	// rad
 	double al_m, al_p; 		// slope th_y vs. th_x, 1
 
-	FiducialCut(double _tx0=0., double _ty0=0., double _alm=0., double _alp=0.) :
-		th_x_0(_tx0), th_y_0(_ty0), al_m(_alm), al_p(_alp)
+	FiducialCut(double _ty0=0., double _txm=0., double _alm=0., double _txp=0., double _alp=0.) :
+		th_y_0(_ty0), th_x_m(_txm), th_x_p(_txp), al_m(_alm), al_p(_alp)
 	{
 	}
 
 	double GetThYLimit(double th_x) const
 	{
-		return (th_x > th_x_0) ? (th_y_0 + al_p * (th_x - th_x_0)) : (th_y_0 + al_m * (th_x - th_x_0));
+		if (th_x < th_x_m)
+			return th_y_0 + al_m * (th_x - th_x_m);
+
+		if (th_x > th_x_p)
+			return th_y_0 + al_p * (th_x - th_x_p);
+
+		return th_y_0;
 	}
 
 	void Print() const
 	{
-		printf("th_x_0=%E, th_y_0=%E, al_m=%E, al_p=%E\n", th_x_0, th_y_0, al_m, al_p);
+		printf("th_y_0=%E, th_x_m=%E, th_x_p=%E, al_m=%E, al_p=%E\n", th_y_0, th_x_m, th_x_p, al_m, al_p);
 	}
 
 	vector<double> GetIntersectionPhis(double th) const
@@ -662,38 +669,53 @@ struct FiducialCut
 	
 		double A, B, C, D, p, phi;
 	
-		// try positve side
+		// th_x > th_x_p
 		A = 1. + al_p * al_p;
-		B = 2. * th_x_0 + 2. * th_y_0 * al_p;
-		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		B = 2. * th_x_p + 2. * th_y_0 * al_p;
+		C = th_x_p * th_x_p + th_y_0 * th_y_0 - th * th;
 		D = B*B - 4.*A*C;
 		if (D > 0.)
 		{
 			p = (-B + sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_p * p, th_x_p + p);
 			if (p > 0.)
 				phis.push_back(phi);
 	
 			p = (-B - sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_p * p, th_x_p + p);
 			if (p > 0.)
 				phis.push_back(phi);
 		}
+
+		// th_x_m < th_x < th_x_p
+		{
+			double phi0 = asin(th_y_0 / th);
+
+			double phi = phi0;
+			double th_x = th * cos(phi);
+			if (th_x_m < th_x && th_x < th_x_p)
+				phis.push_back(phi);
+
+			phi = M_PI - phi0;
+			th_x = th * cos(phi);
+			if (th_x_m < th_x && th_x < th_x_p)
+				phis.push_back(phi);
+		}
 	
-		// try negative side
+		// th_x < th_x_m
 		A = 1. + al_m * al_m;
-		B = 2. * th_x_0 + 2. * th_y_0 * al_m;
-		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		B = 2. * th_x_m + 2. * th_y_0 * al_m;
+		C = th_x_m * th_x_m + th_y_0 * th_y_0 - th * th;
 		D = B*B - 4.*A*C;
 		if (D > 0.)
 		{
 			p = (-B + sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_m * p, th_x_m + p);
 			if (p < 0.)
 				phis.push_back(phi);
 	
 			p = (-B - sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_m * p, th_x_m + p);
 			if (p < 0.)
 				phis.push_back(phi);
 		}

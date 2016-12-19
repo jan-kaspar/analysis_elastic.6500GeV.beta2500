@@ -125,8 +125,10 @@ int main()
 		
 		Kinematics k_sm = k_tr;
 
+		// TODO: this may not be sufficiently good: because of R-L correlation due to the vertex
 		k_sm.th_x_R += rg_x_R * anal_nom.si_th_x_1arm_R;
 		k_sm.th_x_L += rg_x_L * anal_nom.si_th_x_1arm_L;
+
 		k_sm.th_y_R += rg_y_R * anal_nom.si_th_y_1arm;
 		k_sm.th_y_L += rg_y_L * anal_nom.si_th_y_1arm;
 

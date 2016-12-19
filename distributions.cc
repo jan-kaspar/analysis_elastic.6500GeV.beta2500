@@ -108,11 +108,10 @@ TGraph* PlotFiductialCut(const FiducialCut &fc, double th_y_sign)
 {
 	TGraph *g = new TGraph();
 
-	vector<double> de_th_x_values = { -200E-6, 0E-6, +200E-6 };
+	vector<double> th_x_values = { fc.th_x_m - 200E-6, fc.th_x_m, fc.th_x_p, fc.th_x_p + 200E-6 };
 
-	for (const double &de_th_x : de_th_x_values)
+	for (const double &th_x : th_x_values)
 	{
-		double th_x = fc.th_x_0 + de_th_x;
 		g->SetPoint(g->GetN(), th_x, th_y_sign * fc.GetThYLimit(th_x));
 	}
 

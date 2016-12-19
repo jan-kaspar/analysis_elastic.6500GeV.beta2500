@@ -140,8 +140,8 @@ NewRow();
 for (int dsi : datasets.keys)
 {
 	NewPad("time $\ung{h}$", "std.~dev.~of $\De^{R-L}\th_x^*\ung{\mu rad}$");
-	currentpad.yTicks = RightTicks(0.1, 0.05);
-	real y_min = 1.5, y_max = 2.5;
+	//currentpad.yTicks = RightTicks(0.1, 0.05);
+	real y_min = 10, y_max = 15;
 	
 	DrawRunBands(dataset_fills[dsi], y_min, y_max);
 
