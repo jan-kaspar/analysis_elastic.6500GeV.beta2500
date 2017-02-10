@@ -37,6 +37,16 @@ Kinematics theta_x_one_pot_hit_R2F(const HitData &h, const Environment &env)
 }
 
 //----------------------------------------------------------------------------------------------------
+
+Kinematics theta_x_one_pot_hit_LR2F(const HitData &h, const Environment &env)
+{
+	Kinematics k;
+	k.th_x_L = k.th_x_L_2_F = - h.L_2_F.x / env.L_x_L_2_F;
+	k.th_x_R = k.th_x_R_2_F = + h.R_2_F.x / env.L_x_R_2_F;
+	return k;
+}
+
+//----------------------------------------------------------------------------------------------------
 // theta_x, one arm
 //----------------------------------------------------------------------------------------------------
 
@@ -224,6 +234,16 @@ Kinematics theta_y_one_pot_hit_R1F(const HitData &h, const Environment &env)
 Kinematics theta_y_one_pot_hit_R2F(const HitData &h, const Environment &env)
 {
 	Kinematics k;
+	k.th_y_R = k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
+	return k;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+Kinematics theta_y_one_pot_hit_LR2F(const HitData &h, const Environment &env)
+{
+	Kinematics k;
+	k.th_y_L = k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
 	k.th_y_R = k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
 	return k;
 }

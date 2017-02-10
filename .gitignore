@@ -17,5 +17,3 @@ binning/get_acceptance_correction
 binning/make_fit
 binning/make_generators
 binning/simu
-
-reconstruction_formulae/test_formulae_graph
