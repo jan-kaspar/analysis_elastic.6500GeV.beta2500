@@ -34,11 +34,13 @@ void Init_global()
 
 	anal.si_th_x_1arm_L = 12.5E-6 / sqrt(2.);
 	anal.si_th_x_1arm_R = 12.5E-6 / sqrt(2.);
-	// TODO
 	anal.si_th_x_1arm_unc = 0E-6;
 
+	anal.si_th_x_LRdiff = 12.5E-6;
+	anal.si_th_x_LRdiff_unc = 0E-6;
+
 	// TODO
-	anal.si_th_x_2arm = 0E-6;
+	anal.si_th_x_2arm = 0.3E-6;
 	anal.si_th_x_2arm_unc = 0E-6;
 
 	// alignment-determination settings

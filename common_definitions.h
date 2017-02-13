@@ -763,6 +763,8 @@ struct Analysis
 	double si_th_x_1arm_unc;
 	double si_th_x_2arm;
 	double si_th_x_2arm_unc;
+	double si_th_x_LRdiff;
+	double si_th_x_LRdiff_unc;
 
 	double si_th_y_1arm;
 	double si_th_y_1arm_unc;
@@ -877,6 +879,7 @@ struct Analysis
 		printf("smearing parameters:\n");
 		printf("si_th_x_1arm_L=%E, si_th_x_1arm_R=%E, si_th_x_1arm_unc=%E\n", si_th_x_1arm_L, si_th_x_1arm_R, si_th_x_1arm_unc);
 		printf("si_th_x_2arm=%E, si_th_x_2arm_unc=%E\n", si_th_x_2arm, si_th_x_2arm_unc);
+		printf("si_th_x_LRDiff=%E, si_th_x_LRdiff_unc=%E\n", si_th_x_LRdiff, si_th_x_LRdiff_unc);
 		printf("si_th_y_1arm=%E, si_th_y_1arm_unc=%E\n", si_th_y_1arm, si_th_y_1arm_unc);
 		printf("si_th_y_2arm=%E, si_th_y_2arm_unc=%E\n", si_th_y_2arm, si_th_y_2arm_unc);
 	
