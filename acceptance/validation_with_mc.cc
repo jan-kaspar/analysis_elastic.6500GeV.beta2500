@@ -7,14 +7,15 @@
 #include "common_algorithms.h"
 #include "AcceptanceCalculator.h"
 
-#include "parameters.h"
+#include "parameters_mc.h"
 
+//----------------------------------------------------------------------------------------------------
 
 int main()
 {
-	// settings
+	// defaults
 	unsigned int seed = 1;
-	unsigned long N_ev = 1E7;
+	unsigned long N_ev = 1E8;
 
 	double B = 20.;	// GeV^-2
 
@@ -40,13 +41,18 @@ int main()
 	// initialise environments
 	Environment env_nom = env;		// nominal values from parameters.h
 
-	printf("-------------------- env_nom --------------------\n");
-	env_nom.Print();
-
 	// initialise analysis objects
 	anal.BuildCuts();
 	anal.n_si = 4.;
 	Analysis anal_nom = anal;
+
+	// make environment consistent
+	anal_nom.si_th_x_LRdiff = 12.95E-6;
+	anal_nom.si_th_y_1arm = 0.275E-6;
+
+	// print environment
+	printf("-------------------- env_nom --------------------\n");
+	env_nom.Print();
 
 	printf("-------------------- anal_nom --------------------\n");
 	anal_nom.Print();
@@ -65,29 +71,36 @@ int main()
 	printf("t_max_full = %E\n", t_max_full);
 
 	// prepare output
-	TFile *f_out = TFile::Open("mc.root", "recreate");
+	TFile *f_out = TFile::Open("validation_with_mc.root", "recreate");
+
+	// list of binnings
+	vector<string> binnings;
+	binnings.push_back("ub");
+	binnings.push_back("ob-1-30-0.05");
 
 	// prepare t-histograms
-	unsigned int N_bins = 100;
-	TH1D *h_t_true, *h_t_sm, *h_t_sm_cut_corr_old, *h_t_sm_cut_corr_new;
-	h_t_true = new TH1D("h_t_true", ";|t|   (GeV^{2})", N_bins, t_min_full, t_max_full); h_t_true->Sumw2();
-	h_t_sm = new TH1D("h_t_sm", ";|t|   (GeV^{2})", N_bins, t_min_full, t_max_full); h_t_sm->Sumw2();
-	h_t_sm_cut_corr_old = new TH1D("h_t_sm_cut_corr_old", ";|t|   (GeV^{2})", N_bins, t_min_full, t_max_full); h_t_sm_cut_corr_old->Sumw2();
-	h_t_sm_cut_corr_new = new TH1D("h_t_sm_cut_corr_new", ";|t|   (GeV^{2})", N_bins, t_min_full, t_max_full); h_t_sm_cut_corr_new->Sumw2();
+	map<unsigned int, TH1D*> bh_t_tr, bh_t_re_no_acc, bh_t_re_acc;
+	for (unsigned int bi = 0; bi < binnings.size(); ++bi)
+	{
+		unsigned int N_bins;
+		double *bin_edges;
+		BuildBinning(anal, binnings[bi], bin_edges, N_bins);
 
-	unsigned int N_bins_lowt = 50;
-	double t_max_lowt = 0.01;
-	TH1D *h_t_lowt_true, *h_t_lowt_sm, *h_t_lowt_sm_cut_corr_old, *h_t_lowt_sm_cut_corr_new;
-	h_t_lowt_true = new TH1D("h_t_lowt_true", ";|t|   (GeV^{2})", N_bins_lowt, 0., t_max_lowt); h_t_lowt_true->Sumw2();
-	h_t_lowt_sm = new TH1D("h_t_lowt_sm", ";|t|   (GeV^{2})", N_bins_lowt, 0., t_max_lowt); h_t_lowt_sm->Sumw2();
-	h_t_lowt_sm_cut_corr_old = new TH1D("h_t_lowt_sm_cut_corr_old", ";|t|   (GeV^{2})", N_bins_lowt, 0., t_max_lowt); h_t_lowt_sm_cut_corr_old->Sumw2();
-	h_t_lowt_sm_cut_corr_new = new TH1D("h_t_lowt_sm_cut_corr_new", ";|t|   (GeV^{2})", N_bins_lowt, 0., t_max_lowt); h_t_lowt_sm_cut_corr_new->Sumw2();
+		bh_t_tr[bi] = new TH1D("", ";|t|;events per bin", N_bins, bin_edges); bh_t_tr[bi]->Sumw2();
+		bh_t_re_no_acc[bi] = new TH1D("", ";|t|;events per bin", N_bins, bin_edges); bh_t_re_no_acc[bi]->Sumw2();
+		bh_t_re_acc[bi] = new TH1D("", ";|t|;events per bin", N_bins, bin_edges); bh_t_re_acc[bi]->Sumw2();
+	}
 
 	// prepare th histograms
-	TH2D *h_th_x_th_y_true = new TH2D("h_th_x_th_y_true", ";#theta_{x};#theta_{y}", 300, -300E-6, +300E-6, 200, -100E-6, +100E-6);
-	TH2D *h_th_x_th_y_sm = new TH2D("h_th_x_th_y_sm", ";#theta_{x};#theta_{y}", 300, -300E-6, +300E-6, 200, -100E-6, +100E-6);
-	TH2D *h_th_x_th_y_sm_cut_corr_old = new TH2D("h_th_x_th_y_sm_cut_corr_old", ";#theta_{x};#theta_{y}", 300, -300E-6, +300E-6, 200, -100E-6, +100E-6);
-	TH2D *h_th_x_th_y_sm_cut_corr_new = new TH2D("h_th_x_th_y_sm_cut_corr_new", ";#theta_{x};#theta_{y}", 300, -300E-6, +300E-6, 200, -100E-6, +100E-6);
+	TH2D *h_th_x_th_y_true = new TH2D("h_th_x_th_y_true", ";#theta_{x};#theta_{y}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
+	TH2D *h_th_x_th_y_re = new TH2D("h_th_x_th_y_re", ";#theta_{x};#theta_{y}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
+	TH2D *h_th_x_th_y_re_cut_corr = new TH2D("h_th_x_th_y_re_cut_corr", ";#theta_{x};#theta_{y}", 160, -200E-6, +200E-6, 960, -120E-6, +120E-6);
+
+	// prepare histograms for smearing control
+	TH2D *h_th_x_d_vs_th_x_m_full = new TH2D("h_th_x_d_vs_th_x_d_full", ";th_x_m;th_x_d", 100, -1.2E-6, +1.2E-6, 100, -60E-6, +60E-6);
+	TH2D *h_th_x_d_vs_th_x_m_acc = new TH2D("h_th_x_d_vs_th_x_d_acc", ";th_x_m;th_x_d", 100, -1.2E-6, +1.2E-6, 100, -60E-6, +60E-6);
+	TH2D *h_th_y_d_vs_th_y_m_full = new TH2D("h_th_y_d_vs_th_y_d_full", ";th_y_m;th_y_d", 100, -1E-6, +1E-6, 100, -2E-6, +2E-6);
+	TH2D *h_th_y_d_vs_th_y_m_acc = new TH2D("h_th_y_d_vs_th_y_d_acc", ";th_y_m;th_y_d", 100, -1E-6, +1E-6, 100, -2E-6, +2E-6);
 
 	// simulation loop
 	for (unsigned long ev = 0; ev < N_ev; ev++)
@@ -116,7 +129,7 @@ int main()
 				k_tr.th_y_L, k_tr.th_y_R, k_tr.th_y);
 		}
 
-		// ----- generate beam smearing -----
+		// ----- generate beam divergence and vertex -----
 
 		double rg_x_R = gRandom->Gaus();
 		double rg_x_L = gRandom->Gaus();
@@ -125,17 +138,17 @@ int main()
 		
 		Kinematics k_sm = k_tr;
 
-		// TODO: this may not be sufficiently good: because of R-L correlation due to the vertex
-		k_sm.th_x_R += rg_x_R * anal_nom.si_th_x_1arm_R;
-		k_sm.th_x_L += rg_x_L * anal_nom.si_th_x_1arm_L;
+		k_sm.th_x_R += rg_x_R * env_nom.si_th_x_R;
+		k_sm.th_x_L += rg_x_L * env_nom.si_th_x_L;
 
-		k_sm.th_y_R += rg_y_R * anal_nom.si_th_y_1arm;
-		k_sm.th_y_L += rg_y_L * anal_nom.si_th_y_1arm;
+		k_sm.th_y_R += rg_y_R * env_nom.si_th_y_R;
+		k_sm.th_y_L += rg_y_L * env_nom.si_th_y_L;
 
-		k_sm.th_x = (k_sm.th_x_R + k_sm.th_x_L) / 2.;
-		k_sm.th_y = (k_sm.th_y_R + k_sm.th_y_L) / 2.;
+		double rg_vtx_x = gRandom->Gaus();
+		double rg_vtx_y = gRandom->Gaus();
 
-		k_sm.ThetasToTPhi(env_nom);
+		k_sm.vtx_x = rg_vtx_x * env_nom.si_vtx_x;
+		k_sm.vtx_y = rg_vtx_y * env_nom.si_vtx_y;
 
 		if (debug)
 		{
@@ -144,71 +157,125 @@ int main()
 				k_sm.th_y_L, k_sm.th_y_R, k_sm.th_y);
 		}
 
-		// ----- acceptance correction -----
+		// ----- proton transport -----
 
-		double phi_corr_old = 0., div_corr_old = 0.;
-		bool skip_old = CalculateAcceptanceCorrections(th_y_sign, k_sm, anal_nom, phi_corr_old, div_corr_old);
+		HitData h_orig = ProtonTransport(k_sm, env_nom);
 
-		double phi_corr_new = 0., div_corr_new = 0.;
-		bool skip_new = accCalc.Calculate(k_sm, phi_corr_new, div_corr_new);
+		// ----- sensor smearing -----
+
+		HitData h_sm = h_orig;
+
+		h_sm.L_2_F.x += gRandom->Gaus() * env_nom.si_de_P_L; 
+		h_sm.L_2_F.y += gRandom->Gaus() * env_nom.si_de_P_L; 
+	
+		h_sm.L_1_F.x += gRandom->Gaus() * env_nom.si_de_P_L; 
+		h_sm.L_1_F.y += gRandom->Gaus() * env_nom.si_de_P_L; 
+	
+		h_sm.R_1_F.x += gRandom->Gaus() * env_nom.si_de_P_R; 
+		h_sm.R_1_F.y += gRandom->Gaus() * env_nom.si_de_P_R; 
+	
+		h_sm.R_2_F.x += gRandom->Gaus() * env_nom.si_de_P_R; 
+		h_sm.R_2_F.y += gRandom->Gaus() * env_nom.si_de_P_R; 
+
+		// ----- reconstruction -----
+
+		Kinematics k_re;
+
+		k_re.th_x_L = k_re.th_x_L_2_F = - h_sm.L_2_F.x / env_nom.L_x_L_2_F;
+		k_re.th_x_R = k_re.th_x_R_2_F = + h_sm.R_2_F.x / env_nom.L_x_R_2_F;
+		k_re.th_x = (k_re.th_x_L + k_re.th_x_R) / 2.;
+
+		k_re.th_y_L = k_re.th_y_L_2_F = - h_sm.L_2_F.y / env_nom.L_y_L_2_F;
+		k_re.th_y_R = k_re.th_y_R_2_F = + h_sm.R_2_F.y / env_nom.L_y_R_2_F;
+		k_re.th_y = (k_re.th_y_L + k_re.th_y_R) / 2.;
+
+		k_re.ThetasToTPhi(env_nom);
 
 		if (debug)
 		{
-			printf("old: skip = %u, phi_corr = %.3f, dif_corr = %.3f\n", skip_old, phi_corr_old, div_corr_old);
-			printf("new: skip = %u, phi_corr = %.3f, dif_corr = %.3f\n", skip_new, phi_corr_new, div_corr_new);
+			printf("k_re: th_x_L = %E, th_x_R = %E, th_x = %E; th_y_L = %E, th_y_R = %E, th_y = %E\n",
+				k_re.th_x_L, k_re.th_x_R, k_re.th_x,
+				k_re.th_y_L, k_re.th_y_R, k_re.th_y);
 		}
+
+		// ----- acceptance correction -----
+
+		double phi_corr = 0., div_corr = 0.;
+		bool skip = accCalc.Calculate(k_re, phi_corr, div_corr);
+
+		if (debug)
+		{
+			printf("skip = %u, phi_corr = %.3f, dif_corr = %.3f\n", skip, phi_corr, div_corr);
+		}
+
+		// ----- evaluate smearing -----
+
+		double de_th_x_L = k_re.th_x_L - k_tr.th_x_L;
+		double de_th_x_R = k_re.th_x_R - k_tr.th_x_R;
+		double de_th_x_m = (de_th_x_L + de_th_x_R) / 2.;
+		double de_th_x_d = de_th_x_R - de_th_x_L;
+
+		double de_th_y_L = k_re.th_y_L - k_tr.th_y_L;
+		double de_th_y_R = k_re.th_y_R - k_tr.th_y_R;
+		double de_th_y_m = (de_th_y_L + de_th_y_R) / 2.;
+		double de_th_y_d = de_th_y_R - de_th_y_L;
 
 		// ----- fill plots -----
 
-		h_t_true->Fill(k_tr.t, w);
-		h_t_lowt_true->Fill(k_tr.t, w);
-		h_th_x_th_y_true->Fill(k_tr.th_x, k_tr.th_y, w);
-
-		h_t_sm->Fill(k_sm.t, w);
-		h_t_lowt_sm->Fill(k_sm.t, w);
-		h_th_x_th_y_sm->Fill(k_sm.th_x, k_sm.th_y, w);
-
-		if (!skip_old)
+		for (unsigned int bi = 0; bi < binnings.size(); ++bi)
 		{
-			h_t_sm_cut_corr_old->Fill(k_sm.t, w * div_corr_old * phi_corr_old);
-			h_t_lowt_sm_cut_corr_old->Fill(k_sm.t, w * div_corr_old * phi_corr_old);
-			h_th_x_th_y_sm_cut_corr_old->Fill(k_sm.th_x, k_sm.th_y, w * div_corr_old);
+			bh_t_tr[bi]->Fill(k_tr.t, w);
+			bh_t_re_no_acc[bi]->Fill(k_re.t, w);
 		}
 
-		if (!skip_new)
+		h_th_x_th_y_true->Fill(k_tr.th_x, k_tr.th_y, w);
+		h_th_x_th_y_re->Fill(k_re.th_x, k_re.th_y, w);
+
+		h_th_x_d_vs_th_x_m_full->Fill(de_th_x_m, de_th_x_d);
+		h_th_y_d_vs_th_y_m_full->Fill(de_th_y_m, de_th_y_d);
+
+		if (!skip)
 		{
-			h_t_sm_cut_corr_new->Fill(k_sm.t, w * div_corr_new * phi_corr_new);
-			h_t_lowt_sm_cut_corr_new->Fill(k_sm.t, w * div_corr_new * phi_corr_new);
-			h_th_x_th_y_sm_cut_corr_new->Fill(k_sm.th_x, k_sm.th_y, w * div_corr_new);
+			for (unsigned int bi = 0; bi < binnings.size(); ++bi)
+			{
+				bh_t_re_acc[bi]->Fill(k_re.t, w * div_corr * phi_corr);
+			}
+
+			h_th_x_th_y_re_cut_corr->Fill(k_re.th_x, k_re.th_y, w * div_corr);
+
+			h_th_x_d_vs_th_x_m_acc->Fill(de_th_x_m, de_th_x_d);
+			h_th_y_d_vs_th_y_m_acc->Fill(de_th_y_m, de_th_y_d);
 		}
 	}
 
 	// normalise histograms
-	h_t_true->Scale(t_range / N_ev, "width");
-	h_t_sm->Scale(t_range / N_ev, "width");
-	h_t_sm_cut_corr_old->Scale(t_range / N_ev, "width");
-	h_t_sm_cut_corr_new->Scale(t_range / N_ev, "width");
-
-	h_t_lowt_true->Scale(t_max_lowt / N_ev, "width");
-	h_t_lowt_sm->Scale(t_max_lowt / N_ev, "width");
-	h_t_lowt_sm_cut_corr_old->Scale(t_max_lowt / N_ev, "width");
-	h_t_lowt_sm_cut_corr_new->Scale(t_max_lowt / N_ev, "width");
+	for (unsigned int bi = 0; bi < binnings.size(); ++bi)
+	{
+		bh_t_tr[bi]->Scale(1./N_ev, "width");
+		bh_t_re_no_acc[bi]->Scale(1./N_ev, "width");
+		bh_t_re_acc[bi]->Scale(1./N_ev, "width");
+	}
 
 	// save plots
-	h_t_true->Write();
-	h_t_sm->Write();
-	h_t_sm_cut_corr_old->Write();
-	h_t_sm_cut_corr_new->Write();
+	for (unsigned int bi = 0; bi < binnings.size(); ++bi)
+	{
+		gDirectory = f_out->mkdir(binnings[bi].c_str());
 
-	h_t_lowt_true->Write();
-	h_t_lowt_sm->Write();
-	h_t_lowt_sm_cut_corr_old->Write();
-	h_t_lowt_sm_cut_corr_new->Write();
+		bh_t_tr[bi]->Write("h_t_tr");
+		bh_t_re_no_acc[bi]->Write("h_t_re_no_acc");
+		bh_t_re_acc[bi]->Write("h_t_re_acc");
+	}
+
+	gDirectory = f_out;
 
 	h_th_x_th_y_true->Write();
-	h_th_x_th_y_sm->Write();
-	h_th_x_th_y_sm_cut_corr_old->Write();
-	h_th_x_th_y_sm_cut_corr_new->Write();
+	h_th_x_th_y_re->Write();
+	h_th_x_th_y_re_cut_corr->Write();
+
+	h_th_x_d_vs_th_x_m_full->Write();
+	h_th_x_d_vs_th_x_m_acc->Write();
+	h_th_y_d_vs_th_y_m_full->Write();
+	h_th_y_d_vs_th_y_m_acc->Write();
 
 	// clean up
 	delete f_out;
