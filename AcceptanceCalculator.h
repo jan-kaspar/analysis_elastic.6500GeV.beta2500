@@ -9,8 +9,8 @@ struct AcceptanceCalculator
 
 	bool gaussianOptimisation;
 
-	unsigned long integ_workspace_size_de_th_x, integ_workspace_size_de_th_y;
-	gsl_integration_workspace *integ_workspace_de_th_x, *integ_workspace_de_th_y;
+	unsigned long integ_workspace_size_d_x, integ_workspace_size_d_y;
+	gsl_integration_workspace *integ_workspace_d_x, *integ_workspace_d_y;
 
 	void Init(double _th_y_sign, const Analysis &_anal)
 	{
@@ -19,56 +19,66 @@ struct AcceptanceCalculator
 
 		gaussianOptimisation = true;
 
-		integ_workspace_size_de_th_x = 1000;
-		integ_workspace_de_th_x = gsl_integration_workspace_alloc(integ_workspace_size_de_th_x);
+		integ_workspace_size_d_x = 1000;
+		integ_workspace_d_x = gsl_integration_workspace_alloc(integ_workspace_size_d_x);
 
-		integ_workspace_size_de_th_y = 1000;
-		integ_workspace_de_th_y = gsl_integration_workspace_alloc(integ_workspace_size_de_th_y);
+		integ_workspace_size_d_y = 1000;
+		integ_workspace_d_y = gsl_integration_workspace_alloc(integ_workspace_size_d_y);
 	}
 
-	double dist_de_th_x(double de_th_x) const;
+	/// evaluates PDF of d_x, i.e. de_th_x_R - de_th_x_L
+	double dist_d_x(double d_x) const;
 
-	double dist_de_th_y(double de_th_y) const;
+	/// evaluates PDF of d_y
+	double dist_d_y(double d_y) const;
 
-	double Condition(double th_x_p, double de_th_x, double th_y_p, double de_th_y) const;
+	/// evaluates the acceptance condition
+	double Condition(double th_x_p, double d_x, double th_y_p, double d_y) const;
 
-	static double IntegOverDeThY(double x, double *par, const void* obj);
+	/// caculates the smearing integral over d_y
+	static double IntegOverDY(double x, double *par, const void* obj);
 
-	static double IntegOverDeThX(double x, double *par, const void* obj);
+	/// caculates the smearing integral over d_x
+	static double IntegOverDX(double x, double *par, const void* obj);
 
+	/// calculates the "smearing" component of the acceptance correction
 	double SmearingFactor(double th_x_p, double th_y_p) const;
 
+	/// calculates the smearing corrections, for the event described by k
+	/// returns flag whether the event should be skipped
 	bool Calculate(const Kinematics &k, double &phi_corr, double &div_corr) const;
 };
 
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::dist_de_th_x(double de_th_x) const
+double AcceptanceCalculator::dist_d_x(double d_x) const
 {
-	double si_de_th_x = anal.si_th_x_1arm_L * sqrt(2.);
-	double r = de_th_x / si_de_th_x;
-	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_de_th_x;
+	const double si_d_x = anal.si_th_x_LRdiff;
+
+	double r = d_x / si_d_x;
+	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_x;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::dist_de_th_y(double de_th_y) const
+double AcceptanceCalculator::dist_d_y(double d_y) const
 {
-	double si_de_th_y = anal.si_th_y_1arm * sqrt(2.);
-	double r = de_th_y / si_de_th_y;
-	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_de_th_y;
+	const double si_d_y = anal.si_th_y_1arm * sqrt(2.);
+
+	double r = d_y / si_d_y;
+	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_y;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::Condition(double th_x_p, double de_th_x, double th_y_p, double de_th_y) const
+double AcceptanceCalculator::Condition(double th_x_p, double d_x, double th_y_p, double d_y) const
 {
-	double th_x_p_R = th_x_p + de_th_x/2.;
-	double th_x_p_L = th_x_p - de_th_x/2.;
+	double th_x_p_R = th_x_p + d_x/2.;
+	double th_x_p_L = th_x_p - d_x/2.;
 
-	double th_y_p_R = th_y_p + de_th_y/2.;
-	double th_y_p_L = th_y_p - de_th_y/2.;
+	double th_y_p_R = th_y_p + d_y/2.;
+	double th_y_p_L = th_y_p - d_y/2.;
 
 	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(th_x_p_L);
 	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(th_x_p_L);
@@ -87,40 +97,40 @@ double AcceptanceCalculator::Condition(double th_x_p, double de_th_x, double th_
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::IntegOverDeThY(double x, double *par, const void* obj)
+double AcceptanceCalculator::IntegOverDY(double x, double *par, const void* obj)
 {
-	double &de_th_y = x;
+	double &d_y = x;
 
 	double &th_x_p = par[0];
 	double &th_y_p = par[1];
-	double &de_th_x = par[2];
+	double &d_x = par[2];
 
 	AcceptanceCalculator *ac = (AcceptanceCalculator *) obj;
 
-	return ac->dist_de_th_y(de_th_y) * ac->Condition(th_x_p, de_th_x, th_y_p, de_th_y);
+	return ac->dist_d_y(d_y) * ac->Condition(th_x_p, d_x, th_y_p, d_y);
 }
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::IntegOverDeThX(double x, double *par, const void* obj)
+double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 {
-	double &de_th_x = x;
+	double &d_x = x;
 
 	double &th_x_p = par[0];
 	double &th_y_p = par[1];
 
 	AcceptanceCalculator *ac = (AcceptanceCalculator *) obj;
 
-	double ppar[3] = { th_x_p, th_y_p, de_th_x };
+	double ppar[3] = { th_x_p, th_y_p, d_x };
 
-	double si_de_th_y = ac->anal.si_th_y_1arm * sqrt(2.);
+	double si_d_y = ac->anal.si_th_y_1arm * sqrt(2.);
 
 	double I = 0.;
 	
 	if (ac->gaussianOptimisation)
 	{
-		double th_x_p_R = th_x_p + de_th_x/2.;
-		double th_x_p_L = th_x_p - de_th_x/2.;
+		double th_x_p_R = th_x_p + d_x/2.;
+		double th_x_p_L = th_x_p - d_x/2.;
 
 		double th_y_L_cut_l = ac->anal.fc_L_l.GetThYLimit(th_x_p_L);
 		double th_y_L_cut_h = ac->anal.fc_L_h.GetThYLimit(th_x_p_L);
@@ -134,11 +144,11 @@ double AcceptanceCalculator::IntegOverDeThX(double x, double *par, const void* o
 		double LB_y = max(th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h);
 		I = (UB_y > LB_y) ? ( TMath::Erf(UB_y / ac->anal.si_th_y_1arm) - TMath::Erf(LB_y / ac->anal.si_th_y_1arm) ) / 2. : 0.;
 	} else {
-		I = RealIntegrate(AcceptanceCalculator::IntegOverDeThY, ppar, ac, -6.*si_de_th_y, +6.*si_de_th_y, 0., 1E-5,
-			ac->integ_workspace_size_de_th_y, ac->integ_workspace_de_th_y, "AcceptanceCalculator::IntegOverDeThX");
+		I = RealIntegrate(AcceptanceCalculator::IntegOverDY, ppar, ac, -6.*si_d_y, +6.*si_d_y, 0., 1E-5,
+			ac->integ_workspace_size_d_y, ac->integ_workspace_d_y, "AcceptanceCalculator::IntegOverDX");
 	}
 
-	return ac->dist_de_th_x(de_th_x) * I;
+	return ac->dist_d_x(d_x) * I;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -147,10 +157,10 @@ double AcceptanceCalculator::SmearingFactor(double th_x_p, double th_y_p) const
 {
 	double par[2] = { th_x_p, th_y_p };
 
-	double si_de_th_x = anal.si_th_x_1arm_L * sqrt(2.);
+	const double si_d_x = anal.si_th_x_LRdiff;
 
-	return RealIntegrate(AcceptanceCalculator::IntegOverDeThX, par, this, -6.*si_de_th_x, +6.*si_de_th_x, 0., 1E-5,
-		integ_workspace_size_de_th_x, integ_workspace_de_th_x, "AcceptanceCalculator::SmearingFactor");
+	return RealIntegrate(AcceptanceCalculator::IntegOverDX, par, this, -6.*si_d_x, +6.*si_d_x, 0., 1E-5,
+		integ_workspace_size_d_x, integ_workspace_d_x, "AcceptanceCalculator::SmearingFactor");
 }
 
 //----------------------------------------------------------------------------------------------------
