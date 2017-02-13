@@ -6,9 +6,6 @@
 
 DS-merged/merge
 
-acceptance/acceptance_test
-acceptance/mc
-
 alignment/print_fit
 
 background_studies/DS-*
