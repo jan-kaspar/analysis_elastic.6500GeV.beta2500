@@ -12,6 +12,8 @@ struct AcceptanceCalculator
 	unsigned long integ_workspace_size_d_x, integ_workspace_size_d_y;
 	gsl_integration_workspace *integ_workspace_d_x, *integ_workspace_d_y;
 
+	bool debug;
+
 	void Init(double _th_y_sign, const Analysis &_anal)
 	{
 		th_y_sign = _th_y_sign;
@@ -24,6 +26,8 @@ struct AcceptanceCalculator
 
 		integ_workspace_size_d_y = 1000;
 		integ_workspace_d_y = gsl_integration_workspace_alloc(integ_workspace_size_d_y);
+
+		debug = false;
 	}
 
 	/// evaluates PDF of d_x, i.e. de_th_x_R - de_th_x_L
@@ -126,7 +130,10 @@ double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 	double si_d_y = ac->anal.si_th_y_1arm * sqrt(2.);
 
 	double I = 0.;
-	
+
+	if (ac->debug)
+		printf("    d_x = %E\n", d_x);
+
 	if (ac->gaussianOptimisation)
 	{
 		double th_x_p_R = th_x_p + d_x/2.;
@@ -138,6 +145,9 @@ double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 		double th_y_R_cut_l = ac->anal.fc_R_l.GetThYLimit(th_x_p_R);
 		double th_y_R_cut_h = ac->anal.fc_R_h.GetThYLimit(th_x_p_R);
 
+		if (ac->debug)
+			printf("         th_y_L_cut_l = %E, th_y_R_cut_l = %E\n", th_y_L_cut_l, th_y_R_cut_l);
+
 		double th_y_abs = ac->th_y_sign * th_y_p;
 
 		double UB_y = min(th_y_R_cut_h - th_y_abs, th_y_abs - th_y_L_cut_l);
@@ -147,6 +157,9 @@ double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 		I = RealIntegrate(AcceptanceCalculator::IntegOverDY, ppar, ac, -6.*si_d_y, +6.*si_d_y, 0., 1E-5,
 			ac->integ_workspace_size_d_y, ac->integ_workspace_d_y, "AcceptanceCalculator::IntegOverDX");
 	}
+
+	if (ac->debug)
+		printf("         dist = %E, I = %E\n", ac->dist_d_x(d_x), I);
 
 	return ac->dist_d_x(d_x) * I;
 }
@@ -159,7 +172,7 @@ double AcceptanceCalculator::SmearingFactor(double th_x_p, double th_y_p) const
 
 	const double si_d_x = anal.si_th_x_LRdiff;
 
-	return RealIntegrate(AcceptanceCalculator::IntegOverDX, par, this, -6.*si_d_x, +6.*si_d_x, 0., 1E-5,
+	return RealIntegrate(AcceptanceCalculator::IntegOverDX, par, this, -6.*si_d_x, +6.*si_d_x, 0.001, 0.,
 		integ_workspace_size_d_x, integ_workspace_d_x, "AcceptanceCalculator::SmearingFactor");
 }
 
@@ -167,7 +180,7 @@ double AcceptanceCalculator::SmearingFactor(double th_x_p, double th_y_p) const
 
 bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, double &div_corr) const
 {
-	// ---------- smearing component ----------
+	// ----- smearing component, cut -----
 
 	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(k.th_x_L);
 	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(k.th_x_L);
@@ -175,20 +188,30 @@ bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, doub
 	double th_y_R_cut_l = anal.fc_R_l.GetThYLimit(k.th_x_R);
 	double th_y_R_cut_h = anal.fc_R_h.GetThYLimit(k.th_x_R);
 
+	if (debug)
+	{
+		printf("th_y_L_cut_l = %E, th_y_L_cut_h = %E\n", th_y_L_cut_l, th_y_L_cut_h);
+		printf("th_y_R_cut_l = %E, th_y_R_cut_h = %E\n", th_y_R_cut_l, th_y_R_cut_h);
+	}
+
 	if ((th_y_sign * k.th_y_L < th_y_L_cut_l) || (th_y_sign * k.th_y_R < th_y_R_cut_l)
 		|| (th_y_sign * k.th_y_L > th_y_L_cut_h) || (th_y_sign * k.th_y_R > th_y_R_cut_h))
 		return true;
 
-	double F = SmearingFactor(k.th_x, k.th_y);
-	div_corr = 1. / F;
-
-	// ---------- phi component ----------
+	// ----- phi component, cut -----
 
 	double th_y_G_cut_l = anal.fc_G_l.GetThYLimit(k.th_x);
 	double th_y_G_cut_h = anal.fc_G_h.GetThYLimit(k.th_x);
 
 	if ((th_y_sign * k.th_y < th_y_G_cut_l) || (th_y_sign * k.th_y > th_y_G_cut_h))
 		return true;
+
+	// ----- smearing component, correction -----
+
+	double F = SmearingFactor(k.th_x, k.th_y);
+	div_corr = 1. / F;
+
+	// ----- phi component, correction -----
 
 	// get all intersections
 	set<double> phis;
@@ -219,7 +242,7 @@ bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, doub
 
 		phiSum += phi_end - phi_start;
 	}
-	
+
 	phi_corr = 2. * M_PI / phiSum;
 
 	return false;
