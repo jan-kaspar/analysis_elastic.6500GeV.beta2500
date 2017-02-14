@@ -7,10 +7,12 @@ all: validation_vs_old validation_with_mc
 
 validation_vs_old: validation_vs_old.cc parameters_old.h ../common_definitions.h ../common_algorithms.h ../AcceptanceCalculator.h
 	g++ --std=c++11 `root-config --libs` -lMinuit `root-config --cflags` -O3 -g -Wall -Wextra \
-		-I ../ $(INCS) $(LIBS) \
+		-I ../ $(INCS) \
+		$(LIBS) \
 		validation_vs_old.cc -o validation_vs_old
 
 validation_with_mc: validation_with_mc.cc parameters_mc.h ../common_definitions.h ../common_algorithms.h ../AcceptanceCalculator.h
 	g++ --std=c++11 `root-config --libs` -lMinuit `root-config --cflags` -O3 -g -Wall -Wextra \
-		-I ../ $(INCS) $(LIBS) \
+		-I ../ $(INCS) \
+		$(LIBS) \
 		validation_with_mc.cc -o validation_with_mc

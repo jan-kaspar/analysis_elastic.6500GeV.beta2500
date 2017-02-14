@@ -1,0 +1,25 @@
+#!/bin/sh
+
+job_home=`pwd -P`
+export HOME="/afs/cern.ch/exp/totem/scratch/jkaspar"
+export RFIO_USE_CASTOR_V2=YES
+export STAGE_HOST=castorpublic
+export STAGE_SVCCLASS=default
+
+# CMSSW environment
+export VO_CMS_SW_DIR="/cvmfs/cms.cern.ch"
+source "$VO_CMS_SW_DIR/cmsset_default.sh"
+cd "/afs/cern.ch/work/j/jkaspar/software/offline/704/src"
+eval `scram runtime -sh`
+
+# EOS configuration
+source "/afs/cern.ch/project/eos/installation/totem/etc/setup.sh"
+shopt -s expand_aliases
+
+# define directories
+job_dir="/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/acceptance"
+
+# run the process
+cd "$job_dir"
+
+{ time ./validation_with_mc $options -output "$output" ; } &> "$log"
