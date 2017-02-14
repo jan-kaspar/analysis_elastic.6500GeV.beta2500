@@ -11,15 +11,103 @@
 
 //----------------------------------------------------------------------------------------------------
 
-int main()
+void PrintUsage()
+{
+	printf("USAGE: validation_with_mc [options]\n");
+	printf("OPTIONS:\n");
+	printf("    -debug         run in verbose mode\n");
+	printf("    -seed <int>    set seed of random generator\n");
+	printf("    -events <int>  set number of events\n");
+	printf("    -t-max <val>   set maximum value of |t|\n");
+	printf("    -old-acc       use old acceptance calculation engine\n");
+}
+
+//----------------------------------------------------------------------------------------------------
+
+int main(int argc, char **argv)
 {
 	// defaults
 	unsigned int seed = 1;
-	unsigned long N_ev = 1E8;
+	unsigned long N_ev = 1E6;
 
 	double B = 20.;	// GeV^-2
 
 	bool debug = false;
+
+	bool cuts_flat = false;
+
+	bool acceptance_algorithm_new = true;
+
+	double t_min_full = 0.;
+	double t_max_full = 1.1;
+
+	string outputFileName = "validation_with_mc.root";
+
+	// parse command line
+	for (int i = 1; i < argc; i++)
+	{
+		if (strcmp(argv[i], "-debug") == 0)
+		{
+			debug = true;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-alg-old") == 0)
+		{
+			acceptance_algorithm_new = false;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-alg-new") == 0)
+		{
+			acceptance_algorithm_new = true;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-cuts-flat") == 0)
+		{
+			cuts_flat = true;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-cuts-curved") == 0)
+		{
+			cuts_flat = false;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-seed") == 0)
+		{
+			if (argc-1 > i)
+				seed = atoi(argv[++i]);
+			continue;
+		}
+
+		if (strcmp(argv[i], "-events") == 0)
+		{
+			if (argc-1 > i)
+				N_ev = (unsigned long) atof(argv[++i]);
+			continue;
+		}
+
+		if (strcmp(argv[i], "-t-max") == 0)
+		{
+			if (argc-1 > i)
+				t_max_full = atof(argv[++i]);
+			continue;
+		}
+
+		if (strcmp(argv[i], "-output") == 0)
+		{
+			if (argc-1 > i)
+				outputFileName = argv[++i];
+			continue;
+		}
+
+		printf("ERROR: unknown parameter `%s'.\n", argv[i]);
+		PrintUsage();
+		return 3;
+	}
 
 	// print settings
 	printf(">> mc executed with these parameters:\n");
@@ -46,6 +134,19 @@ int main()
 	anal.n_si = 4.;
 	Analysis anal_nom = anal;
 
+	// flatten cuts if needed
+	if (cuts_flat)
+	{
+		anal_nom.fc_L_l.th_x_m = anal_nom.fc_L_l.th_x_p = anal_nom.fc_L_l.al_m = anal_nom.fc_L_l.al_p = 0.;
+		anal_nom.fc_L_h.th_x_m = anal_nom.fc_L_h.th_x_p = anal_nom.fc_L_h.al_m = anal_nom.fc_L_h.al_p = 0.;
+
+		anal_nom.fc_R_l.th_x_m = anal_nom.fc_R_l.th_x_p = anal_nom.fc_R_l.al_m = anal_nom.fc_R_l.al_p = 0.;
+		anal_nom.fc_R_h.th_x_m = anal_nom.fc_R_h.th_x_p = anal_nom.fc_R_h.al_m = anal_nom.fc_R_h.al_p = 0.;
+
+		anal_nom.fc_G_l.th_x_m = anal_nom.fc_G_l.th_x_p = anal_nom.fc_G_l.al_m = anal_nom.fc_G_l.al_p = 0.;
+		anal_nom.fc_G_h.th_x_m = anal_nom.fc_G_h.th_x_p = anal_nom.fc_G_h.al_m = anal_nom.fc_G_h.al_p = 0.;
+	}
+
 	// make environment consistent
 	anal_nom.si_th_x_LRdiff = 12.95E-6;
 	anal_nom.si_th_y_1arm = 0.275E-6;
@@ -60,18 +161,16 @@ int main()
 
 	// initialise acceptance calculation
 	AcceptanceCalculator accCalc;
-	accCalc.Init(th_y_sign, anal);
+	accCalc.Init(th_y_sign, anal_nom);
 
 	// simulation t-range
-	double t_min_full = anal.t_min_full;
-	double t_max_full = anal.t_max_full;
 	double t_range = t_max_full - t_min_full;
 
 	printf("t_min_full = %E\n", t_min_full);
 	printf("t_max_full = %E\n", t_max_full);
 
 	// prepare output
-	TFile *f_out = TFile::Open("validation_with_mc.root", "recreate");
+	TFile *f_out = TFile::Open(outputFileName.c_str(), "recreate");
 
 	// list of binnings
 	vector<string> binnings;
@@ -84,7 +183,7 @@ int main()
 	{
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, binnings[bi], bin_edges, N_bins);
+		BuildBinning(anal_nom, binnings[bi], bin_edges, N_bins);
 
 		bh_t_tr[bi] = new TH1D("", ";|t|;events per bin", N_bins, bin_edges); bh_t_tr[bi]->Sumw2();
 		bh_t_re_no_acc[bi] = new TH1D("", ";|t|;events per bin", N_bins, bin_edges); bh_t_re_no_acc[bi]->Sumw2();
@@ -108,6 +207,7 @@ int main()
 		if (debug)
 		{
 			printf("\n");
+			printf("--------------------------------------------------------\n");
 			printf("event %lu\n", ev);
 		}
 
@@ -115,7 +215,7 @@ int main()
 
 		Kinematics k_tr;
 		k_tr.t = gRandom->Rndm() * t_range + t_min_full;
-		k_tr.phi = th_y_sign * gRandom->Rndm() * 2. * M_PI;
+		k_tr.phi = th_y_sign * gRandom->Rndm() * M_PI;
 		double w = exp(-B * k_tr.t);
 
 		k_tr.TPhiToThetas(env_nom);
@@ -135,7 +235,7 @@ int main()
 		double rg_x_L = gRandom->Gaus();
 		double rg_y_R = gRandom->Gaus();
 		double rg_y_L = gRandom->Gaus();
-		
+
 		Kinematics k_sm = k_tr;
 
 		k_sm.th_x_R += rg_x_R * env_nom.si_th_x_R;
@@ -167,13 +267,13 @@ int main()
 
 		h_sm.L_2_F.x += gRandom->Gaus() * env_nom.si_de_P_L; 
 		h_sm.L_2_F.y += gRandom->Gaus() * env_nom.si_de_P_L; 
-	
-		h_sm.L_1_F.x += gRandom->Gaus() * env_nom.si_de_P_L; 
-		h_sm.L_1_F.y += gRandom->Gaus() * env_nom.si_de_P_L; 
-	
-		h_sm.R_1_F.x += gRandom->Gaus() * env_nom.si_de_P_R; 
-		h_sm.R_1_F.y += gRandom->Gaus() * env_nom.si_de_P_R; 
-	
+
+		//h_sm.L_1_F.x += gRandom->Gaus() * env_nom.si_de_P_L;
+		//h_sm.L_1_F.y += gRandom->Gaus() * env_nom.si_de_P_L;
+
+		//h_sm.R_1_F.x += gRandom->Gaus() * env_nom.si_de_P_R;
+		//h_sm.R_1_F.y += gRandom->Gaus() * env_nom.si_de_P_R;
+
 		h_sm.R_2_F.x += gRandom->Gaus() * env_nom.si_de_P_R; 
 		h_sm.R_2_F.y += gRandom->Gaus() * env_nom.si_de_P_R; 
 
@@ -201,7 +301,13 @@ int main()
 		// ----- acceptance correction -----
 
 		double phi_corr = 0., div_corr = 0.;
-		bool skip = accCalc.Calculate(k_re, phi_corr, div_corr);
+		bool skip = false;
+		if (acceptance_algorithm_new)
+			accCalc.Calculate(k_re, phi_corr, div_corr);
+		else
+			CalculateAcceptanceCorrections(th_y_sign, k_re, anal_nom, phi_corr, div_corr);
+
+		phi_corr /= 2.;	// simulated just one hemishpere
 
 		if (debug)
 		{
