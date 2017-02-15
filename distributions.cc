@@ -337,7 +337,7 @@ int main(int argc, char **argv)
 	ch_in->SetBranchAddress("trigger_num", &ev.trigger_num);
 	ch_in->SetBranchAddress("trigger_bits", &ev.trigger_bits);
 
-	// get time-dependent corrections
+	// get time-dependent pile-up correction
 	TGraph *corrg_pileup = NULL;
 	if (anal.use_pileup_efficiency_fits)
 	{
@@ -369,39 +369,57 @@ int main(int argc, char **argv)
 	*/
 
 	// get th_y* dependent efficiency correction
-	TF1 *f_3outof4_efficiency_L_F = NULL;
-	TF1 *f_3outof4_efficiency_L_N = NULL;
-	TF1 *f_3outof4_efficiency_R_N = NULL;
-	TF1 *f_3outof4_efficiency_R_F = NULL;
+	TF1 *f_3outof4_efficiency_L_2_F = NULL;
+	TF1 *f_3outof4_efficiency_L_1_F = NULL;
+	TF1 *f_3outof4_efficiency_R_1_F = NULL;
+	TF1 *f_3outof4_efficiency_R_2_F = NULL;
 	if (anal.use_3outof4_efficiency_fits)
 	{
-		string path = inputDir + "/eff3outof4_details_fit_old.root";
+		string path = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/efficiency_fits/global_fit.root";
 		TFile *effFile = TFile::Open(path.c_str());
 		if (!effFile)
 			printf("ERROR: 3-out-of-4 efficiency file `%s' cannot be opened.\n", path.c_str());
 		
 		string diagonal = argv[1];
-		f_3outof4_efficiency_L_F = (TF1 *) effFile->Get( (diagonal + "/L_F/fit").c_str() );
-		f_3outof4_efficiency_L_N = (TF1 *) effFile->Get( (diagonal + "/L_N/fit").c_str() );
-		f_3outof4_efficiency_R_N = (TF1 *) effFile->Get( (diagonal + "/R_N/fit").c_str() );
-		f_3outof4_efficiency_R_F = (TF1 *) effFile->Get( (diagonal + "/R_F/fit").c_str() );
+		f_3outof4_efficiency_L_2_F = (TF1 *) effFile->Get( (diagonal + "/L_2_F/pol1").c_str() );
+		f_3outof4_efficiency_L_1_F = (TF1 *) effFile->Get( (diagonal + "/L_1_F/pol1").c_str() );
+		f_3outof4_efficiency_R_1_F = (TF1 *) effFile->Get( (diagonal + "/R_1_F/pol1").c_str() );
+		f_3outof4_efficiency_R_2_F = (TF1 *) effFile->Get( (diagonal + "/R_2_F/pol1").c_str() );
 
 		printf("\n>> using 3-out-of-4 fits: %p, %p, %p, %p\n",
-			f_3outof4_efficiency_L_F, f_3outof4_efficiency_L_N, f_3outof4_efficiency_R_N, f_3outof4_efficiency_R_F);
+			f_3outof4_efficiency_L_2_F, f_3outof4_efficiency_L_1_F, f_3outof4_efficiency_R_1_F, f_3outof4_efficiency_R_2_F);
+
+		if (!f_3outof4_efficiency_L_2_F || !f_3outof4_efficiency_L_1_F || !f_3outof4_efficiency_R_1_F || !f_3outof4_efficiency_R_2_F)
+		{
+			printf("ERROR: some of the 3-out-of-4 graphs can not be loaded.\n");
+			return 100;
+		}
 	}
 
 	// get unsmearing correction
+	bool apply_unsmearing = (unsmearing_file != "");
+
 	printf("\n>> unsmearing_file = %s\n", unsmearing_file.c_str());
 	printf(">> unsmearing_object = %s\n", unsmearing_object.c_str());
+	printf(">> apply_unsmearing = %i\n", apply_unsmearing);
+
 	TF1 *unsmearing_correction_fit = NULL;
-	TFile *unsmearing_correction_file = TFile::Open(unsmearing_file.c_str());
-	if (!unsmearing_correction_file)
+
+	if (apply_unsmearing)
 	{
-		printf("ERROR: unfolding file `%s' can not be opened.\n", unsmearing_file.c_str());
-	} else {
-		unsmearing_correction_fit = (TF1 *) unsmearing_correction_file->Get(unsmearing_object.c_str());
-		if (!unsmearing_correction_fit)
-			printf("ERROR: unsmearing correction object `%s' cannot be loaded.\n", unsmearing_object.c_str());
+		TFile *unsmearing_correction_file = TFile::Open(unsmearing_file.c_str());
+		if (!unsmearing_correction_file)
+		{
+			printf("ERROR: unfolding file `%s' can not be opened.\n", unsmearing_file.c_str());
+			return 101;
+		} else {
+			unsmearing_correction_fit = (TF1 *) unsmearing_correction_file->Get(unsmearing_object.c_str());
+			if (!unsmearing_correction_fit)
+			{
+				printf("ERROR: unsmearing correction object `%s' cannot be loaded.\n", unsmearing_object.c_str());
+				return 102;
+			}
+		}
 	}
 
 	// book metadata histograms	
@@ -963,30 +981,27 @@ int main(int argc, char **argv)
 		double inefficiency_3outof4 = anal.inefficiency_3outof4;
 		if (anal.use_3outof4_efficiency_fits)
 		{
-			inefficiency_3outof4 = 0.;
-			inefficiency_3outof4 += 1. - f_3outof4_efficiency_L_F->Eval(k.th_y * 1E6);
-			inefficiency_3outof4 += 1. - f_3outof4_efficiency_L_N->Eval(k.th_y * 1E6);
-			inefficiency_3outof4 += 1. - f_3outof4_efficiency_R_N->Eval(k.th_y * 1E6);
-			inefficiency_3outof4 += 1. - f_3outof4_efficiency_R_F->Eval(k.th_y * 1E6);
-		}
+			const double th_y_abs = fabs(k.th_y);
 
-		double inefficiency_shower_near = anal.inefficiency_shower_near;
+			inefficiency_3outof4 = 0.;
+			inefficiency_3outof4 += 1. - f_3outof4_efficiency_L_2_F->Eval(th_y_abs);
+			inefficiency_3outof4 += 1. - f_3outof4_efficiency_R_2_F->Eval(th_y_abs);
+		}
 
 		double inefficiency_pile_up = anal.inefficiency_pile_up;
 		if (anal.use_pileup_efficiency_fits)
 			inefficiency_pile_up = corrg_pileup->Eval(ev.timestamp);
 
-		double inefficiency_trigger = anal.inefficiency_trigger;
-
+		// TODO: verify how anal.inefficiency_shower_near is used
 		double norm_corr =
-			1./(1. - (inefficiency_3outof4 + inefficiency_shower_near))
+			1./(1. - (inefficiency_3outof4 + anal.inefficiency_shower_near))
 			* 1./(1. - inefficiency_pile_up)
-			* 1./(1. - inefficiency_trigger);
+			* 1./(1. - anal.inefficiency_trigger)
+			* 1./(1. - anal.inefficiency_DAQ);
 
 		p_norm_corr->Fill(ev.timestamp, norm_corr);
 		p_3outof4_corr->Fill(k.th_y, inefficiency_3outof4);
 
-		// TODO: add inefficiency_DAQ
 		double normalization = anal.bckg_corr * norm_corr / anal.L_int;
 
 		// data for alignment
@@ -1582,7 +1597,7 @@ int main(int argc, char **argv)
 			double v = bh_t_normalized_unsmeared[bi]->GetBinContent(bin);
 			double v_u = bh_t_normalized_unsmeared[bi]->GetBinError(bin);
 
-			double corr = (unsmearing_correction_fit == NULL) ? 0. : unsmearing_correction_fit->Eval(c);
+			double corr = (apply_unsmearing) ? unsmearing_correction_fit->Eval(c) : 0.;
 
 			bh_t_normalized_unsmeared[bi]->SetBinContent(bin, v * corr);
 			bh_t_normalized_unsmeared[bi]->SetBinError(bin, v_u * corr);

@@ -21,6 +21,10 @@ void Init_global()
 	// environment settings
 	env.InitNominal();
 
+	// selection of bunches
+	keepAllBunches = true;
+	//bunchMap[94882].push_back(0);
+
 	// binning
 	anal.t_min = 20E-4; anal.t_max = 1.0;
 	anal.t_min_full = 0.; anal.t_max_full = 1.1;
@@ -53,12 +57,30 @@ void Init_global()
 	anal.alignmentYRanges["R_1_F"] = Analysis::AlignmentYRange(-16.0, -3.0, +3.0, +16.0);
 	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-20.0, -4.0, +4.0, +20.0);
 
-	// efficiency settings
+	// correction settings
+	anal.use_3outof4_efficiency_fits = true;
 	anal.inefficiency_3outof4 = 0.;
-	anal.inefficiency_shower_near = 0.;
+	anal.inefficiency_shower_near = 3.0;
+
+	anal.use_pileup_efficiency_fits = false;
 	anal.inefficiency_pile_up = 0.;
+
 	anal.inefficiency_trigger = 0.;
-	anal.L_int = 1.;
+	anal.inefficiency_DAQ = 0.;
+
+	anal.bckg_corr = 1.;
+
+	// unfolding settings
+	// TODO
+#if 0
+	unsmearing_file = "";	// diagonal dependent
+	//unsmearing_object = "cf,<binning>/exp3/corr_final";
+	//unsmearing_object = "cf,<binning>/exp3+exp4/corr_final";
+	unsmearing_object = "ff";
+#endif
+
+	// normalisation settings
+	anal.L_int = 1.;	// mb^-1
 }
 
 //----------------------------------------------------------------------------------------------------
