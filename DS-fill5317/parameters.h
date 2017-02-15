@@ -8,6 +8,7 @@ void Init_base()
 	Init_global();
 
 	// alignment settings
+	/*
 	AlignmentSource alSrc;
 	alSrc.SetAlignmentA(atNone);
 	alSrc.SetAlignmentB(atNone);
@@ -19,6 +20,7 @@ void Init_base()
 	alSrc.cnst.a_R_2_F = -1.8E-3; alSrc.cnst.b_R_2_F = -132.6E-3; alSrc.cnst.c_R_2_F = -85.1E-3; 
 	
 	alignmentSources.push_back(alSrc);
+	*/
 }
 
 //----------------------------------------------------------------------------------------------------
