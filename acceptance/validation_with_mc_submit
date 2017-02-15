@@ -5,8 +5,13 @@ config_options=()
 
 configs=(
 #	"0.013 1E7 old flat"
-	"0.013 1E7 new flat"
-	"0.013 1E7 new curved"
+#	"0.013 1E7 new flat"
+#	"0.013 1E7 new curved"
+
+#	"0.100 1E8 new curved"
+#	"1.100 1E8 new curved"
+
+	"0.013 2E8 new curved"
 )
 
 #config+=("t_max=0.10,events=1E6,old"); config_options+=("-t-max 0.1 -events 1E6 -old-acc")

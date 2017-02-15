@@ -5,7 +5,7 @@ import pad_layout;
 //	"validation_with_mc_problem.root"
 //};
 
-string base = "simulations/0.013,1E7,new,curved";
+string base = "simulations/0.013,2E8,new,curved";
 
 string files[] = {
 	base + "/seed1/validation_with_mc.root",
@@ -48,7 +48,8 @@ for (string f : files)
 	draw(RootGetObject(f, binning + "/h_t_tr"), "eb", blue, "simulation truth");
 	draw(RootGetObject(f, binning + "/h_t_re_no_acc"), "eb", heavygreen, "reconstruction, full acceptance");
 	draw(RootGetObject(f, binning + "/h_t_re_acc"), "eb", red, "reconstruction, realistic acceptance");
-	xlimits(0, 0.01, Crop);
+	//xlimits(0, 0.01, Crop);
+	limits((0, 60), (0.01, 80), Crop);
 	
 	yaxis(XEquals(8e-4, false), dashed);
 	
