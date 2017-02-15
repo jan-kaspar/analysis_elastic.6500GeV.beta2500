@@ -37,12 +37,11 @@ int main()
 	double B = 20.;		// GeV^2
 	double p = 6.5E3;	// GeV
 
-	// 1-arm
-	double si_de_th_x = 2.0E-6 / sqrt(2.);
-	double si_de_th_y = 0.37E-6 / sqrt(2.);
+	double si_de_th_x_2arm = 0.30E-6;
+	double si_de_th_y_1arm = 0.26E-6;
 
-	double lcut_th_y_L = 5E-6;
-	double lcut_th_y_R = 5E-6;
+	double lcut_th_y_L = 4.3E-6;
+	double lcut_th_y_R = 4.3E-6;
 	double hcut_th_y_L = 100E-6;
 	double hcut_th_y_R = 100E-6;
 
@@ -57,7 +56,7 @@ int main()
 	TH1D *h_t_sm = new TH1D("h_t_sm", ";t  (GeV^{2})", 100, 0., 3.0);
 
 	TH2D *h_de_t_vs_t = new TH2D("h_de_t_vs_t", ";t  (GeV^{2});#Delta t  (GeV^{2})", 100, 0., 1.0, 100, 0., 0.);
-	TProfile *p_de_t_vs_t = new TProfile("p_de_t_vs_t", ";t  (GeV^{2})", 300, 0., 1.0);
+	TProfile *p_de_t_vs_t = new TProfile("p_de_t_vs_t", ";t  (GeV^{2})", 1000, 0., 1.0);
 
 	for (unsigned int i = 0; i < 40000000; i++)
 	{
@@ -73,14 +72,11 @@ int main()
 		h_th_y_tr->Fill(th_y, w);
 		h_t_tr->Fill(t, w);
 
-		double th_x_sm_L = th_x + gRandom->Gaus() * si_de_th_x;
-		double th_y_sm_L = th_y + gRandom->Gaus() * si_de_th_y;
-
-		double th_x_sm_R = th_x + gRandom->Gaus() * si_de_th_x;
-		double th_y_sm_R = th_y + gRandom->Gaus() * si_de_th_y;
-
-		double th_x_sm = (th_x_sm_L + th_x_sm_R) / 2.;
+		double th_y_sm_L = th_y + gRandom->Gaus() * si_de_th_y_1arm;
+		double th_y_sm_R = th_y + gRandom->Gaus() * si_de_th_y_1arm;
 		double th_y_sm = (th_y_sm_L + th_y_sm_R) / 2.;
+
+		double th_x_sm = th_x + gRandom->Gaus() * si_de_th_x_2arm;
 
 		double t_sm = p*p * (th_x_sm * th_x_sm + th_y_sm * th_y_sm);
 

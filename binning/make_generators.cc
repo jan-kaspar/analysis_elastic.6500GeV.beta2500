@@ -7,7 +7,7 @@
 
 //----------------------------------------------------------------------------------------------------
 
-TGraph* MakeFixStatUncBinSizeGraph(TProfile *p_acc_corr, TF1 *ff_cs, double lumi, double u, const char *name)
+TGraph* MakeFixStatUncBinSizeGraph(TProfile *p_acc_corr, TF1 *ff_dNdt, double u, const char *name)
 {
 	TGraph *g_bs = new TGraph();
 	g_bs->SetName(name);
@@ -21,14 +21,21 @@ TGraph* MakeFixStatUncBinSizeGraph(TProfile *p_acc_corr, TF1 *ff_cs, double lumi
 		if (acc_corr == 0)
 			continue;
 
+		// there are 2 compensating "mistakes" originating from the same source:
+		// 1) acc_corr is determined from a single diagonal, thus acc_corr >= 2
+		//    and consquently A twice smaller than what it should be
+		// 2) dNdt comes from merge which sums both diagonals instead of making
+		//    average, thus making dNdt twice larger than what it should be
+		// Nevertheless, the product A * dNdt is correct
+
 		double A = 1./acc_corr;
 
-		double dsdt = ff_cs->Eval(t);
-		double bin_size = 1. / (u*u * lumi * dsdt * A);
+		double dNdt = ff_dNdt->Eval(t);
+		double bin_size = 1. / (u*u * dNdt * A);
 
 		g_bs->SetPoint(g_bs->GetN(), t, bin_size);
 
-		//printf("%.3f, dsdt=%E, A=%E, bin_size=%E\n", t, dsdt, A, bin_size);
+		//printf("%.3f, dNdt=%E, A=%E, bin_size=%E\n", t, dNdt, A, bin_size);
 	}
 
 	return g_bs;
@@ -42,8 +49,24 @@ int main()
 	TFile *f_acc_corr = new TFile("acceptance_correction.root");
 	TProfile *p_acc_corr = (TProfile *) f_acc_corr->Get("p_t_full_corr");
 
-	TFile *f_cs = new TFile("dsigma_dt_fit.root");
-	TF1 *ff_cs = (TF1 *) f_cs->Get("ff");
+	TFile *f_dNdt = new TFile("dN_dt_fit.root");
+	TF1 *ff_dNdt = (TF1 *) f_dNdt->Get("ff");
+
+	/*
+	{
+		TH1D *h_dNdt = (TH1D *) f_dNdt->Get("h_dsdt");
+
+		for (int i = 1; i <= h_dNdt->GetNbinsX(); ++i)
+		{
+			double c = h_dNdt->GetBinCenter(i);
+			
+			double v = h_dNdt->GetBinContent(i);
+			double unc = h_dNdt->GetBinError(i);
+
+			printf("i = %i, t = %.4f, rel unc = %.3f\n", i, c, unc/v);
+		}
+	}
+	*/
 	
 	TFile *f_simu = new TFile("simu.root");
 	TGraph *g_rms_t = (TGraph *) f_simu->Get("g_RMS_de_t_vs_t");
@@ -54,10 +77,9 @@ int main()
 	g_rms_t->SetName("g_rms_t");
 	g_rms_t->Write();
 
-	double lumi_int = 0.38E6;	// mb^-1
-	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_cs, lumi_int, 0.10, "g_bs_stat_unc_10")->Write();
-	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_cs, lumi_int, 0.20, "g_bs_stat_unc_20")->Write();
-	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_cs, lumi_int, 0.30, "g_bs_stat_unc_30")->Write();
+	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_dNdt, 0.05, "g_bs_stat_unc_5")->Write();
+	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_dNdt, 0.10, "g_bs_stat_unc_10")->Write();
+	MakeFixStatUncBinSizeGraph(p_acc_corr, ff_dNdt, 0.20, "g_bs_stat_unc_20")->Write();
 
 	delete f_out;
 

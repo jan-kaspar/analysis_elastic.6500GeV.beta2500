@@ -1,0 +1,11 @@
+The steps are as follows.
+
+1. run make
+
+2. run "./get_acceptance_correction" which will ge it from "../DS-XXX/distributions_XXX.root"
+
+3. run "./make_fit" which needs object "ob-1-30-0.05/merged/45b_56t/h_dsdt" from "../DS-merged/merged.root"
+
+4. run "./simu"
+
+5. run "./make_generators"
