@@ -1350,8 +1350,8 @@ int main(int argc, char **argv)
 		
 		// TODO: decide
 		// TODO: compatible with time-dependent sigmas ??
-		bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
-		//bool skip = accCalc.Calculate(k, phi_corr, div_corr);
+		//bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
+		bool skip = accCalc.Calculate(k, phi_corr, div_corr);
 
 		for (unsigned int bi = 0; bi < binnings.size(); bi++)
 		{
