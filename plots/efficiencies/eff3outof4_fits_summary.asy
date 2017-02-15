@@ -88,7 +88,7 @@ for (int rpi : rps.keys)
 		limits((-1, -200), (datasets.length, +0), Crop);
 
 		SetPad(p_b);
-		currentpad.yTicks = RightTicks(5., 1.);
+		currentpad.yTicks = RightTicks(1., 0.5);
 		string avg_label = format("avg = $%#.1f$", b_g) + format("$\pm %#.1f$", b_g_unc);
 		draw(Label(avg_label, 0.5, S, Fill(white)), (-0.5, b_g)--(datasets.length-0.5, b_g), blue);
 		limits((-1, 94), (datasets.length, 100), Crop);

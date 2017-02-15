@@ -338,7 +338,7 @@ int main(int argc, char **argv)
 	ch_in->SetBranchAddress("trigger_num", &ev.trigger_num);
 	ch_in->SetBranchAddress("trigger_bits", &ev.trigger_bits);
 
-	// get time-dependent corrections
+	// get time-dependent pile-up correction
 	TGraph *corrg_pileup = NULL;
 	if (anal.use_pileup_efficiency_fits)
 	{
