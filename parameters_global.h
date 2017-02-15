@@ -26,7 +26,7 @@ void Init_global()
 	//bunchMap[94882].push_back(0);
 
 	// binning
-	anal.t_min = 20E-4; anal.t_max = 1.0;
+	anal.t_min = 8E-4; anal.t_max = 1.0;
 	anal.t_min_full = 0.; anal.t_max_full = 1.1;
 
 	// approximate (time independent) resolutions

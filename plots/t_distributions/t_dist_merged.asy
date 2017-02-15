@@ -7,7 +7,7 @@ string diagonals[], diagLabels[];
 diagonals.push("45b_56t"); diagLabels.push("45 bot -- 56 top");
 diagonals.push("45t_56b"); diagLabels.push("45 top -- 56 bot");
 
-string binning = "ob-1-30-0.05";
+string binning = "ob-1-20-0.05";
 
 drawGridDef = true;
 
