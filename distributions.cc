@@ -992,7 +992,6 @@ int main(int argc, char **argv)
 		if (anal.use_pileup_efficiency_fits)
 			inefficiency_pile_up = corrg_pileup->Eval(ev.timestamp);
 
-		// TODO: verify how anal.inefficiency_shower_near is used
 		double norm_corr =
 			1./(1. - (inefficiency_3outof4 + anal.inefficiency_shower_near))
 			* 1./(1. - inefficiency_pile_up)

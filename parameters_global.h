@@ -60,7 +60,7 @@ void Init_global()
 	// correction settings
 	anal.use_3outof4_efficiency_fits = true;
 	anal.inefficiency_3outof4 = 0.;
-	anal.inefficiency_shower_near = 3.0;
+	anal.inefficiency_shower_near = 0.03;	// probability of shower created in near and spreading to far: 2 * 1.5%
 
 	anal.use_pileup_efficiency_fits = false;
 	anal.inefficiency_pile_up = 0.;
