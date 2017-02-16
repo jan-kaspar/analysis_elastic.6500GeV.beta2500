@@ -19,13 +19,10 @@ struct shist
 
 //----------------------------------------------------------------------------------------------------
 
-bool sumBins = true;
-
-TH1D* Merge(const vector<shist> &hists)
+TH1D* Merge(const vector<shist> &hists, bool sumBins = true)
 {
 	// prepare merged histogram
 	TH1D *m = new TH1D(*hists[0].hist);
-	m->SetName("h_dsdt");
 
 	// merge number of entries
 	unsigned int entries = 0;
@@ -121,8 +118,11 @@ int main()
 
 		TDirectory *binningDir = f_out->mkdir(binnings[bi].c_str());
 
-		vector<shist> full_list;				// list of histograms for final merge
-		map<string, vector<shist> > full_map;	// map: diagonal --> list of inputs
+		// list of histograms for final merge
+		vector<shist> full_list_L, full_list_no_L;				
+
+		// map: diagonal --> list of inputs
+		map<string, vector<shist> > full_map_L, full_map_no_L;
 
 		for (unsigned int ei = 0; ei < entries.size(); ei++)
 		{
@@ -130,7 +130,7 @@ int main()
 
 			TDirectory *datasetDir = binningDir->mkdir(entries[ei].output.c_str());
 
-			vector<shist> ds_list;
+			vector<shist> ds_list_L, ds_list_no_L;
 			for (unsigned int dgni = 0; dgni < diagonals.size(); dgni++)
 			{
 				printf("\t\t\t%s\n", diagonals[dgni].c_str());
@@ -143,48 +143,66 @@ int main()
 					return 1;
 				}
 
-				//string on = "normalization+unfolding/"+binnings[bi]+"/h_t_normalized_unsmeared";
-				//string on = "normalization/"+binnings[bi]+"/h_t_normalized";
-				string on = "acceptance correction/"+binnings[bi]+"/h_t_after";
-				TH1D *h_dsdt = (TH1D *) f_in->Get(on.c_str());
-				if (!h_dsdt)
+				string on = "normalization/"+binnings[bi]+"/h_t_normalized";
+				TH1D *h_norm_L = (TH1D *) f_in->Get(on.c_str());
+				if (!h_norm_L)
+				{
+					printf("ERROR: Object `%s' cannot be loaded from file `%s'.\n", on.c_str(), fn.c_str());
+					return 2;
+				}
+
+				on = "normalization/"+binnings[bi]+"/h_t_normalized_no_L";
+				TH1D *h_norm_no_L = (TH1D *) f_in->Get(on.c_str());
+				if (!h_norm_no_L)
 				{
 					printf("ERROR: Object `%s' cannot be loaded from file `%s'.\n", on.c_str(), fn.c_str());
 					return 2;
 				}
 				
-				h_dsdt->SetName("h_dsdt");
+				h_norm_L->SetName("h_dsdt");
+				h_norm_no_L->SetName("h_dNdt");
 
-				shist sc_hist(h_dsdt, entries[ei].stat_unc_scale);
+				shist sc_hist_L(h_norm_L, entries[ei].stat_unc_scale);
+				shist sc_hist_no_L(h_norm_no_L, entries[ei].stat_unc_scale);
 
-				ds_list.push_back(sc_hist);
+				ds_list_L.push_back(sc_hist_L);
+				ds_list_no_L.push_back(sc_hist_no_L);
 
 				if (entries[ei].merge)
 				{
-					full_list.push_back(sc_hist);
-					full_map[diagonals[dgni]].push_back(sc_hist);
+					full_list_L.push_back(sc_hist_L);
+					full_list_no_L.push_back(sc_hist_no_L);
+
+					full_map_L[diagonals[dgni]].push_back(sc_hist_L);
+					full_map_no_L[diagonals[dgni]].push_back(sc_hist_no_L);
 				}
 
 				gDirectory = datasetDir->mkdir(diagonals[dgni].c_str());
-				h_dsdt->Write();
+				h_norm_L->Write();
+				h_norm_no_L->Write();
 			}
 
 			// save histogram merged from all inputs of a dataset
 			gDirectory = datasetDir->mkdir("combined");
-			Merge(ds_list)->Write();
+			Merge(ds_list_L, false)->Write();
+			Merge(ds_list_no_L, true)->Write();
 		}
 
 		// save merged histograms
 		TDirectory *mergedDir = binningDir->mkdir("merged");
 
-		for (map<string, vector<shist> >::iterator it = full_map.begin(); it != full_map.end(); ++it)
+		for (map<string, vector<shist> >::iterator it = full_map_L.begin(); it != full_map_L.end(); ++it)
 		{
 			gDirectory = mergedDir->mkdir(it->first.c_str());
-			Merge(it->second)->Write();
+			Merge(it->second, false)->Write();
+
+			auto it_no_L = full_map_no_L.find(it->first);
+			Merge(it_no_L->second, true)->Write();
 		}
 		
 		gDirectory = mergedDir->mkdir("combined");
-		Merge(full_list)->Write();
+		Merge(full_list_L, false)->Write();
+		Merge(full_list_no_L, true)->Write();
 	}
 
 	delete f_out;

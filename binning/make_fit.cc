@@ -6,7 +6,7 @@
 int main()
 {
 	TFile *f_in = new TFile("../DS-merged/merged.root");
-	TH1D *h_in = (TH1D *) f_in->Get("ob-3-10-0.05/merged/combined/h_dsdt");
+	TH1D *h_in = (TH1D *) f_in->Get("ob-2-10-0.05/merged/combined/h_dNdt");
 	//TH1D *h_in = (TH1D *) f_in->Get("ub/merged/45t_56b/h_dsdt");
 
 	TF1 *ff = new TF1("ff", "[0]*exp(-[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x+[5]*x*x*x*x*x)+TMath::Erf((x-[6])/[7])*[8]*exp(-[9]*x)", 0., 3.);

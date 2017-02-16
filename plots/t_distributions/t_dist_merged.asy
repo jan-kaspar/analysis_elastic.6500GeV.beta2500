@@ -27,7 +27,7 @@ for (int dgni : diagonals.keys)
 }
 
 currentpad.xTicks = LeftTicks(0.2, 0.1);
-limits((0, 1e3), (1.1, 1e9), Crop);
+limits((0, 1e-3), (1.1, 1e3), Crop);
 
 AttachLegend();
 
@@ -40,13 +40,13 @@ for (int dgni : diagonals.keys)
 	pen p = StdPen(dgni + 1);
 
 	draw(RootGetObject(topDir+"DS-merged/merged.root", binning + "/merged/" + diagonals[dgni] + "/h_dsdt"),
-		"d0,eb,vl", p, diagLabels[dgni]);
+		"d0,eb", p, diagLabels[dgni]);
 
 	AddToLegend(format("events $%.2E$", robj.rExec("GetEntries")));
 }
 
 currentpad.xTicks = LeftTicks(0.002, 0.001);
 currentpad.yTicks = RightTicks(5e7, 1e7);
-limits((0, 1e8), (0.01, 2.5e8), Crop);
+limits((0, 400), (0.01, 1000), Crop);
 
 AttachLegend();

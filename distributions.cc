@@ -2106,6 +2106,11 @@ int main(int argc, char **argv)
 	{
 		gDirectory = normDir->mkdir(binnings[bi].c_str());
 		bh_t_normalized[bi]->Write();
+
+		TH1D *h_t_normalized_no_L = new TH1D(* bh_t_normalized[bi]);
+		h_t_normalized_no_L->Scale(anal.L_int);
+		h_t_normalized_no_L->Write("h_t_normalized_no_L");
+
 		bh_t_normalized_rel_diff[bi]->Write();
 	}
 

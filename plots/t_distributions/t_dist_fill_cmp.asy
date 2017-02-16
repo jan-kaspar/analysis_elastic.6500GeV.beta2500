@@ -12,7 +12,7 @@ datasets.push("DS-fill5321"); dataset_fills.push("5321");
 string diagonals[] = { "45b_56t", "45t_56b" };
 string diagLabels[] = { "45 bot -- 56 top", "45 top -- 56 bot" };
 
-string binning = "ob-1-30-0.05";
+string binning = "ob-2-10-0.05";
 
 drawGridDef = true;
 
@@ -25,17 +25,17 @@ for (int dsi : datasets.keys)
 {
 	xTicksDef = LeftTicks(0.2, 0.1);
 
-	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{a.~u.}$");
+	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{mb/GeV^2}$");
 	scale(Linear, Log);
 
 	for (int dgni : diagonals.keys)
 	{
 		pen p = StdPen(dgni + 1);
-		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "acceptance correction/"+binning+"/h_t_after"),
+		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "normalization/"+binning+"/h_t_normalized"),
 			"d0,eb", p, diagLabels[dgni]);
 	}
 
-	limits((0, 1e1), (1.0, 1e9), Crop);
+	limits((0, 1e-3), (1.0, 1e3), Crop);
 
 	AttachLegend(datasets[dsi]);
 }
@@ -49,16 +49,16 @@ for (int dsi : datasets.keys)
 	xTicksDef = LeftTicks(0.002, 0.001);
 
 	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{a.~u.}$");
-	scale(Linear, Log);
+	//scale(Linear, Log);
 
 	for (int dgni : diagonals.keys)
 	{
 		pen p = StdPen(dgni + 1);
-		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "acceptance correction/"+binning+"/h_t_after"),
+		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "normalization/"+binning+"/h_t_normalized"),
 			"d0,eb", p, diagLabels[dgni]);
 	}
 
-	limits((0, 1e7), (0.01, 2e8), Crop);
+	limits((0, 400), (0.01, 1000), Crop);
 
 	AttachLegend(datasets[dsi]);
 }
