@@ -143,7 +143,8 @@ int main()
 					return 1;
 				}
 
-				string on = "normalization/"+binnings[bi]+"/h_t_normalized";
+				//string on = "normalization/"+binnings[bi]+"/h_t_normalized";
+				string on = "normalization+unfolding/"+binnings[bi]+"/h_t_normalized_unsmeared";
 				TH1D *h_norm_L = (TH1D *) f_in->Get(on.c_str());
 				if (!h_norm_L)
 				{

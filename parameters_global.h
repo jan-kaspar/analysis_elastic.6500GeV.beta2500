@@ -70,15 +70,6 @@ void Init_global()
 
 	anal.bckg_corr = 1.;
 
-	// unfolding settings
-	// TODO
-#if 0
-	unsmearing_file = "";	// diagonal dependent
-	//unsmearing_object = "cf,<binning>/exp3/corr_final";
-	//unsmearing_object = "cf,<binning>/exp3+exp4/corr_final";
-	unsmearing_object = "ff";
-#endif
-
 	// normalisation settings
 	anal.L_int = 1.;	// mb^-1
 }
@@ -96,6 +87,10 @@ void Init_global_45b_56t()
 
 	anal.fc_G_l = FiducialCut(4.3E-6, -20E-6, -0.01, +10E-6, +0.05);
 	anal.fc_G_h = FiducialCut(100E-6, 0E-6, 0., 0E-6, 0.);
+
+	// unfolding settings
+	unsmearing_file = "unfolding_cf_45b_56t.root";
+	unsmearing_object = "first_fit/g_t_corr";	// TODO: switch to histogram
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -111,4 +106,8 @@ void Init_global_45t_56b()
 
 	anal.fc_G_l = FiducialCut(4.2E-6, -12E-6, -0.05, +15E-6, +0.04);
 	anal.fc_G_h = FiducialCut(100E-6, 0E-6, 0., 0E-6, 0.);
+
+	// unfolding settings
+	unsmearing_file = "unfolding_cf_45b_56t.root";
+	unsmearing_object = "first_fit/g_t_corr";	// TODO: switch to histogram
 }
