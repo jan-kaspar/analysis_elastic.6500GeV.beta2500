@@ -46,7 +46,7 @@ for (int dgni : diagonals.keys)
 }
 
 currentpad.xTicks = LeftTicks(0.002, 0.001);
-currentpad.yTicks = RightTicks(5e7, 1e7);
+currentpad.yTicks = RightTicks(100., 50.);
 limits((0, 400), (0.01, 1000), Crop);
 
 AttachLegend();
