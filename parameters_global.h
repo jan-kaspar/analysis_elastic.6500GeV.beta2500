@@ -40,7 +40,7 @@ void Init_global()
 	anal.si_th_x_1arm_R = 2E-6 / sqrt(2.);
 	anal.si_th_x_1arm_unc = 0E-6;
 
-	anal.si_th_x_2arm = 0E-6;
+	anal.si_th_x_2arm = 1E-6;		// due to pitch error much worse than beam divergence
 	anal.si_th_x_2arm_unc = 0E-6;
 
 	// fiducial cuts
@@ -99,6 +99,10 @@ void Init_global_45b_56t()
 
 	anal.fc_G_l = FiducialCut(-20E-6, 4.2E-6, 0., 0.05);
 	anal.fc_G_h = FiducialCut(0., 100E-6, 0., 0.);
+
+	// unfolding settings
+	unsmearing_file = "unfolding_cf_45b_56t.root";
+	unsmearing_object = "first_fit/g_t_corr";	// TODO: switch to histogram
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -124,4 +128,8 @@ void Init_global_45t_56b()
 	//anal.fc_G_l = FiducialCut(0., 4.5E-6, 0., 0.);
 	anal.fc_G_l = FiducialCut(17E-6, 4.1E-6, -0.05, 0.);
 	anal.fc_G_h = FiducialCut(0., 100E-6, 0., 0.);
+
+	// unfolding settings
+	unsmearing_file = "unfolding_cf_45b_56t.root";
+	unsmearing_object = "first_fit/g_t_corr";	// TODO: switch to histogram
 }

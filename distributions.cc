@@ -405,7 +405,7 @@ int main(int argc, char **argv)
 	printf(">> unsmearing_object = %s\n", unsmearing_object.c_str());
 	printf(">> apply_unsmearing = %i\n", apply_unsmearing);
 
-	TF1 *unsmearing_correction_fit = NULL;
+	TGraph *unsmearing_correction = NULL;
 
 	if (apply_unsmearing)
 	{
@@ -415,8 +415,8 @@ int main(int argc, char **argv)
 			printf("ERROR: unfolding file `%s' can not be opened.\n", unsmearing_file.c_str());
 			return 101;
 		} else {
-			unsmearing_correction_fit = (TF1 *) unsmearing_correction_file->Get(unsmearing_object.c_str());
-			if (!unsmearing_correction_fit)
+			unsmearing_correction = (TGraph *) unsmearing_correction_file->Get(unsmearing_object.c_str());
+			if (!unsmearing_correction)
 			{
 				printf("ERROR: unsmearing correction object `%s' cannot be loaded.\n", unsmearing_object.c_str());
 				return 102;
@@ -1604,7 +1604,7 @@ int main(int argc, char **argv)
 			double v = bh_t_normalized_unsmeared[bi]->GetBinContent(bin);
 			double v_u = bh_t_normalized_unsmeared[bi]->GetBinError(bin);
 
-			double corr = (apply_unsmearing) ? unsmearing_correction_fit->Eval(c) : 0.;
+			double corr = (apply_unsmearing) ? unsmearing_correction->Eval(c) : 0.;
 
 			bh_t_normalized_unsmeared[bi]->SetBinContent(bin, v * corr);
 			bh_t_normalized_unsmeared[bi]->SetBinError(bin, v_u * corr);
