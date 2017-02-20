@@ -77,9 +77,6 @@ void Init_global()
 	//unsmearing_object = "cf,<binning>/exp3+exp4/corr_final";
 	unsmearing_object = "ff";
 #endif
-
-	// normalisation settings
-	anal.L_int = 1.;
 }
 
 //----------------------------------------------------------------------------------------------------
