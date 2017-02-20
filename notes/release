@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_dir="/afs/cern.ch/user/j/jkaspar/www/totem/analyses/6500GeV/beta2500/standard"
+base_dir="/afs/cern.ch/user/j/jkaspar/www/totem/analyses/6500GeV/beta2500/4rp"
 
 release=`date +%Y_%m_%d`
 release_dir="$base_dir/$release"
