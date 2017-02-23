@@ -1,0 +1,54 @@
+#!/bin/bash
+
+datasets=(
+	"DS-fill5313"
+)
+
+diagonals=(
+	"45b_56t"
+	"45t_56b"
+)
+
+#----------------------------------------------------------------------------------------------------
+
+function RunOneDiagonal()
+{
+	echo "* $ds, $dgn"
+
+	tag="$ds/numerical_integration_$dgn"
+	./numerical_integration "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+
+	# TODO
+	#tag="$ds/numerical_integration_double_$dgn"
+	#./numerical_integration_double "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+}
+#----------------------------------------------------------------------------------------------------
+
+function RunOneDataset()
+{
+	mkdir -p "$ds"
+
+	for dgn in ${diagonals[*]}
+	do
+		RunOneDiagonal &
+	done
+
+	wait
+
+	# TODO
+	#tag="$ds/matrix_numerical_integration"
+	#./matrix_numerical_integration "${ds}" "${tag}.root" &> "${tag}.log"
+}
+
+#----------------------------------------------------------------------------------------------------
+
+make "numerical_integration" || exit 1
+
+# TODO
+#make "numerical_integration_double" || exit 2
+#make "matrix_numerical_integration" || exit 3
+
+for ds in ${datasets[*]}
+do
+	RunOneDataset &
+done
