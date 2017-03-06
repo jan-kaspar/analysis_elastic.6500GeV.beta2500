@@ -48,6 +48,15 @@ struct AcceptanceCalculator
 	/// calculates the "smearing" component of the acceptance correction
 	double SmearingFactor(double th_x_p, double th_y_p) const;
 
+	/// returns true if event outside left, right fiducial cuts
+	bool SmearingComponentCut(double th_x_L, double th_x_R, double th_y_L, double th_y_R) const;
+
+	/// returns true if event outside global fiducial cuts
+	bool PhiComponentCut(double th_x_p, double th_y_p) const;
+
+	/// returns phi-acceptance factor
+	double PhiFactor(double th) const;
+
 	/// calculates the smearing corrections, for the event described by k
 	/// returns flag whether the event should be skipped
 	bool Calculate(const Kinematics &k, double &phi_corr, double &div_corr) const;
@@ -178,15 +187,13 @@ double AcceptanceCalculator::SmearingFactor(double th_x_p, double th_y_p) const
 
 //----------------------------------------------------------------------------------------------------
 
-bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, double &div_corr) const
+bool AcceptanceCalculator::SmearingComponentCut(double th_x_L, double th_x_R, double th_y_L, double th_y_R) const
 {
-	// ----- smearing component, cut -----
+	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(th_x_L);
+	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(th_x_L);
 
-	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(k.th_x_L);
-	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(k.th_x_L);
-
-	double th_y_R_cut_l = anal.fc_R_l.GetThYLimit(k.th_x_R);
-	double th_y_R_cut_h = anal.fc_R_h.GetThYLimit(k.th_x_R);
+	double th_y_R_cut_l = anal.fc_R_l.GetThYLimit(th_x_R);
+	double th_y_R_cut_h = anal.fc_R_h.GetThYLimit(th_x_R);
 
 	if (debug)
 	{
@@ -194,32 +201,37 @@ bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, doub
 		printf("th_y_R_cut_l = %E, th_y_R_cut_h = %E\n", th_y_R_cut_l, th_y_R_cut_h);
 	}
 
-	if ((th_y_sign * k.th_y_L < th_y_L_cut_l) || (th_y_sign * k.th_y_R < th_y_R_cut_l)
-		|| (th_y_sign * k.th_y_L > th_y_L_cut_h) || (th_y_sign * k.th_y_R > th_y_R_cut_h))
+	if ((th_y_sign * th_y_L < th_y_L_cut_l) || (th_y_sign * th_y_R < th_y_R_cut_l)
+		|| (th_y_sign * th_y_L > th_y_L_cut_h) || (th_y_sign * th_y_R > th_y_R_cut_h))
 		return true;
 
-	// ----- phi component, cut -----
+	return false;
+}
 
-	double th_y_G_cut_l = anal.fc_G_l.GetThYLimit(k.th_x);
-	double th_y_G_cut_h = anal.fc_G_h.GetThYLimit(k.th_x);
+//----------------------------------------------------------------------------------------------------
 
-	if ((th_y_sign * k.th_y < th_y_G_cut_l) || (th_y_sign * k.th_y > th_y_G_cut_h))
+bool AcceptanceCalculator::PhiComponentCut(double th_x, double th_y) const
+{
+	double th_y_G_cut_l = anal.fc_G_l.GetThYLimit(th_x);
+	double th_y_G_cut_h = anal.fc_G_h.GetThYLimit(th_x);
+
+	if ((th_y_sign * th_y < th_y_G_cut_l) || (th_y_sign * th_y > th_y_G_cut_h))
 		return true;
 
-	// ----- smearing component, correction -----
+	return false;
+}
 
-	double F = SmearingFactor(k.th_x, k.th_y);
-	div_corr = 1. / F;
+//----------------------------------------------------------------------------------------------------
 
-	// ----- phi component, correction -----
-
+double AcceptanceCalculator::PhiFactor(double th) const
+{
 	// get all intersections
 	set<double> phis;
 
-	for (const auto &phi : anal.fc_G_l.GetIntersectionPhis(k.th))
+	for (const auto &phi : anal.fc_G_l.GetIntersectionPhis(th))
 		phis.insert(phi);
 
-	for (const auto &phi : anal.fc_G_h.GetIntersectionPhis(k.th))
+	for (const auto &phi : anal.fc_G_h.GetIntersectionPhis(th))
 		phis.insert(phi);
 
 	// the number of intersections must be even
@@ -243,7 +255,31 @@ bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, doub
 		phiSum += phi_end - phi_start;
 	}
 
-	phi_corr = 2. * M_PI / phiSum;
+	return 2. * M_PI / phiSum;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, double &div_corr) const
+{
+	// ----- smearing component, cut -----
+
+	if (SmearingComponentCut(k.th_x_L, k.th_x_R, k.th_y_L, k.th_y_R))
+		return true;
+
+	// ----- phi component, cut -----
+
+	if (PhiComponentCut(k.th_x, k.th_y))
+		return true;
+
+	// ----- smearing component, correction -----
+
+	const double F = SmearingFactor(k.th_x, k.th_y);
+	div_corr = 1. / F;
+
+	// ----- phi component, correction -----
+
+	phi_corr = PhiFactor(k.th);
 
 	return false;
 }
