@@ -66,26 +66,16 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("alig-sh-thx") == 0)
 	{
-		// TODO
-		sh_th_x = 0.28E-6;
+		sh_th_x = 1E-6;
 		return 0;
 	}
 
-
-	// TODO
-	/*
-	if (scenario.compare("alig-sh-thy:D+0,R+1") == 0)
+	if (scenario.compare("alig-sh-thy") == 0)
 	{
-		sh_th_y = 0.18E-6;
+		sh_th_y = 0.24E-6;
 		return 0;
 	}
 
-	if (scenario.compare("alig-sh-thy:D+1,R+0") == 0)
-	{
-		sh_th_y = -0.05E-6 / 2.;
-		return 0;
-	}
-	
 	if (scenario.compare("thx-thy-tilt") == 0)
 	{
 		thx_thy_tilt = 0.005;
@@ -94,20 +84,22 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("opt-m1") == 0)
 	{
-		sc_th_x = 1. - 3.382E-03;
-		sc_th_y = 1. - -2.343E-03;
+		sc_th_x = 1. - 1E-03;
+		sc_th_y = 1.;
 
 		return 0;
 	}
 
 	if (scenario.compare("opt-m2") == 0)
 	{
-		sc_th_x = 1. - 5.278E-04;
-		sc_th_y = 1. - 7.618E-04;
+		sc_th_x = 1.;
+		sc_th_y = 1. - 1E-03;
 
 		return 0;
 	}
 
+	// TODO
+	/*
 	if (scenario.compare("eff-slp") == 0)
 	{
 		eff_slope_fix_point = 40E-6;		// |th_y|, rad
@@ -118,6 +110,7 @@ int SetScenario(const string &scenario)
 
 		return 0;
 	}
+	*/
 
 	if (scenario.compare("beam-mom") == 0)
 	{
@@ -128,11 +121,10 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("norm") == 0)
 	{
-		de_norm = 0.042;
+		de_norm = 0.10;
 
 		return 0;
 	}
-	*/
 
 	printf("ERROR: unknown scenario `%s'.\n", scenario.c_str());
 	return 1;
@@ -169,7 +161,6 @@ int Setup(const string &s_dataset, const string &s_diagonal)
 	else
 		th_y_sign = -1.;
 
-	// TODO
 	fc_G_l = FiducialCut(4.3E-6, -20E-6, -0.01, +10E-6, +0.05);
 	fc_G_h = FiducialCut(100E-6, 0E-6, 0., 0E-6, 0.);
 
@@ -335,17 +326,15 @@ int main(int argc, const char **argv)
 	vector<string> scenarios;
 	scenarios.push_back("none");
 	scenarios.push_back("alig-sh-thx");
-	/*
-	scenarios.push_back("alig-sh-thy:D+0,R+1");
-	scenarios.push_back("alig-sh-thy:D+1,R+0");
+	scenarios.push_back("alig-sh-thy");
 	scenarios.push_back("thx-thy-tilt");
 	scenarios.push_back("opt-m1");
 	scenarios.push_back("opt-m2");
-	scenarios.push_back("eff-slp");
+	// TODO
+	//scenarios.push_back("eff-slp");
 	scenarios.push_back("beam-mom");
 	scenarios.push_back("beam-mom-alfa");
 	scenarios.push_back("norm");
-	*/
 
 	// load input dsigma/dt distribution
 	if (LoadTDistributions() != 0)
@@ -382,47 +371,44 @@ int main(int argc, const char **argv)
 			gDirectory = d_scenario;
 
 			// sample distributions
-			// TODO: more descriptive names
-			TGraph *g_h = new TGraph(); g_h->SetName("g_h"); g_h->SetLineColor(1);
-			TGraph *g_h_p = new TGraph(); g_h_p->SetName("g_h_p"); g_h_p->SetLineColor(2);
-			TGraph *g_h_obs = new TGraph(); g_h_obs->SetName("g_h_obs"); g_h_obs->SetLineColor(6);
-			TGraph *g_r = new TGraph(); g_r->SetName("g_r"); g_r->SetLineColor(8);
+			TGraph *g_dsdt_true = new TGraph(); g_dsdt_true->SetName("g_dsdt_true"); g_dsdt_true->SetLineColor(1);
+			TGraph *g_dsdt_idre = new TGraph(); g_dsdt_idre->SetName("g_dsdt_idre"); g_dsdt_idre->SetLineColor(2);
+			TGraph *g_dsdt_reco = new TGraph(); g_dsdt_reco->SetName("g_dsdt_reco"); g_dsdt_reco->SetLineColor(4);
+			TGraph *g_eff = new TGraph(); g_eff->SetName("g_eff"); g_eff->SetLineColor(8);
 
 			for (double t = 8E-4; t <= 0.3;)
 			{
+				double v_true = dist_true_t(t);
+
 				applyAcceptanceCorrection = true;
 				use_reco_dist_th_x_th_y = false;
-				double h = dist_reco_t(t);
+				double v_idre = dist_reco_t(t);
 
 				applyAcceptanceCorrection = true;
 				use_reco_dist_th_x_th_y = true;
-				double h_p = dist_reco_t(t);
+				double v_reco = dist_reco_t(t);
 
-				applyAcceptanceCorrection = false;
-				use_reco_dist_th_x_th_y = true;
-				double h_obs = dist_reco_t(t);
+				double v_eff = (v_idre != 0.) ? v_reco / v_idre : 0.;
 
-				double r = (h != 0.) ? h_p / h : 0.;
+				int idx = g_dsdt_true->GetN();
 
-				int idx = g_h->GetN();
-
-				g_h->SetPoint(idx, t, h);
-				g_h_p->SetPoint(idx, t, h_p);
-				g_h_obs->SetPoint(idx, t, h_obs);
-				g_r->SetPoint(idx, t, r);
+				g_dsdt_true->SetPoint(idx, t, v_true);
+				g_dsdt_idre->SetPoint(idx, t, v_idre);
+				g_dsdt_reco->SetPoint(idx, t, v_reco);
+				g_eff->SetPoint(idx, t, v_eff);
 
 				// advance t
 				double dt = 0.001;
 				if (t < 0.01) dt = 0.001;
-				if (t < 2E-3) dt = 0.0001;
+				if (t < 4E-3) dt = 0.0001;
 				if (t < 1E-3) dt = 0.00005;
 				t += dt;
 			}
 
-			g_h->Write();
-			g_h_p->Write();
-			g_h_obs->Write();
-			g_r->Write();
+			g_dsdt_true->Write();
+			g_dsdt_idre->Write();
+			g_dsdt_reco->Write();
+			g_eff->Write();
 		}
 	}
 
