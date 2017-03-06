@@ -72,13 +72,11 @@ struct RPStruct
 
 struct DiagStruct
 {
-	RPStruct L_2_F, L_1_F, R_1_F, R_2_F;
+	RPStruct L_2_F, R_2_F;
 
-	void AssignBranches(TChain *ch, unsigned int l2f, unsigned int l1f, unsigned int r1f, unsigned int r2f)
+	void AssignBranches(TChain *ch, unsigned int l2f, unsigned int r2f)
 	{
 		L_2_F.AssignBranches(ch, l2f);
-		L_1_F.AssignBranches(ch, l1f);
-		R_1_F.AssignBranches(ch, r1f);
 		R_2_F.AssignBranches(ch, r2f);
 	}
 };
@@ -129,70 +127,34 @@ bool RPTooFullV(const RPStruct &rp)
 
 void AnalyzeDiagonal(const DiagStruct &dgn, CounterMap &c, unsigned int period)
 {
-	bool L_1_F_pl_suff = (dgn.L_1_F.digi->uPlanesOn >= 3 && dgn.L_1_F.digi->vPlanesOn >= 3);
-	bool L_1_F_pl_too_full_u = RPTooFullU(dgn.L_1_F), L_1_F_pl_too_full_v = RPTooFullV(dgn.L_1_F);
-	bool L_1_F_pat_suff = (dgn.L_1_F.pat->u.size() > 0 || dgn.L_1_F.pat->v.size() > 0) || (L_1_F_pl_too_full_u || L_1_F_pl_too_full_v);
-	bool L_1_F_pat_more = (dgn.L_1_F.pat->u.size() > 1 && dgn.L_1_F.pat->v.size() > 1) || (L_1_F_pl_too_full_u || L_1_F_pl_too_full_v);
-	bool L_1_F_tr_any = (dgn.L_1_F.tr->valid || dgn.L_1_F.mtr->size() > 0);
-	
 	bool L_2_F_pl_suff = (dgn.L_2_F.digi->uPlanesOn >= 3 && dgn.L_2_F.digi->vPlanesOn >= 3);
 	bool L_2_F_pl_too_full_u = RPTooFullU(dgn.L_2_F), L_2_F_pl_too_full_v = RPTooFullV(dgn.L_2_F);
 	bool L_2_F_pat_suff = (dgn.L_2_F.pat->u.size() > 0 || dgn.L_2_F.pat->v.size() > 0) || (L_2_F_pl_too_full_u || L_2_F_pl_too_full_v);
-	bool L_2_F_pat_more = (dgn.L_2_F.pat->u.size() > 1 && dgn.L_2_F.pat->v.size() > 1) || (L_2_F_pl_too_full_u || L_2_F_pl_too_full_v);
+	//bool L_2_F_pat_more = (dgn.L_2_F.pat->u.size() > 1 && dgn.L_2_F.pat->v.size() > 1) || (L_2_F_pl_too_full_u || L_2_F_pl_too_full_v);
 	bool L_2_F_tr_any = (dgn.L_2_F.tr->valid || dgn.L_2_F.mtr->size() > 0);
-	
-	bool R_1_F_pl_suff = (dgn.R_1_F.digi->uPlanesOn >= 3 && dgn.R_1_F.digi->vPlanesOn >= 3);
-	bool R_1_F_pl_too_full_u = RPTooFullU(dgn.R_1_F), R_1_F_pl_too_full_v = RPTooFullV(dgn.R_1_F);
-	bool R_1_F_pat_suff = (dgn.R_1_F.pat->u.size() > 0 || dgn.R_1_F.pat->v.size() > 0) || (R_1_F_pl_too_full_u || R_1_F_pl_too_full_v);
-	bool R_1_F_pat_more = (dgn.R_1_F.pat->u.size() > 1 && dgn.R_1_F.pat->v.size() > 1) || (R_1_F_pl_too_full_u || R_1_F_pl_too_full_v);
-	bool R_1_F_tr_any = (dgn.R_1_F.tr->valid || dgn.R_1_F.mtr->size() > 0);
 	
 	bool R_2_F_pl_suff = (dgn.R_2_F.digi->uPlanesOn >= 3 && dgn.R_2_F.digi->vPlanesOn >= 3);
 	bool R_2_F_pl_too_full_u = RPTooFullU(dgn.R_2_F), R_2_F_pl_too_full_v = RPTooFullV(dgn.R_2_F);
 	bool R_2_F_pat_suff = (dgn.R_2_F.pat->u.size() > 0 || dgn.R_2_F.pat->v.size() > 0) || (R_2_F_pl_too_full_u || R_2_F_pl_too_full_v);
-	bool R_2_F_pat_more = (dgn.R_2_F.pat->u.size() > 1 && dgn.R_2_F.pat->v.size() > 1) || (R_2_F_pl_too_full_u || R_2_F_pl_too_full_v);
+	//bool R_2_F_pat_more = (dgn.R_2_F.pat->u.size() > 1 && dgn.R_2_F.pat->v.size() > 1) || (R_2_F_pl_too_full_u || R_2_F_pl_too_full_v);
 	bool R_2_F_tr_any = (dgn.R_2_F.tr->valid || dgn.R_2_F.mtr->size() > 0);
 
 	c["total"]["total"][period]++;
-
-	if (L_1_F_pl_suff) c["L_1_F"]["pl_suff"][period]++;
-	if (L_1_F_pat_suff) c["L_1_F"]["pat_suff"][period]++;
-	if (L_1_F_tr_any) c["L_1_F"]["tr_any"][period]++;
 
 	if (L_2_F_pl_suff) c["L_2_F"]["pl_suff"][period]++;
 	if (L_2_F_pat_suff) c["L_2_F"]["pat_suff"][period]++;
 	if (L_2_F_tr_any) c["L_2_F"]["tr_any"][period]++;
 
-	if (R_1_F_pl_suff) c["R_1_F"]["pl_suff"][period]++;
-	if (R_1_F_pat_suff) c["R_1_F"]["pat_suff"][period]++;
-	if (R_1_F_tr_any) c["R_1_F"]["tr_any"][period]++;
-
 	if (R_2_F_pl_suff) c["R_2_F"]["pl_suff"][period]++;
 	if (R_2_F_pat_suff) c["R_2_F"]["pat_suff"][period]++;
 	if (R_2_F_tr_any) c["R_2_F"]["tr_any"][period]++;
 
-	if (L_1_F_pl_suff && L_2_F_pl_suff) c["L_1_F, L_2_F"]["pl_suff && pl_suff"][period]++;
-	if (L_1_F_pl_suff || L_2_F_pl_suff) c["L_1_F, L_2_F"]["pl_suff || pl_suff"][period]++;
-	if (L_1_F_pat_suff && L_2_F_pat_suff) c["L_1_F, L_2_F"]["pat_suff && pat_suff"][period]++;
-	if (L_1_F_pat_suff || L_2_F_pat_suff) c["L_1_F, L_2_F"]["pat_suff || pat_suff"][period]++;
-	if (L_1_F_pat_more && L_2_F_pat_more) c["L_1_F, L_2_F"]["pat_more && pat_more"][period]++;
-	if (L_1_F_tr_any && L_2_F_tr_any) c["L_1_F, L_2_F"]["tr_any && tr_any"][period]++;
-	if (L_1_F_tr_any || L_2_F_tr_any) c["L_1_F, L_2_F"]["tr_any || tr_any"][period]++;
-
-	if (R_1_F_pl_suff && R_2_F_pl_suff) c["R_1_F, R_2_F"]["pl_suff && pl_suff"][period]++;
-	if (R_1_F_pl_suff || R_2_F_pl_suff) c["R_1_F, R_2_F"]["pl_suff || pl_suff"][period]++;
-	if (R_1_F_pat_suff && R_2_F_pat_suff) c["R_1_F, R_2_F"]["pat_suff && pat_suff"][period]++;
-	if (R_1_F_pat_suff || R_2_F_pat_suff) c["R_1_F, R_2_F"]["pat_suff || pat_suff"][period]++;
-	if (R_1_F_pat_more && R_2_F_pat_more) c["R_1_F, R_2_F"]["pat_more && pat_more"][period]++;
-	if (R_1_F_tr_any && R_2_F_tr_any) c["R_1_F, R_2_F"]["tr_any && tr_any"][period]++;
-	if (R_1_F_tr_any || R_2_F_tr_any) c["R_1_F, R_2_F"]["tr_any || tr_any"][period]++;
-
-	if ((L_1_F_pl_suff && L_2_F_pl_suff) && (R_1_F_pl_suff && R_2_F_pl_suff)) c["dgn"]["pl_suff && pl_suff, L && R"][period]++;
-	if ((L_1_F_pl_suff && L_2_F_pl_suff) || (R_1_F_pl_suff && R_2_F_pl_suff)) c["dgn"]["pl_suff && pl_suff, L || R"][period]++;
-	if ((L_1_F_pat_suff && L_2_F_pat_suff) && (R_1_F_pat_suff && R_2_F_pat_suff)) c["dgn"]["pat_suff && pat_suff, L && R"][period]++;
-	if ((L_1_F_pat_suff && L_2_F_pat_suff) || (R_1_F_pat_suff && R_2_F_pat_suff)) c["dgn"]["pat_suff && pat_suff, L || R"][period]++;
-	if ((L_1_F_tr_any && L_2_F_tr_any) && (R_1_F_tr_any && R_2_F_tr_any)) c["dgn"]["tr_any && tr_any, L && R"][period]++;
-	if ((L_1_F_tr_any && L_2_F_tr_any) || (R_1_F_tr_any && R_2_F_tr_any)) c["dgn"]["tr_any && tr_any, L || R"][period]++;
+	if ((L_2_F_pl_suff) && (R_2_F_pl_suff)) c["dgn"]["pl_suff, L && R"][period]++;
+	if ((L_2_F_pl_suff) || (R_2_F_pl_suff)) c["dgn"]["pl_suff, L || R"][period]++;
+	if ((L_2_F_pat_suff) && (R_2_F_pat_suff)) c["dgn"]["pat_suff, L && R"][period]++;
+	if ((L_2_F_pat_suff) || (R_2_F_pat_suff)) c["dgn"]["pat_suff, L || R"][period]++;
+	if ((L_2_F_tr_any) && (R_2_F_tr_any)) c["dgn"]["tr_any, L && R"][period]++;
+	if ((L_2_F_tr_any) || (R_2_F_tr_any)) c["dgn"]["tr_any, L || R"][period]++;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -284,8 +246,8 @@ int main(int argc, char **argv)
 	ch->SetBranchAddress("trigger_data.", &triggerData);
 
 	DiagStruct diag_45b, diag_45t;
-	diag_45b.AssignBranches(ch, 25, 5, 104, 124);
-	diag_45t.AssignBranches(ch, 24, 4, 105, 125);
+	diag_45b.AssignBranches(ch, 25, 124);
+	diag_45t.AssignBranches(ch, 24, 125);
 
 	// prepare counters and histograms
 	map<string, CounterMap> counters;	// map: diagonal label -> CounterMap

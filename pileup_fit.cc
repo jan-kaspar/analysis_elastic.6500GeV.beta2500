@@ -39,7 +39,8 @@ void DoFit(TFile *inF, const string &dir, const string &label)
 
 	// build graph per run
 	map<unsigned int, TGraphErrors *> gMap;
-	for (int pi = 0; pi < g_run->GetN(); pi++) {
+	for (int pi = 0; pi < g_run->GetN(); pi++)
+	{
 		// load data from input graphs
 		double t, v, runD;
 		g_run->GetPoint(pi, t, runD);
@@ -66,7 +67,8 @@ void DoFit(TFile *inF, const string &dir, const string &label)
 	TGraph *g_gl = new TGraphErrors();
 	g_gl->SetName(label.c_str());
 	g_gl->SetLineColor(2);
-	for (map<unsigned int, TGraphErrors *>::iterator pit = gMap.begin(); pit != gMap.end(); ++pit) {
+	for (map<unsigned int, TGraphErrors *>::iterator pit = gMap.begin(); pit != gMap.end(); ++pit)
+	{
 		//printf("* %s / %u\n", label.c_str(), pit->first);
 		TF1 *ff = (pit->second->GetN() > 1) ? pol1 : pol0;
 
@@ -76,7 +78,8 @@ void DoFit(TFile *inF, const string &dir, const string &label)
 
 		// determine boundaries of the run
 		double t_min=0., t_max=0.;
-		for (int i = 0; i < pit->second->GetN(); i++) {
+		for (int i = 0; i < pit->second->GetN(); i++)
+		{
 			double x, y;
 			pit->second->GetPoint(i, x, y);
 			double ex = pit->second->GetErrorX(i);
@@ -118,10 +121,10 @@ int main(int argc, char **argv)
 	TFile *outF = new TFile((string("pileup_fit_") + argv[1] + ".root").c_str(), "recreate");
 
 	gDirectory = outF->mkdir("45b_56t");
-	DoFit(inF, "45b/dgn/pat_suff && pat_suff, L || R", "dgn");
+	DoFit(inF, "45b/dgn/pat_suff, L || R", "dgn");
 
 	gDirectory = outF->mkdir("45t_56b");
-	DoFit(inF, "45t/dgn/pat_suff && pat_suff, L || R", "dgn");
+	DoFit(inF, "45t/dgn/pat_suff, L || R", "dgn");
 
 	delete outF;
 	return 0;
