@@ -34,8 +34,8 @@ label("\vbox{\SetFontSizesXX\hbox{$\th_x^*$}\hbox{right -- left difference}}");
 
 for (int dsi : datasets.keys)
 {
-	NewPad("time $\ung{h}$", "$\De^{2-1} \th_y^{*L}\ung{\mu rad}$");
-	real y_min = -0.5, y_max = 0.5;
+	NewPad("time $\ung{h}$", "$\De^{R-L} \th_x^*\ung{\mu rad}$");
+	real y_min = -1.5, y_max = 1.5;
 
 	DrawRunBands(dataset_fills[dsi], y_min, y_max);
 
@@ -50,54 +50,6 @@ for (int dsi : datasets.keys)
 	SetPadWidth();
 }
 
-//----------------------------------------------------------------------------------------------------
-NewRow();
-
-NewPad(false);
-label("\vbox{\SetFontSizesXX\hbox{$\th_y^*$}\hbox{220-210 difference}\hbox{left arm}}");
-
-for (int dsi : datasets.keys)
-{
-	NewPad("time $\ung{h}$", "$\De^{2-1} \th_y^{*L}\ung{\mu rad}$");
-	real y_min = -0.05, y_max = 0.25;
-
-	DrawRunBands(dataset_fills[dsi], y_min, y_max);
-
-	for (int dgni : diagonals.keys)
-	{
-		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
-		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_diff12_th_y_L_vs_time"), "eb,d0", StdPen(dgni+1));
-	}
-
-	ylimits(y_min, y_max, Crop);
-
-	SetPadWidth();
-}
-
-//----------------------------------------------------------------------------------------------------
-
-NewRow();
-
-NewPad(false);
-label("\vbox{\SetFontSizesXX\hbox{$\th_y^*$}\hbox{220-210 difference}\hbox{right arm}}");
-
-for (int dsi : datasets.keys)
-{
-	NewPad("time $\ung{h}$", "$\De^{2-1} \th_y^{*R}\ung{\mu rad}$");
-	real y_min = -0.10, y_max = 0.10;
-
-	DrawRunBands(dataset_fills[dsi], y_min, y_max);
-
-	for (int dgni : diagonals.keys)
-	{
-		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
-		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_diff12_th_y_R_vs_time"), "eb,d0", StdPen(dgni+1));
-	}
-
-	ylimits(y_min, y_max, Crop);
-
-	SetPadWidth();
-}
 
 //----------------------------------------------------------------------------------------------------
 NewRow();
@@ -109,7 +61,7 @@ TGraph_errorBar = None;
 for (int dsi : datasets.keys)
 {
 	NewPad("time $\ung{h}$", "$\De^{R-L} \th_y^{*}\ung{\mu rad}$");
-	real y_min = -0.05, y_max = 0.05;
+	real y_min = -0.08, y_max = 0.08;
 
 	DrawRunBands(dataset_fills[dsi], y_min, y_max);
 
@@ -119,7 +71,7 @@ for (int dsi : datasets.keys)
 		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/g_ext_diffLR_th_y_vs_time"), "p", StdPen(dgni+1), mCi+2pt+StdPen(dgni+1));
 	}
 
-	ylimits(y_min, y_max, Crop);
+	//ylimits(y_min, y_max, Crop);
 
 	SetPadWidth();
 }

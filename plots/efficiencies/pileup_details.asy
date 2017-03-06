@@ -17,9 +17,9 @@ string diagonals[] = { "45b", "45t" };
 string dgn_labels[] = { "45 bot -- 56 top", "45 top -- 56 bot" };
 
 string elements[][] = {
-	{ "L_1_F/#", "L_2_F/#", "L_1_F, L_2_F/# && #" },
-	{ "R_1_F/#", "R_2_F/#", "R_1_F, R_2_F/# && #" },
-	{ "", "", "dgn/# && #, L || R" }
+	{ "L_2_F/#",  },
+	{ "R_2_F/#",  },
+	{ "dgn/#, L || R" }
 };
 
 string criteria[] = { "pat_suff", "pl_suff" };
@@ -27,7 +27,7 @@ string criteria[] = { "pat_suff", "pl_suff" };
 
 string row_captions[] = { "left", "right", "left OR right" };
 
-string col_captions[] = { "210-fr", "220-far", "210-fr AND 220-fr" };
+string col_captions[] = { "220-far" };
 
 xSizeDef = 15cm;
 

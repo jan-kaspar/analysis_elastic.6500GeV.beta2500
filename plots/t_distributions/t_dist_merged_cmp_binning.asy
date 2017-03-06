@@ -24,21 +24,21 @@ for (int bi : binnings.keys)
 
 	// ----------
 
-	NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{a.~u.}$");
+	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{mb/GeV^2}$");
 	scale(Linear, Log);
 	currentpad.xTicks = LeftTicks(0.2, 0.1);
 
 	draw(RootGetObject(topDir+"DS-merged/merged.root", binning + "/merged/combined/h_dsdt"), "d0,eb", red);
 
-	limits((0, 1e3), (1., 1e9), Crop);
+	limits((0, 1e-3), (1, 1e3), Crop);
 	
 	// ----------
 
-	NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{a.~u.}$");
+	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{mb/GeV^2}$");
 	currentpad.xTicks = LeftTicks(0.002, 0.001);
 
 	draw(RootGetObject(topDir+"DS-merged/merged.root", binning + "/merged/combined/h_dsdt"), "d0,eb", red);
 
-	limits((0, 2e8), (0.02, 5e8), Crop);
+	limits((0, 400), (0.01, 1000), Crop);
 
 }

@@ -46,7 +46,7 @@ for (int ai : arms.keys)
 	{
 		NewPad("time $\ung{h}$", "mean of $\th_x^*\ung{\mu rad}$");
 
-		currentpad.yTicks = RightTicks(2., 1);
+		currentpad.yTicks = RightTicks(1., 0.5);
 		real y_min = -4, y_max = +4;
 
 		DrawRunBands(dataset_fills[dsi], y_min, y_max);

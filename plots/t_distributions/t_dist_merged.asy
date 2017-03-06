@@ -13,7 +13,7 @@ drawGridDef = true;
 
 //----------------------------------------------------------------------------------------------------
 
-NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{a.~u.}$", 12cm, 9cm);
+NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{mb/GeV^2}$", 12cm, 9cm);
 scale(Linear, Log);
 
 for (int dgni : diagonals.keys)
@@ -33,7 +33,7 @@ AttachLegend();
 
 //----------------------------------------------------------------------------------------------------
 
-NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{a.~u.}$", 12cm, 9cm);
+NewPad("$|t|\ung{GeV^2}$", "$\d N/\d t\ung{mb/GeV^2}$", 12cm, 9cm);
 
 for (int dgni : diagonals.keys)
 {

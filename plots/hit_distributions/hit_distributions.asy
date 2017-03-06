@@ -11,10 +11,10 @@ string file_45t = topDir + "DS-fill5313/distributions_45t_56b.root";
 string rps[], rp_labels[];
 real sh_top[], sh_bot[];
 
-rps.push("L_2_F"); rp_labels.push("L-220-fr"); sh_top.push(1.0); sh_bot.push(-1.3);
-rps.push("L_1_F"); rp_labels.push("L-210-fr"); sh_top.push(1.0); sh_bot.push(-0.9);
-rps.push("R_1_F"); rp_labels.push("R-210-fr"); sh_top.push(1.3); sh_bot.push(-0.6);
-rps.push("R_2_F"); rp_labels.push("R-220-fr"); sh_top.push(1.0); sh_bot.push(-1.3);
+rps.push("L_2_F"); rp_labels.push("L-220-fr"); sh_top.push(1.2); sh_bot.push(-1.3);
+//rps.push("L_1_F"); rp_labels.push("L-210-fr"); sh_top.push(1.0); sh_bot.push(-0.9);
+//rps.push("R_1_F"); rp_labels.push("R-210-fr"); sh_top.push(1.3); sh_bot.push(-0.6);
+rps.push("R_2_F"); rp_labels.push("R-220-fr"); sh_top.push(1.2); sh_bot.push(-1.3);
 
 xTicksDef = LeftTicks(Step=10, step=5);
 yTicksDef = RightTicks(Step=10, step=5);
