@@ -110,17 +110,11 @@ double AcceptanceCalculator::Condition(double th_x_p, double d_x, double th_y_p,
 
 //----------------------------------------------------------------------------------------------------
 
-double AcceptanceCalculator::IntegOverDY(double x, double *par, const void* obj)
+double AcceptanceCalculator::IntegOverDY(double d_y, double *, const void* obj)
 {
-	double &d_y = x;
-
-	double &th_x_p = par[0];
-	double &th_y_p = par[1];
-	double &d_x = par[2];
-
 	AcceptanceCalculator *ac = (AcceptanceCalculator *) obj;
 
-	return ac->dist_d_y(d_y) * ac->Condition(th_x_p, d_x, th_y_p, d_y);
+	return ac->dist_d_y(d_y);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -134,36 +128,36 @@ double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 
 	AcceptanceCalculator *ac = (AcceptanceCalculator *) obj;
 
-	double ppar[3] = { th_x_p, th_y_p, d_x };
-
-	double si_d_y = ac->anal.si_th_y_1arm * sqrt(2.);
-
 	double I = 0.;
 
 	if (ac->debug)
 		printf("    d_x = %E\n", d_x);
 
+	double th_x_p_R = th_x_p + d_x/2.;
+	double th_x_p_L = th_x_p - d_x/2.;
+
+	double th_y_L_cut_l = ac->anal.fc_L_l.GetThYLimit(th_x_p_L);
+	double th_y_L_cut_h = ac->anal.fc_L_h.GetThYLimit(th_x_p_L);
+
+	double th_y_R_cut_l = ac->anal.fc_R_l.GetThYLimit(th_x_p_R);
+	double th_y_R_cut_h = ac->anal.fc_R_h.GetThYLimit(th_x_p_R);
+
+	if (ac->debug)
+		printf("         th_y_L_cut_l = %E, th_y_R_cut_l = %E\n", th_y_L_cut_l, th_y_R_cut_l);
+
+	double th_y_abs = ac->th_y_sign * th_y_p;
+
+	double d_y_min = 2. * max(th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h);
+	double d_y_max = 2. * min(th_y_R_cut_h - th_y_abs, th_y_abs - th_y_L_cut_l);
+
+	if (d_y_min >= d_y_max)
+		return 0;
+
 	if (ac->gaussianOptimisation)
 	{
-		double th_x_p_R = th_x_p + d_x/2.;
-		double th_x_p_L = th_x_p - d_x/2.;
-
-		double th_y_L_cut_l = ac->anal.fc_L_l.GetThYLimit(th_x_p_L);
-		double th_y_L_cut_h = ac->anal.fc_L_h.GetThYLimit(th_x_p_L);
-
-		double th_y_R_cut_l = ac->anal.fc_R_l.GetThYLimit(th_x_p_R);
-		double th_y_R_cut_h = ac->anal.fc_R_h.GetThYLimit(th_x_p_R);
-
-		if (ac->debug)
-			printf("         th_y_L_cut_l = %E, th_y_R_cut_l = %E\n", th_y_L_cut_l, th_y_R_cut_l);
-
-		double th_y_abs = ac->th_y_sign * th_y_p;
-
-		double UB_y = min(th_y_R_cut_h - th_y_abs, th_y_abs - th_y_L_cut_l);
-		double LB_y = max(th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h);
-		I = (UB_y > LB_y) ? ( TMath::Erf(UB_y / ac->anal.si_th_y_1arm) - TMath::Erf(LB_y / ac->anal.si_th_y_1arm) ) / 2. : 0.;
+		I = ( TMath::Erf(d_y_max / 2. / ac->anal.si_th_y_1arm) - TMath::Erf(d_y_min / 2. / ac->anal.si_th_y_1arm) ) / 2.;
 	} else {
-		I = RealIntegrate(AcceptanceCalculator::IntegOverDY, ppar, ac, -6.*si_d_y, +6.*si_d_y, 0., 1E-5,
+		I = RealIntegrate(AcceptanceCalculator::IntegOverDY, NULL, ac, d_y_min, d_y_max, 0., 1E-3,
 			ac->integ_workspace_size_d_y, ac->integ_workspace_d_y, "AcceptanceCalculator::IntegOverDX");
 	}
 
