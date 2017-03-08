@@ -8,8 +8,9 @@ xSizeDef = 18cm;
 
 string datasets[] = { "DS-fill5313" };
 
-string diagonals[] = { "45b_56t" };
 //string diagonals[] = { "45b_56t", "45t_56b" };
+string diagonals[] = { "45b_56t" };
+//string diagonals[] = { "45t_56b" };
 
 string t_dist_type = "first fit";
 
@@ -72,9 +73,7 @@ for (int dsi : datasets.keys)
 				
 				// ----- numerical integration, simple -----
 		
-				string ni_f = (modes[mi].num_int_file == "s")
-					? topDir + "systematics/"+datasets[dsi]+"/numerical_integration_"+diagonals[dgni]+".root"
-					: topDir + "systematics/"+datasets[dsi]+"/numerical_integration_double_"+diagonals[dgni]+".root";
+				string ni_f = topDir + "systematics/"+datasets[dsi]+"/numerical_integration_"+diagonals[dgni]+".root";
 	
 				string objPath = (modes[mi].num_int_file == "s")
 					?  "<TDIST>/" + modes[mi].num_int_tag + "/g_eff"

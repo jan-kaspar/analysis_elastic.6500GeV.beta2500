@@ -66,7 +66,7 @@ int Setup(const string &s_dataset, const string &s_diagonal)
 	else
 		th_y_sign = -1.;
 
-	// TODO: diagonal dependent
+	// TODO: preliminary - final should be diagonal dependent
 	anal.fc_L_l = FiducialCut(4.1E-6, -20E-6, -0.01, +10E-6, +0.05);
 	anal.fc_L_h = FiducialCut(102E-6, 0E-6, 0., 0E-6, 0.);
 
@@ -116,11 +116,16 @@ double sc_th_x = 1., sc_th_y = 1.;
 // relative error of beam momentum
 double de_rel_p;
 		
-// uncertainty of the 3-out-of-4 efficiency plateau slope
+// errors of the 3-out-of-4 efficiency plateau slope
 double eff_slope_error;
 double eff_slope_fix_point;
 
+// normalisation error
 double de_norm;
+
+// errors of unsmearing parameters
+double si_d_x_err;
+double si_d_y_err;
 
 //----------------------------------------------------------------------------------------------------
 
@@ -138,6 +143,11 @@ int SetScenario(const string &scenario)
 	eff_slope_fix_point = 0E-6;
 
 	de_norm = 0.;
+
+	si_d_x_err = 0.;
+	si_d_y_err = 0.;
+
+	// scenario definitions
 
 	if (scenario.compare("none") == 0)
 	{
@@ -164,6 +174,7 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("opt-m1") == 0)
 	{
+		// TODO: preliminary
 		sc_th_x = 1. - 1E-03;
 		sc_th_y = 1.;
 
@@ -172,25 +183,21 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("opt-m2") == 0)
 	{
+		// TODO: preliminary
 		sc_th_x = 1.;
 		sc_th_y = 1. - 1E-03;
 
 		return 0;
 	}
 
-	// TODO
-	/*
 	if (scenario.compare("eff-slp") == 0)
 	{
-		eff_slope_fix_point = 40E-6;		// |th_y|, rad
-		if (ds == ds2a)
-			eff_slope_error = 90.;			// 1/rad
-		if (ds == ds2b)
-			eff_slope_error = 60.;			// 1/rad
+		// TODO: preliminary
+		eff_slope_fix_point = 30E-6;	// |th_y|, rad
+		eff_slope_error = 15.;			// 1/rad
 
 		return 0;
 	}
-	*/
 
 	if (scenario.compare("beam-mom") == 0)
 	{
@@ -202,6 +209,20 @@ int SetScenario(const string &scenario)
 	if (scenario.compare("norm") == 0)
 	{
 		de_norm = 0.10;
+
+		return 0;
+	}
+
+	if (scenario.compare("acc-corr-sigma-unc-thx") == 0)
+	{
+		si_d_x_err = 2.5E-6;
+
+		return 0;
+	}
+
+	if (scenario.compare("acc-corr-sigma-unc-thy") == 0)
+	{
+		si_d_y_err = 0.025E-6;
 
 		return 0;
 	}
@@ -248,16 +269,24 @@ double dist_m_y(double m_y)
 
 double dist_d_x(double d_x)
 {
-	const double r = d_x / si_d_x;
-	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_x;
+	double si_d_x_eff = si_d_x;
+	if (apply_reconstruction_bias)
+		si_d_x_eff += si_d_x_err;
+
+	const double r = d_x / si_d_x_eff;
+	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_x_eff;
 }
 
 //----------------------------------------------------------------------------------------------------
 
 double dist_d_y(double d_y)
 {
-	const double r = d_y / si_d_y;
-	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_y;
+	double si_d_y_eff = si_d_y;
+	if (apply_reconstruction_bias)
+		si_d_y_eff += si_d_y_err;
+
+	const double r = d_y / si_d_y_eff;
+	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_y_eff;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -512,10 +541,11 @@ int main(int argc, const char **argv)
 	scenarios.push_back("thx-thy-tilt");
 	scenarios.push_back("opt-m1");
 	scenarios.push_back("opt-m2");
-	// TODO
-	//scenarios.push_back("eff-slp");
+	scenarios.push_back("eff-slp");
 	scenarios.push_back("beam-mom");
 	scenarios.push_back("norm");
+	scenarios.push_back("acc-corr-sigma-unc-thx");
+	scenarios.push_back("acc-corr-sigma-unc-thy");
 
 	// load input dsigma/dt distribution
 	if (LoadTDistributions() != 0)
