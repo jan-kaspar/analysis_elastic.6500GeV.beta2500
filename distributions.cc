@@ -721,7 +721,7 @@ int main(int argc, char **argv)
 	{
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, binnings[bi], bin_edges, N_bins, true);
+		BuildBinning(anal, binnings[bi], bin_edges, N_bins);
 
 		bh_t_Nev_before[bi] = new TH1D("h_t_Nev_before", ";|t|;events per bin", N_bins, bin_edges); bh_t_Nev_before[bi]->Sumw2();
 		bh_t_Nev_after_no_corr[bi] = new TH1D("h_t_Nev_after_no_corr", ";|t|;events per bin", N_bins, bin_edges); bh_t_Nev_after_no_corr[bi]->Sumw2();
@@ -789,6 +789,7 @@ int main(int argc, char **argv)
 		n_ev_cut[ci] = 0;
 
 	double th_min = 1E100;
+	double th_min_no_cut = 1E100;
 	double th_y_L_min = +1E100, th_y_R_min = +1E100;
 
 	unsigned int N_anal=0, N_anal_zeroBias=0;
@@ -1361,6 +1362,8 @@ int main(int argc, char **argv)
 
 		h_th_y_vs_th_x_before->Fill(k.th_x, k.th_y, 1.);
 
+		th_min_no_cut = min(th_min_no_cut, k.th);
+
 		if (skip)
 			continue;
 
@@ -1408,6 +1411,7 @@ int main(int argc, char **argv)
 		printf("run %u: from %u to %u\n", p.first, p.second.first, p.second.second);
 	}
 
+	printf(">> th_min_no_cut = %E\n", th_min_no_cut);
 	printf(">> th_min = %E\n", th_min);
 	printf(">> th_y_L_min = %E\n", th_y_L_min);
 	printf(">> th_y_R_min = %E\n", th_y_R_min);
@@ -2009,6 +2013,18 @@ int main(int argc, char **argv)
 	}
 
 	gDirectory = outF->mkdir("time dependences");
+
+	TGraph *g_run_boundaries = new TGraph();
+	g_run_boundaries->SetName("g_run_boundaries");
+	g_run_boundaries->SetTitle(";timestamp;run");
+	for (auto &p : runTimestampBoundaries)
+	{
+		const int idx = g_run_boundaries->GetN();
+		g_run_boundaries->SetPoint(idx, p.second.first, p.first);
+		g_run_boundaries->SetPoint(idx+1, p.second.second, p.first);
+	}
+	g_run_boundaries->Write();
+
 	p_diffLR_th_x_vs_time->Write();
 	ProfileToRMSGraph(p_diffLR_th_x_vs_time, gRMS_diffLR_th_x_vs_time);
 	gRMS_diffLR_th_x_vs_time->Write();
