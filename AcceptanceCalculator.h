@@ -1,3 +1,6 @@
+#ifndef _AcceptanceCalculator_h_
+#define _AcceptanceCalculator_h_
+
 #include "NumericalIntegration.h"
 
 //----------------------------------------------------------------------------------------------------
@@ -277,3 +280,5 @@ bool AcceptanceCalculator::Calculate(const Kinematics &k, double &phi_corr, doub
 
 	return false;
 }
+
+#endif
