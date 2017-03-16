@@ -38,6 +38,8 @@
 	\everypar={\parindent=\ParIndent \everypar={}}%
 }
 
+\def\linkColor{\cBlue}
+
 %----------------------------------------------------------------------------------------------------
 
 \centerline{\SetFontSizesXX Elastic analysis, $\sqrt s = 13\un{TeV}$, $\be^* = 2500\un{m}$}
@@ -256,29 +258,99 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 %----------------------------------------------------------------------------------------------------
 \section{Acceptance correction}
 
-\TODO
+\subsection{Theory}
 
-\iffalse
-\> method
-\>> known acceptance limitations: sensor edges (low $|\th_y^*|$), LHC apertures (high $|\th_y^*|$)
-\>> acceptance region determined empirically by looking at the reconstructed $\th_y^*$ vs.~$\th_x^*$ distributions, separately in the left and right arm
-\>> due to the presence of the tilted RPs (210-far), the acceptance limitations due to the sensors edges are both $\th_y^*$ and $\th_x^*$ dependent
-\>> assuming that the smearing in $\th_{x, y}^*$ is independent and has the same sigma left and right, then:
-$$h_{\rm observed}(\th_x^*, \th_y^*) = A_{\rm sm}(\th_x^*, \th_y^*)\ h_{\rm smeared}(\th_x^*, \th_y^*)$$
-where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scattering angles reconstructed via left-right average and $A_{\rm sm}$ is the ``smearing'' contribution to the acceptance
-\>> $A_{\rm sm}$ is calculated as the probability that any of the two protons leaves the fiducial region due to smearing -- this time it requires two-fold integral
-\>> another acceptance factor, $A_{\rm geom}$, is given by the fraction of const-$\th^*$ arc within the fiducial region
-\>>> for this, another set of fiducial cuts, ``global'', is used -- in order to avoid to corners with high smearing correction
+\vskip3mm
 
-\> \plot{acceptance_correction/acc_cmp_fill.pdf}: shows the region of acceptance in $\th_x^*$ vs.~$\th_y^*$, per fill
+The smearing (beam, detector, ...) can be formally described as change of the true scattering angle, $\th_x$, to the reconstructed angle, $\th'_x$, (for brevity the stars are suppressed):
+\eqref{
+\th'_x = \th_x + \De \th_x
+}{de th x}
+The smearing may be different the left (L) and right (R) arm and can be decomposed as
+\eqref{
+\De\th_x^{\rm R} = m_x + {\d_x\over 2}\ ,\qquad \De\th_x^{\rm L} = m_x - {\d_x\over 2}\ ,
+}{m d to th L R}
+where $m_x$ modifies the L-R average while $d_x$ modifies the L-R difference:
+\eqref{
+m_x = {\De\th_x^{\rm R} + \De\th_x^{\rm L}\over 2}\ ,\qquad d_x = \De\th_x^{\rm R} - \De\th_x^{\rm L}\ .
+}{th L R to m d}
 
-\> \plot{acceptance_correction/acc_cmp_fill_details.pdf}: shows the details of acceptance limitations due to the sensor edges and the corresponding fiducial cuts
+The smearing and acceptance effects can then be described as transformation from true, $h_{\rm true}$, to reconstructed, $h_{\rm reco}$, probability distribution functions (PDFs):
+\eqref{
+\eqnarray{
+	h_{\rm reco}(\th'_x, \th'_y) & = & \int \d\th_x \int \d\th_y\ h_{\rm true}(\th_x, \th_y) \cr
+								 &  & \cdot \int \d m_x\ G_{m_x}(m_x) \int \d m_y\ G_{m_y}(m_y) \cr
+								 &  & \cdot \int \d d_x\ G_{d_x}(d_x) \int \d d_y\ G_{d_y}(d_y) \cr
+								 &  & \cdot \de\left( \th'_x - (\th_x + m_x) \right) \cr
+								 &  & \cdot \de\left( \th'_y - (\th_y + m_y) \right) \cr
+								 &  & \cdot \Th(\hbox{acc.~cond.}) \ ,\cr
+}
+}{sm acc model}
+where the $G$ functions give distributions of the smearing parameters, thus the model assumes that the $m_{x,y}$ and $d_{x,y}$ parameters are independent (uncorrelated). The $\Th$ function expresses the acceptance condition. As the condition can be written in terms of $\th'_{x,y}$ and $d_{x,y}$, i.e.~the cuts are done in the smeared coordinates, \Eq{sm acc model} can be factorised as
+\eqref{
+	h_{\rm reco}(\th'_x, \th'_y) = h_{\rm smear}(\th'_x, \th'_y)\ F_{\rm acc}(\th'_x, \th'_y)\ .
+}{sm acc model fac}
+The first factor
+\eqref{
+\eqnarray{
+	h_{\rm smear}(\th'_x, \th'_y) & = & \int \d\th_x \int \d\th_y\ h_{\rm true}(\th_x, \th_y) \cr
+								 &  & \cdot \int \d m_x\ G_{m_x}(m_x) \int \d m_y\ G_{m_y}(m_y) \cr
+								 &  & \cdot \de\left( \th'_x - (\th_x + m_x) \right) \cr
+								 &  & \cdot \de\left( \th'_y - (\th_y + m_y) \right) \cr
+}
+}{sm model}
+gives the PDF corresponding to the case where only smearing was applied. The effect of acceptance cuts is all contained in the second term:
+\eqref{
+\eqnarray{
+	F_{\rm acc}(\th'_x, \th'_y) & = & \int \d d_x\ G_{d_x}(d_x) \int \d d_y\ G_{d_y}(d_y) \cr
+								 &  & \cdot \Th(\hbox{acc.~cond.}) \ .\cr
+}
+}{acc model}
 
-\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts in the left and right arm and the global cuts
+In the data reconstruction, one builds histogram(s) using weight $1 / F_{\rm acc}$ which according to \Eq{sm acc model fac} estimates $h_{\rm smear}$ wherever there is non-zero acceptance. A particularly interesting histogram is in $t$, or in equivalently in $\th$ which can be modelled as
+\eqref{H_{\rm smear}(\th) = \int\limits_{\Om(\th)} \ \d\ph\ h_{\rm smear}(\th \cos\ph, \th\sin\ph)\ ,}{sm model th}
+where $\Om(\th)$ is a set of $\ph$ values with non-zero acceptance. In order to recover the part with zero acceptance, one can introduce a correction
+\eqref{H_{\rm smear,corr}(\th) = {1\over A_{\ph}(\th)} H_{\rm smear}(\th)\ ,}{sm model th corr}
+\eqref{A_{\ph}(\th) = {1\over 2\pi} \int\limits_{\Om(\th)} \ \d\ph\ .}{A phi}
+This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is typically slightly broken due to different smearing in $\th_x$ and $\th_y$. The error induced is typically absorbed into the ``unfolding correction'' which is applied in the final step of the analysis.
+
+\subsection{Fiducial cuts}
+
+\> there two types of fiducial cuts
+\>> separately in left and right arm
+\>>> cuts corresponding to the actual limits (sensors, LHC)
+\>>> they correspond to the condition $\Th$ in \Eq{acc model}
+\>> cut in global (after averaging) $\th_{x, y}$
+\>>> in order to avoid regions where $F_{\rm acc}$ is too small (and thus the corresponding weight too large)
+\>>> they enter via the set $\Om$ in \Eq{sm model th}
+
+\> all cuts have two bounds (illustrated in \plot{acceptance_correction/acc_phi_lab.pdf})
+\>> at low $|\th_y^*|$: due to sensor edge
+\>> at higher $|\th_y^*|$): due to LHC apertures
+
+\> all cuts are defined empirically by selecting a region within which one expects full acceptance ($\Th \equiv 1$ in \Eq{acc model}), shown in \plot{acceptance_correction/acc_cmp_fill_details.pdf}
+\>> there is evident effect of the upstream 210-fr RPs which are tilted, causing inefficiency -- this region is cut out
+
+\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts
 
 
-%\> \plot{acceptance_correction/acc_phi_lab.pdf}
-\fi
+\subsection{Smearing correction}
+
+\> ``smearing correction'' denotes the factor $1/F_{\rm acc}$
+\>> it is calculated according to \Eq{acc model}, assuming Gaussian distributions of $d_{x,y}$, using numerical integration (GSL library)
+\>> it is applied as described below \Eq{acc model}
+
+
+\subsection{$\ph$ correction}
+
+\> ``$\ph$ correction'' refers to $1 / A_{\ph}$
+\>> it is calculated according to \Eq{A phi}
+\>> it is applied according to \Eq{sm model th corr}
+
+
+\> \plot{acceptance_correction/acc_cmp_fill.pdf} : verification of the assumed $\ph$ symmetry
+
+
 
 
 
@@ -289,6 +361,7 @@ where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scatter
 \>> a first fit of data with model including both Coulomb and hadronic contributions
 \>> this fit serves as an input (truth) to simulation (numerical integration) with and without smearing effects
 \>> ratio of these two curves gives unfolding correction
+\>> \TODO: write that one makes ratio of \Eq{sm model th corr} and $H_{\rm true}(\th)$ in order to account for the small bias introduced in acceptance correction handling
 
 \> results (preliminary)
 \>> for the moment only at low $|t|$: \plot{unfolding/cmp_mc_num_int.pdf}
