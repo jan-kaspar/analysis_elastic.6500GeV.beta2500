@@ -80,7 +80,7 @@ double AcceptanceCalculator::dist_d_x(double d_x) const
 
 double AcceptanceCalculator::dist_d_y(double d_y) const
 {
-	const double si_d_y = anal.si_th_y_1arm * sqrt(2.);
+	const double si_d_y = anal.si_th_y_LRdiff;
 
 	double r = d_y / si_d_y;
 	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_y;
@@ -158,7 +158,7 @@ double AcceptanceCalculator::IntegOverDX(double x, double *par, const void* obj)
 
 	if (ac->gaussianOptimisation)
 	{
-		I = ( TMath::Erf(d_y_max / 2. / ac->anal.si_th_y_1arm) - TMath::Erf(d_y_min / 2. / ac->anal.si_th_y_1arm) ) / 2.;
+		I = ( TMath::Erf(d_y_max / sqrt(2.) / ac->anal.si_th_y_LRdiff) - TMath::Erf(d_y_min / sqrt(2.) / ac->anal.si_th_y_LRdiff) ) / 2.;
 	} else {
 		I = RealIntegrate(AcceptanceCalculator::IntegOverDY, NULL, ac, d_y_min, d_y_max, 0., 1E-3,
 			ac->integ_workspace_size_d_y, ac->integ_workspace_d_y, "AcceptanceCalculator::IntegOverDX");
