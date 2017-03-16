@@ -1,13 +1,56 @@
 \input article
 \input macros
 
-\def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/4p/}
+\def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/4rp/}
+
+\def\section#1{%
+	\advance\nsec1
+	\nsubsec=0 
+	\nssubsec=0%
+	\penalty-\clubpenalty
+	\vskip2\baselineskip
+	{%
+		\baselineskip15pt
+		\vbox{%
+			\noindent\SetFontSizesXII\bf\the\nsec. #1%
+		}%
+	}%
+	\penalty\clubpenalty
+	\vskip0\baselineskip
+	\parindent=0pt
+	\everypar={\parindent=\ParIndent \everypar={}}%
+}
+
+\def\subsection#1{%
+	\advance\nsubsec1
+	\nssubsec=0%
+	\penalty-\clubpenalty
+	\vskip2\baselineskip
+	{%
+		\vbox{%
+			\noindent\bf\the\nsec.\the\nsubsec. #1%
+		}%
+	}%
+	\penalty\clubpenalty
+	\vskip0\baselineskip
+	\parindent=0pt
+	\everypar={\parindent=\ParIndent \everypar={}}%
+}
+
+\def\linkColor{\cBlue}
 
 %----------------------------------------------------------------------------------------------------
 
 \centerline{\SetFontSizesXX Elastic analysis, $\sqrt s = 13\un{TeV}$, $\be^* = 2500\un{m}$ }
 \vskip2mm
+\centerline{\SetFontSizesXX analysis with 4 RPs }
+\vskip2mm
 \centerline{version: {\it \number\day. \number\month. \number\year}}
+
+%----------------------------------------------------------------------------------------------------
+\section{Analysis approach}
+
+\> RPs used (track required): 220-fr unit in both arms
 
 %----------------------------------------------------------------------------------------------------
 \section{Datasets}
@@ -253,6 +296,16 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
+\section{$t$-distributions}
+
+\> \plot{t_distributions/t_dist_fill_cmp.pdf}: comparison of $t$-distributions from different fills and diagonals
+
+\> \plot{t_distributions/t_dist_merged.pdf}: full and low-$t$ plots of the merged $t$-distribution
+
+\> \plot{t_distributions/t_dist_rel.pdf}: merged $t$-distribution in a relative frame
+
+
+%----------------------------------------------------------------------------------------------------
 \section{Systematic uncertainties}
 
 \subsection{Effects one by one}
@@ -262,16 +315,6 @@ the analysis
 \subsection{Multiple effects}
 
 \> not studied yet
-
-
-%----------------------------------------------------------------------------------------------------
-\section{$t$-distributions}
-
-\> \plot{t_distributions/t_dist_fill_cmp.pdf}: comparison of $t$-distributions from different fills and diagonals
-
-\> \plot{t_distributions/t_dist_merged.pdf}: full and low-$t$ plots of the merged $t$-distribution
-
-\> \plot{t_distributions/t_dist_rel.pdf}: merged $t$-distribution in a relative frame
 
 
 
