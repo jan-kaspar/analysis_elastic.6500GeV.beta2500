@@ -1,0 +1,313 @@
+\input article
+\input macros
+
+\def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/}
+
+\NumberSectionstrue
+
+%----------------------------------------------------------------------------------------------------
+
+\centerline{\SetFontSizesXX Elastic analysis, $\sqrt s = 13\un{TeV}$, $\be^* = 2500\un{m}$}
+\centerline{\SetFontSizesXX analysis with 2 RPs }
+\vskip2mm
+\centerline{version: {\it \number\day. \number\month. \number\year}}
+
+%----------------------------------------------------------------------------------------------------
+\section{Analysis approach}
+
+\> RPs used (track required): 220-fr unit in both arms
+
+%----------------------------------------------------------------------------------------------------
+\section{Datasets}
+
+\> fills: 5313, 5314, 5317, 5321
+
+%----------------------------------------------------------------------------------------------------
+\section{Beam conditions}
+
+\> naming
+\>> ``unresolved'' activity: event where RP has sufficient number of planes on, but no track is reconstructed
+
+\> plots of rates vs.~time
+\>> \plot{common/rates_vs_time.pdf}: basic rates
+\>> \plot{common/multitrack_rates_vs_time.pdf}: details for the unresolved category
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Ntuples}
+
+\> currently used: /eos/totem/data/offline/2016/2500m/version1/
+
+%----------------------------------------------------------------------------------------------------
+\section{Hit distributions}
+
+\> \plot{hit_distributions/hit_distributions.pdf}: hit distribution after elastic event selection
+
+%----------------------------------------------------------------------------------------------------
+\section{Reconstruction formulae}
+
+\> \plot{reconstruction_formulae/plot_formulae_graphs.pdf} : study of performance of various reconstruction formulae
+\>> formulae
+\>>> using different RPs as input
+\>>> combining the input in various ways
+\>> studying the impact of various effects: beam divergence, vertex, pitch, ...
+
+\> \plot{reconstruction_formulae/plot_formulae_correlation.pdf} : study of left-right correlations of angle reconstruction errors
+\>> significant in $x$ due to neglecting $x^*$
+
+\> formulae used
+\>> horizontal plane
+\>>> single arm: $x / L_x$
+\>>> double arm: average of single arm
+\>> vertical plane
+\>>> single arm: $y / L_y$
+\>>> double arm: average of single arm
+
+%----------------------------------------------------------------------------------------------------
+\section{Cuts/elastic tagging}
+
+\> event selection
+\>> track in 220-fr units of a diagonal
+\>> elastic tagging, see below
+\>> RP trigger flag: non zero (ev.trigger\_bits \& 7)
+
+\> elastic tagging: general cut structure $| a q_a + b q_b + c| < n_\si  \si$
+\>> cut 1: $q_a = \th_x^{*R}$, $q_b = \th_x^{*L}$; \plot{cuts/cut_1.pdf}
+\>> cut 2: $q_a = \th_y^{*R}$, $q_b = \th_y^{*L}$; \plot{cuts/cut_2.pdf}
+
+\> all cuts applied at $n_\si = 4$ level
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Efficiency and purity of cuts, background}
+
+\> background studies
+\>> \plot{background,cut_efficiency/cut_distributions.pdf}: distributions of cut discriminators under various cut combinations
+
+\>> \plot{background,cut_efficiency/cut_dist_antidgn_cmp.pdf}: distributions of cut discriminators, after all available cuts, comparison between diagonal and anti-diagonal configurations
+
+\>> \plot{background,cut_efficiency/t_distributions_cuts.pdf}: $t$-distributions under various cut combinations
+
+\>> \plot{background,cut_efficiency/t_dist_antidgn_cmp.pdf}: $t$-distributions, after all available cuts, comparison between diagonal (mostly signal) and anti-diagonal (background) configurations
+\>>> background / signal at low $|t|$: $\approx 0.1\un{\%}$
+\>>> background / signal at dip: $\approx 10\un{\%}$
+
+\> study of signal loss due to cuts
+\>> \plot{background,cut_efficiency/t_distributions_n_si.pdf}: $t$ distribution at different cut levels
+\>>> at low $|t|$: inefficiency $\O{0.1\un{\%}}$ and flat in $|t|$
+
+%----------------------------------------------------------------------------------------------------
+\section{Efficiency studies, pile-up, ...}
+
+\subsection{DAQ efficiency}
+
+\> method: per time slice calculate from the trigger block:
+$$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
+
+\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
+
+\subsection{Trigger efficiency}
+
+\> method:
+\>> take zero-bias (BX) data
+\>> select elastic events (standard tagging) $\rightarrow$ number of events $N(BX,elastic)$
+\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N(BX,elastic,trigger)$
+\>> efficiency = $N(BX,elastic,trigger) / N(BX,elastic)$
+
+\> results:
+\>> fill 5317, diagonal 45 bot -- 56 top: $N(BX,elastic) = N(BX,elastic,trigger) = 7914$
+\>> fill 5317, diagonal 45 top -- 56 bot: $N(BX,elastic) = N(BX,elastic,trigger) = 7194$
+
+
+
+\subsection{3-out-of-4 efficiencies}
+
+\> method: derive from results of the 4-RP analysis
+\>> take the results for 220-fr pots only
+
+\> uncertainties
+\>> inefficiency at $\th_y^* = 0$: $0.3\un{\%}$
+\>> slope: $15\un{rad^{-1}}$
+
+
+\subsection{Pile-up}
+
+\> TODO
+
+\> method
+\>> take BX sample
+\>> evaluate probability of signal that could ``hide'' elastic event, typical conditions:
+\>>> ``pl\_suff'': sufficient number of planes is on
+\>>> ``pat\_suff'': U or V pattern is recognised 
+
+\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
+
+\> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
+
+%----------------------------------------------------------------------------------------------------
+\section{Alignment}
+
+\subsection{Determination}
+
+\> method: standard procedure
+\>> beam-based alignment: before data-taking
+\>> track-based alignment: relative alignment between RP sensors
+\>> alignment with elastics: absolute alignment wrt.~LHC beam
+
+\> uncertainty of track-based alignment
+\>> horizontal shift: $5\un{\mu m}$
+\>> vertical shift: $5\un{\mu m}$
+\>> rotation about $z$: $1\un{mrad}$
+
+\> uncertainty of elastic alignment
+\>> horizontal shift: $25\un{\mu m}$
+\>> vertical shift: $100\un{\mu m}$
+\>> rotation about $z$: $2\un{mrad}$
+
+\> induced uncertainties
+\>> shift in 2-arm $\th_x^*$: $0.35\un{\mu rad}$
+\>> shift in 2-arm $\th_y^*$: $0.24\un{\mu rad}$
+\>> rotation about z: $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.012$
+
+\subsection{Validation}
+
+\> \plot{alignment/angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
+
+\> \plot{alignment/mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
+
+\> \plot{alignment/mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
+
+\> observations (2 arm)
+\>> shift in $\th_x^*$: $\De^{R-L} \th_x^*$ up to $1\un{\mu rad}$, the above estimate gives RMS of $0.7\un{\mu rad}$ thus quite compatible; maximum of $\De^{R-L} \th_x^*$ only occurs seldom; for safety take $0.5\un{\mu rad}$ for the two-arm uncertainty
+\>> shift in $\th_y^*$: compatible with above estimate $0.24\un{\mu rad}$
+\>> rotation about z: $\si(C) \approx 0.005$ significantly better than the above estimate, use this value
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Optics}
+
+\subsection{Validation}
+
+\> \plot{optics/optics_test_summary.pdf}: left-right differences in reconstructed scattering angles plotted as a function of the scattering angle
+\>> shifts (fit extrapolated to 0): due to misalignments
+\>> tilts (slope): due to optics
+\>>> within $0.1\un{\%}$ -- for the moment, use this as uncertainty estimate independently for scaling $\th_x^*$ and $\th_y^*$
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Resolutions}
+
+\> method
+\>> horizontal plane
+\>>> single arm $\th_x^*$ reconstruction biased by neglecting $x^*$
+\>>> this bias in left-right antisymmetric, see \plot{reconstruction_formulae/plot_formulae_correlation.pdf}
+\>>> therefore $\De^{R-L} \th_x^*$ is dominated by the vertex term
+\>>> and the 2-arm reconstruction (L-R average) is almost free of the bias
+\>>> this can not be extracted directly from data, but can be studied with a MC tuned to the 4-RP analysis
+\>> vertical plane
+\>>> left-right difference of $\th_y^*$ directly probes the vertical beam divergence (the detector component is negligible)
+
+\> \plot{resolutions/resolutions_vs_time.pdf} : time-dependence of observed $\si(\De^{R-L} \th_{x, y}^*)$
+\>> solid line: compilation of per-run linear fits (excluding points with too large errors)
+
+\> uncertainties of RMS values
+\>> R-L difference of $\th_{x, y}^*$: from the above plot
+\>>> x: $0.3\un{\mu rad}$
+\>>> y: $0.007\un{\mu rad}$
+\>> R-L mean of $\th_{x, y}^*$
+\>>> x: from 4-RP analysis plus MC, \TODO
+\>>> y: from the above plot, $0.0035\un{\mu rad}$
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Acceptance correction}
+
+\TODO
+
+\iffalse
+\> method
+\>> known acceptance limitations: sensor edges (low $|\th_y^*|$), LHC apertures (high $|\th_y^*|$)
+\>> acceptance region determined empirically by looking at the reconstructed $\th_y^*$ vs.~$\th_x^*$ distributions, separately in the left and right arm
+\>> due to the presence of the tilted RPs (210-far), the acceptance limitations due to the sensors edges are both $\th_y^*$ and $\th_x^*$ dependent
+\>> assuming that the smearing in $\th_{x, y}^*$ is independent and has the same sigma left and right, then:
+$$h_{\rm observed}(\th_x^*, \th_y^*) = A_{\rm sm}(\th_x^*, \th_y^*)\ h_{\rm smeared}(\th_x^*, \th_y^*)$$
+where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scattering angles reconstructed via left-right average and $A_{\rm sm}$ is the ``smearing'' contribution to the acceptance
+\>> $A_{\rm sm}$ is calculated as the probability that any of the two protons leaves the fiducial region due to smearing -- this time it requires two-fold integral
+\>> another acceptance factor, $A_{\rm geom}$, is given by the fraction of const-$\th^*$ arc within the fiducial region
+\>>> for this, another set of fiducial cuts, ``global'', is used -- in order to avoid to corners with high smearing correction
+
+\> \plot{acceptance_correction/acc_cmp_fill.pdf}: shows the region of acceptance in $\th_x^*$ vs.~$\th_y^*$, per fill
+
+\> \plot{acceptance_correction/acc_cmp_fill_details.pdf}: shows the details of acceptance limitations due to the sensor edges and the corresponding fiducial cuts
+
+\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts in the left and right arm and the global cuts
+
+
+%\> \plot{acceptance_correction/acc_phi_lab.pdf}
+\fi
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Unfolding of resolution effects}
+
+\> method (preliminary)
+\>> a first fit of data with model including both Coulomb and hadronic contributions
+\>> this fit serves as an input (truth) to simulation (numerical integration) with and without smearing effects
+\>> ratio of these two curves gives unfolding correction
+
+\> results (preliminary)
+\>> for the moment only at low $|t|$: \plot{unfolding/cmp_mc_num_int.pdf}
+\>>> as expected: effect in general small (very small beam divergence) and only present at low $|t|$ (strong non-linearity due to Coulomb)
+
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Binning}
+
+\> method
+\>> at $|t| \approx 10^{-3}\un{GeV^2}$: very fine binning
+\>> at $|t| \approx 10^{-1}\un{GeV^2}$: bin size about $n\times \un{\si}$ of the $t$ smearing
+\>> at $|t| \approx 0.35\un{GeV^2}$: bin size for a fixed statistical uncertainty
+\>> if needed at large $|t|$: constant bin size to avoid excessively large bins
+
+\> \plot{binning/bin_size_vs_t.pdf} : visualisation of binning determinants vs.~several binnings used in
+the analysis
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Normalisation}
+
+\> method
+\>> normalise $\d\si/\d t$ such that $I + S = 29.7\un{mb}$
+\>> $I$ stands for $\d\si/\d t$ fit over $0.01 < |t| < 0.05\un{GeV^2}$, integrated over $0 < |t| < 0.01\un{GeV^2}$
+\>> $S$ stands for histogram integral of bins $0.01 < |t| < 0.5\un{GeV^2}$
+
+
+%----------------------------------------------------------------------------------------------------
+\section{$t$-distributions}
+
+\> \plot{t_distributions/t_dist_fill_cmp.pdf}: comparison of $t$-distributions from different fills and diagonals
+
+\> \plot{t_distributions/t_dist_merged.pdf}: full and low-$t$ plots of the merged $t$-distribution
+
+\> \plot{t_distributions/t_dist_rel.pdf}: merged $t$-distribution in a relative frame
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Systematic uncertainties}
+
+\subsection{Effects one by one}
+
+\> not studied yet
+
+\subsection{Multiple effects}
+
+\> not studied yet
+
+
+
+\bye
