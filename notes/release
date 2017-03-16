@@ -44,5 +44,5 @@ rm -rf "$release_dir"
 # make latest link
 echo "    updating links..."
 cd "$base_dir" || exit 3
-rm -r "latest"
-ln -s "$release_file" "latest"
+rm -r "latest.tar.gz"
+ln -s "$release_file" "latest.tar.gz"
