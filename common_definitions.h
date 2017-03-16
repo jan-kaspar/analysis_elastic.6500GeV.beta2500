@@ -774,6 +774,7 @@ struct Analysis
 	double si_th_y_LRdiff_unc;
 
 	// efficiency parameters
+	bool use_resolution_fits;				// whether to use time-dependent fits of resolution curves
 	bool use_3outof4_efficiency_fits;		// whether to use time-dependent fits of 3-out-of-4 efficiency
 	bool use_pileup_efficiency_fits;		// whether to use time-dependent fits of pile-up efficiency
 
@@ -885,6 +886,7 @@ struct Analysis
 		printf("si_th_y_1arm=%E, si_th_y_1arm_unc=%E\n", si_th_y_1arm, si_th_y_1arm_unc);
 		printf("si_th_y_2arm=%E, si_th_y_2arm_unc=%E\n", si_th_y_2arm, si_th_y_2arm_unc);
 		printf("si_th_y_LRDiff=%E, si_th_y_LRdiff_unc=%E\n", si_th_y_LRdiff, si_th_y_LRdiff_unc);
+		printf("use_resolution_fits = %i\n", use_resolution_fits);
 	
 		printf("\n");
 		printf("normalisation parameters:\n");

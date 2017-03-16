@@ -61,6 +61,8 @@ void Init_global()
 	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-20.0, -4.0, +4.0, +20.0);
 
 	// correction settings
+	anal.use_resolution_fits = true;
+
 	anal.use_3outof4_efficiency_fits = true;
 	anal.inefficiency_3outof4 = 0.;
 	anal.inefficiency_shower_near = 0.03;	// probability of shower created in near and spreading to far: 2 * 1.5%
