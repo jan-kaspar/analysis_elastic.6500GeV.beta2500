@@ -3,7 +3,40 @@
 
 \def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/}
 
-\NumberSectionstrue
+
+\def\section#1{%
+	\advance\nsec1
+	\nsubsec=0 
+	\nssubsec=0%
+	\penalty-\clubpenalty
+	\vskip2\baselineskip
+	{%
+		\baselineskip15pt
+		\vbox{%
+			\noindent\SetFontSizesXII\bf\the\nsec. #1%
+		}%
+	}%
+	\penalty\clubpenalty
+	\vskip0\baselineskip
+	\parindent=0pt
+	\everypar={\parindent=\ParIndent \everypar={}}%
+}
+
+\def\subsection#1{%
+	\advance\nsubsec1
+	\nssubsec=0%
+	\penalty-\clubpenalty
+	\vskip2\baselineskip
+	{%
+		\vbox{%
+			\noindent\bf\the\nsec.\the\nsubsec. #1%
+		}%
+	}%
+	\penalty\clubpenalty
+	\vskip0\baselineskip
+	\parindent=0pt
+	\everypar={\parindent=\ParIndent \everypar={}}%
+}
 
 %----------------------------------------------------------------------------------------------------
 
@@ -132,13 +165,13 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 
 \subsection{Pile-up}
 
-\> TODO
-
 \> method
-\>> take BX sample
-\>> evaluate probability of signal that could ``hide'' elastic event, typical conditions:
+\>> take BX sample, split it into time slices
+\>> evaluate probability of signal that would make impossible to reconstruct elastic event due to too much activity
+\>> typical conditions per RP
 \>>> ``pl\_suff'': sufficient number of planes is on
 \>>> ``pat\_suff'': U or V pattern is recognised 
+\>> use OR between left and right arm -- it is sufficient to loose any arm to loose the elastic event
 
 \> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
 

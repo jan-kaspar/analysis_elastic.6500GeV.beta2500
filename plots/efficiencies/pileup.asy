@@ -9,15 +9,17 @@ TH2_palette = Gradient(blue, heavygreen, yellow, red);
 string datasets[], dataset_fills[];
 datasets.push("DS-fill5313"); dataset_fills.push("5313");
 datasets.push("DS-fill5314"); dataset_fills.push("5314");
-datasets.push("DS-fill5317"); dataset_fills.push("5317");
-//datasets.push("DS-fill5317/block1"); dataset_fills.push("5317.1");
-//datasets.push("DS-fill5317/block2"); dataset_fills.push("5317.2");
+//datasets.push("DS-fill5317"); dataset_fills.push("5317");
+datasets.push("DS-fill5317/block1"); dataset_fills.push("5317.1");
+datasets.push("DS-fill5317/block2"); dataset_fills.push("5317.2");
 datasets.push("DS-fill5321"); dataset_fills.push("5321");
 
 TGraph_errorBar = None;
 
 xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.01, 0.005);
+
+bool showFits = false;
 
 //----------------------------------------------------------------------------------------------------
 
@@ -44,12 +46,18 @@ for (int di : datasets.keys)
 	DrawRunBands(dataset_fills[di], y_min, y_max);
 
 	draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45b_56t/dgn.src"), "p", blue, mTU+2pt+blue, "45 bot -- 56 top");
-	draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45b_56t/dgn"), "l", blue+dashed);
+
+	if (showFits)
+		draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45b_56t/dgn"), "l", blue+dashed);
 	
 	draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45t_56b/dgn.src"), "p", red, mTD+2pt+red, "45 top -- 56 bot");
-	draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45t_56b/dgn"), "l", red+dashed);
+
+	if (showFits)
+		draw(swToHours, RootGetObject(topDir+datasets[di]+"/pileup_fit_combined.root", "45t_56b/dgn"), "l", red+dashed);
 
 	SetPadWidth();
+
+	ylimits(0, 0.1, Crop);
 }
 
 frame f_legend = BuildLegend();
