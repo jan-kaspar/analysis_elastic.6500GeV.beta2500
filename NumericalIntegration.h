@@ -1,10 +1,10 @@
+#ifndef _numerical_integration_h_
+#define _numerical_integration_h_
+
 #include "TComplex.h"
 
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_errno.h>
-
-#ifndef _numerical_integration_h_
-#define _numerical_integration_h_
 
 //----------------------------------------------------------------------------------------------------
 
