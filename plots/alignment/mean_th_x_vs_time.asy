@@ -18,7 +18,7 @@ diagonals.push("45t_56b"); diagonal_labels.push("45 top -- 56 bot"); diagonal_pe
 string arms[], arm_labels[];
 arms.push("_L"); arm_labels.push("left arm");
 arms.push("_R"); arm_labels.push("right arm");
-//arms.push(""); arm_labels.push("double arm");
+arms.push(""); arm_labels.push("double arm");
 
 xTicksDef = LeftTicks(Step=1, step=0.5);
 

@@ -470,7 +470,6 @@ int main(int argc, char **argv)
 
 	map<signed int, TH1D *> tm_h_th_x_L, tm_h_th_x_R;
 	map<signed int, TProfile *> tm_p_diffLR_th_x, tm_p_diffLR_th_y;
-	map<signed int, TProfile *> tm_p_x_L_F_vs_th_x_L, tm_p_x_R_F_vs_th_x_R;
 
 	// book cut histograms
 	map<unsigned int, TH1D *> h_cq;
@@ -704,6 +703,8 @@ int main(int argc, char **argv)
 	TProfile *p_th_y_R_vs_time = new TProfile("p_th_y_R_vs_time", ";timestamp;#theta_{y}^{R}", time_bins, time_min, time_max);
 	TProfile *p_th_x_L_vs_time = new TProfile("p_th_x_L_vs_time", ";timestamp;#theta_{x}^{L}", time_bins, time_min, time_max);
 	TProfile *p_th_y_L_vs_time = new TProfile("p_th_y_L_vs_time", ";timestamp;#theta_{y}^{L}", time_bins, time_min, time_max);
+	TProfile *p_th_x_vs_time = new TProfile("p_th_x_vs_time", ";timestamp;#theta_{x}", time_bins, time_min, time_max);
+	TProfile *p_th_y_vs_time = new TProfile("p_th_y_vs_time", ";timestamp;#theta_{y}", time_bins, time_min, time_max);
 	
 	TProfile *p_input_d_x_rms_vs_time = new TProfile("p_input_d_x_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
 	TProfile *p_input_d_y_rms_vs_time = new TProfile("p_input_d_y_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
@@ -1006,28 +1007,25 @@ int main(int argc, char **argv)
 		// data for alignment
 		// (SHOULD use hit positions WITHOUT alignment corrections, i.e. ev.h)
 		signed int period = int((ev.timestamp - anal.alignment_t0) / anal.alignment_ts);
+		if (g_w_vs_timestamp_sel.find(period) == g_w_vs_timestamp_sel.end())
+		{
+			g_w_vs_timestamp_sel[period] = new TGraph();
+
+			g_y_L_1_F_vs_x_L_1_F_sel[period] = new TGraph();
+			g_y_L_2_F_vs_x_L_2_F_sel[period] = new TGraph();
+
+			g_y_R_1_F_vs_x_R_1_F_sel[period] = new TGraph();
+			g_y_R_2_F_vs_x_R_2_F_sel[period] = new TGraph();
+
+			tm_h_th_x_L[period] = new TH1D("", ";#theta_{x}^{L}", 100, -150E-6, +150E-6);
+			tm_h_th_x_R[period] = new TH1D("", ";#theta_{x}^{R}", 100, -150E-6, +150E-6);
+
+			tm_p_diffLR_th_x[period] = new TProfile("", ";#theta_{x}   (#murad);#Delta^{R-L} #theta_{x}   (#murad)", 300, -300E-6, +300E-6);
+			tm_p_diffLR_th_y[period] = new TProfile("", ";#theta_{y}   (#murad);#Delta^{R-L} #theta_{y}   (#murad)", 200, -500E-6, +500E-6);
+		}
+	
 		if (detailsLevel >= 2)
 		{
-			if (g_w_vs_timestamp_sel.find(period) == g_w_vs_timestamp_sel.end())
-			{
-				g_w_vs_timestamp_sel[period] = new TGraph();
-
-				g_y_L_1_F_vs_x_L_1_F_sel[period] = new TGraph();
-				g_y_L_2_F_vs_x_L_2_F_sel[period] = new TGraph();
-
-				g_y_R_1_F_vs_x_R_1_F_sel[period] = new TGraph();
-				g_y_R_2_F_vs_x_R_2_F_sel[period] = new TGraph();
-
-				tm_h_th_x_L[period] = new TH1D("", ";#theta_{x}^{L}", 100, -150E-6, +150E-6);
-				tm_h_th_x_R[period] = new TH1D("", ";#theta_{x}^{R}", 100, -150E-6, +150E-6);
-
-				tm_p_diffLR_th_x[period] = new TProfile("", ";#theta_{x}   (#murad);#Delta^{R-L} #theta_{x}   (#murad)", 300, -300E-6, +300E-6);
-				tm_p_diffLR_th_y[period] = new TProfile("", ";#theta_{y}   (#murad);#Delta^{R-L} #theta_{y}   (#murad)", 200, -500E-6, +500E-6);
-
-				tm_p_x_L_F_vs_th_x_L[period] = new TProfile("", ";#theta_{x}^{L}   (#murad);x^{LF}   (mm)", 200, -200E-6, +200E-6);
-				tm_p_x_R_F_vs_th_x_R[period] = new TProfile("", ";#theta_{x}^{R}   (#murad);x^{RF}   (mm)", 200, -200E-6, +200E-6);
-			}
-	
 			int idx = g_w_vs_timestamp_sel[period]->GetN();
 			g_w_vs_timestamp_sel[period]->SetPoint(idx, ev.timestamp, norm_corr);
 			
@@ -1311,25 +1309,19 @@ int main(int argc, char **argv)
 
 			p_vtx_x_vs_time->Fill(ev.timestamp, k.vtx_x);
 
-			if (detailsLevel >= 2)
-			{
-				tm_h_th_x_L[period]->Fill(k.th_x_L);
-				tm_h_th_x_R[period]->Fill(k.th_x_R);
+			tm_h_th_x_L[period]->Fill(k.th_x_L);
+			tm_h_th_x_R[period]->Fill(k.th_x_R);
 
-				tm_p_diffLR_th_x[period]->Fill(k.th_x, k.th_x_R - k.th_x_L);
-				tm_p_diffLR_th_y[period]->Fill(k.th_y, k.th_y_R - k.th_y_L);
-
-				/*
-				tm_p_x_L_F_vs_th_x_L[period]->Fill(k.th_x_L, h_al.x_L_F);
-				tm_p_x_R_F_vs_th_x_R[period]->Fill(k.th_x_R, h_al.x_R_F);
-				*/
-			}
+			tm_p_diffLR_th_x[period]->Fill(k.th_x, k.th_x_R - k.th_x_L);
+			tm_p_diffLR_th_y[period]->Fill(k.th_y, k.th_y_R - k.th_y_L);
 		}
 
 		p_th_x_R_vs_time->Fill(ev.timestamp, k.th_x_R);
 		p_th_y_R_vs_time->Fill(ev.timestamp, k.th_y_R);
 		p_th_x_L_vs_time->Fill(ev.timestamp, k.th_x_L);
 		p_th_y_L_vs_time->Fill(ev.timestamp, k.th_y_L);
+		p_th_x_vs_time->Fill(ev.timestamp, k.th_x);
+		p_th_y_vs_time->Fill(ev.timestamp, k.th_y);
 
 		// set time-dependent resolutions
 		if (anal.use_resolution_fits)
@@ -1670,9 +1662,6 @@ int main(int argc, char **argv)
 	TGraphErrors* g_ext_diffLR_th_x_vs_time = new TGraphErrors(); g_ext_diffLR_th_x_vs_time->SetName("g_ext_diffLR_th_x_vs_time");
 	TGraphErrors* g_ext_diffLR_th_y_vs_time = new TGraphErrors(); g_ext_diffLR_th_y_vs_time->SetName("g_ext_diffLR_th_y_vs_time");
 
-	TGraphErrors* g_L_L_F_vs_time = new TGraphErrors(); g_L_L_F_vs_time->SetName("g_L_L_F_vs_time");
-	TGraphErrors* g_L_R_F_vs_time = new TGraphErrors(); g_L_R_F_vs_time->SetName("g_L_R_F_vs_time");
-
 	for (map<signed int, TGraph *>::iterator pid = g_w_vs_timestamp_sel.begin(); pid != g_w_vs_timestamp_sel.end(); ++pid)
 	{
 		signed int period = pid->first;
@@ -1723,35 +1712,6 @@ int main(int argc, char **argv)
 			int idx = g_ext_diffLR_th_y_vs_time->GetN();
 			g_ext_diffLR_th_y_vs_time->SetPoint(idx, time, v_y);
 			g_ext_diffLR_th_y_vs_time->SetPointError(idx, 0., u_y);
-		}
-
-
-		TProfile *p_L_L = tm_p_x_L_F_vs_th_x_L[period];
-		p_L_L->SetName("p_x_L_F_vs_th_x_L");
-		unsigned int reasonableBins_L_L = SuppressLowStatisticsBins(p_L_L, 5);
-		p_L_L->Fit(ff, "Q");
-		p_L_L->Write();
-		double L_L = ff->GetParameter(1), u_L_L = ff->GetParError(1);
-
-		if (reasonableBins_L_L > 9)
-		{
-			int idx = g_L_L_F_vs_time->GetN();
-			g_L_L_F_vs_time->SetPoint(idx, time, -L_L);
-			g_L_L_F_vs_time->SetPointError(idx, 0., u_L_L);
-		}
-
-		TProfile *p_L_R = tm_p_x_R_F_vs_th_x_R[period];
-		p_L_R->SetName("p_x_R_F_vs_th_x_R");
-		unsigned int reasonableBins_L_R = SuppressLowStatisticsBins(p_L_R, 5);
-		p_L_R->Fit(ff, "Q");
-		p_L_R->Write();
-		double L_R = ff->GetParameter(1), u_L_R = ff->GetParError(1);
-
-		if (reasonableBins_L_R > 9)
-		{
-			int idx = g_L_R_F_vs_time->GetN();
-			g_L_R_F_vs_time->SetPoint(idx, time, +L_R);
-			g_L_R_F_vs_time->SetPointError(idx, 0., u_L_R);
 		}
 	}
 
@@ -2058,15 +2018,14 @@ int main(int argc, char **argv)
 	p_th_y_R_vs_time->Write();
 	p_th_x_L_vs_time->Write();
 	p_th_y_L_vs_time->Write();
+	p_th_x_vs_time->Write();
+	p_th_y_vs_time->Write();
 
 	g_ext_diffLR_th_x_vs_time->Write();
 	g_ext_diffLR_th_y_vs_time->Write();
 
 	p_input_d_x_rms_vs_time->Write();
 	p_input_d_y_rms_vs_time->Write();
-
-	g_L_L_F_vs_time->Write();
-	g_L_R_F_vs_time->Write();
 
 	TDirectory *fidCutDir = outF->mkdir("fiducial cuts");
 	gDirectory = fidCutDir;
