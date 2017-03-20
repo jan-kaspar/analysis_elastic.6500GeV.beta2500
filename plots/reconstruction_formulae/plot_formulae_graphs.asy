@@ -16,7 +16,7 @@ void DrawSet(string iq, real scale_x, string unit, string formulae[])
 		NewPad(false);
 		label("{\SetFontSizesXX " + replace(formula, "_", "\_") + "}");
 		
-		NewPad("$"+iq+"^{*, sim}\ung{"+unit+"}$", "std.~dev.~of $"+iq+"^{*, reco} - "+iq+"^{*, sim}\ung{"+unit+"}$");
+		NewPad("$"+iq+"^{*,\rm sim}\ung{"+unit+"}$", "std.~dev.~of $"+iq+"^{*,\rm reco} - "+iq+"^{*,\rm sim}\ung{"+unit+"}$");
 		scale(Linear, Linear(true));
 		draw(scale(scale_x, 1), RootGetObject(f, formula+"/pitch/g_stddev"), "l,p", black, mCi+1pt+black, "pitch");
 		draw(scale(scale_x, 1), RootGetObject(f, formula+"/beamDiv/g_stddev"), "l,p", red, mCi+1pt+red, "beamDiv");

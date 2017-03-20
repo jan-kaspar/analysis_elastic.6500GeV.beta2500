@@ -48,8 +48,10 @@ for (int dsi : datasets.keys)
 
 	for (int dgni : diagonals.keys)
 	{
+		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
+
 		draw(swToHours*scale(1, 1e6),
-			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_x_vs_time"), "p,eb,d0",
+			RootGetObject(f, "time dependences/gRMS_diffLR_th_x_vs_time"), "p,eb,d0",
 			dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 
 		RootObject fit = RootGetObject(topDir+datasets[dsi]+"/resolution_fit_"+diagonals[dgni]+".root", "d_x/g_fits");
@@ -62,6 +64,12 @@ for (int dsi : datasets.keys)
 			draw(shift(0, +unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 			draw(shift(0, -unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 		}
+
+		// validation
+		/*
+		draw(swToHours*scale(1, 1e6),
+			RootGetObject(f, "time dependences/p_input_d_x_rms_vs_time"), "p,eb,d0", magenta+1pt);
+		*/
 	}
 
 	ylimits(y_min, y_max, Crop);
@@ -82,8 +90,10 @@ for (int dsi : datasets.keys)
 
 	for (int dgni : diagonals.keys)
 	{
+		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
+
 		draw(swToHours*scale(1, 1e6),
-			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_y_vs_time"), "p,eb,d0",
+			RootGetObject(f, "time dependences/gRMS_diffLR_th_y_vs_time"), "p,eb,d0",
 			dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 
 		RootObject fit = RootGetObject(topDir+datasets[dsi]+"/resolution_fit_"+diagonals[dgni]+".root", "d_y/g_fits");
@@ -96,6 +106,12 @@ for (int dsi : datasets.keys)
 			draw(shift(0, +unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 			draw(shift(0, -unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 		}
+
+		// validation
+		/*
+		draw(swToHours*scale(1, 1e6),
+			RootGetObject(f, "time dependences/p_input_d_y_rms_vs_time"), "p,eb,d0", magenta+1pt);
+		*/
 	}
 	
 	ylimits(y_min, y_max, Crop);

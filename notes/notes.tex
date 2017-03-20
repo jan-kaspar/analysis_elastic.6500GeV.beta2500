@@ -256,13 +256,24 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 \> \plot{resolutions/resolutions_vs_time.pdf} : time-dependence of observed $\si(\De^{R-L} \th_{x, y}^*)$
 \>> solid line: compilation of per-run linear fits (excluding points with too large errors)
 
-\> uncertainties of RMS values
-\>> R-L difference of $\th_{x, y}^*$: from the above plot
+\> $d_{x, y}$ (R-L difference of $\th_{x, y}^*$): used for acceptance correction
+\>> time dependent
+\>> central values and uncertainties from \plot{resolutions/resolutions_vs_time.pdf}
+\>> uncertainties:
 \>>> x: $0.3\un{\mu rad}$
 \>>> y: $0.007\un{\mu rad}$
-\>> R-L mean of $\th_{x, y}^*$
-\>>> x: from 4-RP analysis plus MC, \TODO
-\>>> y: from the above plot, $0.0035\un{\mu rad}$
+
+\> $m_{x, y}$ (R-L mean of $\th_{x, y}^*$): used for resolution unfolding
+\>> for the moment: time independent, single value for all fills
+\>> uncertainty covers the full time and fill dependence
+\>> x: from 4-RP analysis plus MC -- considered two extreme cases
+\>>> case 1: $\si(x^*) = 480\un{\mu m}$, $\si^{\rm bd}(\th^*_x) = 0.27\un{\mu rad}$, $\si^{\rm sen}(x) = 11\un{\mu m}$
+\>>> case 2: $\si(x^*) = 680\un{\mu m}$, $\si^{\rm bd}(\th^*_x) = 0.39\un{\mu rad}$, $\si^{\rm sen}(x) = 12\un{\mu m}$
+\>>> \plot{reconstruction_formulae/plot_formulae_graphs_desc_th_x.pdf}: MC shows that the impact of vertex in 2-arm reconstruction can be neglected wrt.~beam divergence and sensor resolution
+\>>> case 1: MC gives $\si(m_x) = 0.25\un{\mu rad}$
+\>>> case 2: MC gives $\si(m_x) = 0.33\un{\mu rad}$
+\>>> mean and difference from the two cases: $\si(m_x) = (0.29 \pm 0.04)\un{\mu rad}$
+\>> y: from \plot{resolutions/resolutions_vs_time.pdf}, $\si(m_y) = (0.258 \pm 0.018)\un{\mu rad}$
 
 
 %----------------------------------------------------------------------------------------------------
