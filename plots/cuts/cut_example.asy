@@ -8,8 +8,7 @@ TH2_palette = Gradient(blue, heavygreen, yellow, red);
 string dataset = "DS-fill5313";
 string diagonal = "45b_56t";
 
-//int cuts[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-int cuts[] = { 1, 2, 7 };
+int cuts[] = { 1, 2 };
 
 real scale_x[] = { 1e6, 1e6, 1e6, 1e6, 1e0, 1e0, 1e6, 1e6 };
 real scale_y[] = { 1e6, 1e6, 1e0, 1e0, 1e0, 1e0, 1e0, 1e0 };

@@ -14,8 +14,7 @@ string datasets[] = {
 
 string dgns[] = { "45b_56t", "45t_56b" };
 
-//int cuts[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-int cuts[] = { 1, 2, 7 };
+int cuts[] = { 1, 2 };
 
 real scale_x[] = { 1e6, 1e6, 1e6, 1e6, 1e0, 1e0, 1e6, 1e6 };
 real scale_y[] = { 1e6, 1e6, 1e0, 1e0, 1e0, 1e0, 1e0, 1e0 };
