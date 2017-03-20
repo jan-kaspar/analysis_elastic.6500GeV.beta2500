@@ -66,7 +66,7 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("alig-sh-thx") == 0)
 	{
-		sh_th_x = 1E-6;
+		sh_th_x = 0.5E-6;
 		return 0;
 	}
 

@@ -51,25 +51,20 @@ for (int dsi : datasets.keys)
 				real y_min = -0.02, y_max = +0.02, y_Step = 0.005, y_step = 0.001;
 	
 				if (xsi == 0)
-					{ x_min = 0; x_max = 0.01; x_Step = 0.002; x_step = 0.001; }
+					{ x_min = 0; x_max = 0.005; x_Step = 0.002; x_step = 0.001; }
 
 				if (modes[mi].mc_dir_tag == "norm")
 					{ y_min = 0; y_max = +0.15; y_Step = 0.05; y_step = 0.01; }
 	
 				// ----- MC direct -----
 	
-				/*
-				string mc_f = (modes[mi].mc_dir_file == "sd")
-					? topDir + "systematics/"+datasets[dsi]+"/simu_direct_"+diagonals[dgni]+".root"
-					: topDir + "systematics/"+datasets[dsi]+"/simu_direct_unsmearing_"+diagonals[dgni]+".root";
+				string mc_f = topDir + "systematics-mc/"+datasets[dsi]+"/"+diagonals[dgni]+"/simu_direct_" + modes[mi].num_int_tag + "/1E8.root";
 			
-				string objPath = modes[mi].mc_dir_tag + ((modes[mi].mc_dir_file == "sd") ? "/h_eff_syst" : "");
-				objPath = replace(objPath, "<TDIST>", t_dist_type);
+				string objPath = "re/h_eff_syst";
 
 				RootObject os = RootGetObject(mc_f, objPath, error=false);
 				if (os.valid)
-					draw(shift(0, -modes[mi].mc_dir_ref), os, "eb", red, "Monte-Carlo (direct)");
-				*/
+					draw(shift(0, -modes[mi].mc_dir_ref), os, "eb", heavygreen, "Monte-Carlo (direct)");
 				
 				// ----- numerical integration, simple -----
 		
@@ -106,6 +101,9 @@ for (int dsi : datasets.keys)
 				limits((0, y_min), (x_max, y_max), Crop);
 			
 				xaxis(YEquals(0, false), dashed);
+
+				if (xsi == 0)
+					yaxis(XEquals(8e-4, false), dashed);
 		
 				if (!legend_drawn)
 				{

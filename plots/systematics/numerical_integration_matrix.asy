@@ -6,8 +6,7 @@ AddAllModes();
 
 string topDir = "../../";
 
-//string datasets[] = { "DS2a", "DS2b" };
-string datasets[] = { "DS2b" };
+string datasets[] = { "DS-fill5313" };
 
 string diagonal = "combined";
 
@@ -25,7 +24,7 @@ string object_labels[] = {
 	"2nd dgn. combination",
 };
 
-string binning = "ob-1-4";
+string binning = "ob-1-20-0.05";
 
 //----------------------------------------------------------------------------------------------------
 
@@ -37,7 +36,7 @@ void PlotAllModes(string f)
 	{
 		for (int oi : objects.keys)
 		{
-			string pth = "contributions/" + modes[mi].mat_num_int_tag + "/" + objects[oi];
+			string pth = "contributions/" + modes[mi].num_int_tag + "/" + objects[oi];
 			RootObject obj = RootGetObject(f, pth, error=false);
 			if (obj.valid)
 			{
@@ -47,8 +46,9 @@ void PlotAllModes(string f)
 		}
 	}
 
-	draw(scale(1, +100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt, "$\pm 1\un{\si}$ {\it envelope of analysis uncertainties}");
-	draw(scale(1, -100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt);
+	// TODO
+	//draw(scale(1, +100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt, "$\pm 1\un{\si}$ {\it envelope of analysis uncertainties}");
+	//draw(scale(1, -100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt);
 }
 
 
@@ -76,12 +76,19 @@ for (int dsi : datasets.keys)
 
 	NewPad("$|t|\ung{GeV^2}$", "systematic effect$\ung{\%}$", 1, gy);
 	PlotAllModes(f);
-	limits((0, -8), (0.01, +2), Crop);
+	limits((0, -5), (0.005, +2), Crop);
+	yaxis(XEquals(8e-4, false), dashed, above=true);
+	currentpad.xTicks = LeftTicks(0.001, 0.0005);
+	currentpad.yTicks = RightTicks(1., 0.5);
+	f_legend = BuildLegend();
 	currentpicture.legend.delete();
 	AttachLegend("low $|t|$ zoom");
 
 
 	//--------------------
+
+	// TODO
+	/*
 	++gy;
 	
 	NewPad("$|t|\ung{GeV^2}$", "$|t|\ung{GeV^2}$", axesAbove=true, 0, gy);
@@ -92,11 +99,13 @@ for (int dsi : datasets.keys)
 	draw(RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_corr_mat"), "p,bar");
 	limits((0, 0), (0.20, 0.20), Crop);
 	AttachLegend("analysis uncertainties -- correlation matrix", SE, NE);
+	*/
 
 	//--------------------
 
 	NewPad(false, 2, gy);
-	add(shift(0, 345) * f_legend);
+	//add(shift(0, 345) * f_legend);
+	add(shift(0, +100) * f_legend);
 }
 
-GShipout(vSkip=-71.5mm);
+GShipout();

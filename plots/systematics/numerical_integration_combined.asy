@@ -59,7 +59,7 @@ for (int dsi : datasets.keys)
 
 			for (int oi : objects.keys)
 			{
-				string pth = "contributions/" + modes[mi].mat_num_int_tag + "/" + objects[oi];
+				string pth = "contributions/" + modes[mi].num_int_tag + "/" + objects[oi];
 				RootObject obj = RootGetObject(f, pth, error=false);
 				if (obj.valid)
 					draw(obj, "l,d0", StdPen(oi+1)+1pt);
@@ -68,22 +68,19 @@ for (int dsi : datasets.keys)
 
 			// ----- limits, grid, ... -----
 
-			real x_min = 0, x_max = 0.25, x_Step = 0.05, x_step = 0.01;
+			real x_min = 0, x_max = 0.3, x_Step = 0.05, x_step = 0.01;
 			real y_min = -0.02, y_max = +0.02, y_Step = 0.005, y_step = 0.001;
 
 			if (xsi == 0)
-				{ x_min = 0; x_max = 0.01; x_Step = 0.002; x_step = 0.001; }
+				{ x_min = 0; x_max = 0.005; x_Step = 0.002; x_step = 0.001; }
 
 			currentpad.xTicks = LeftTicks(x_Step, x_step);
 			currentpad.yTicks = RightTicks(y_Step, y_step);
 		
 			limits((0, y_min), (x_max, y_max), Crop);
-		
-			for (real y = y_min; y <= y_max; y += y_Step)
-				xaxis(YEquals(y, false), (abs(y - 0.) < 1e-5) ? dashed : dotted);
-
-			for (real x = x_min; x <= x_max; x += x_Step)
-				yaxis(XEquals(x, false), dotted);
+			
+			if (xsi == 0)
+				yaxis(XEquals(8e-4, false), dashed);
 		}
 	}
 }

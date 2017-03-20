@@ -156,7 +156,7 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("alig-sh-thx") == 0)
 	{
-		sh_th_x = 1E-6;
+		sh_th_x = 0.5E-6;
 		return 0;
 	}
 
@@ -215,14 +215,14 @@ int SetScenario(const string &scenario)
 
 	if (scenario.compare("acc-corr-sigma-unc-thx") == 0)
 	{
-		si_d_x_err = 2.5E-6;
+		si_d_x_err = 0.3E-6;
 
 		return 0;
 	}
 
 	if (scenario.compare("acc-corr-sigma-unc-thy") == 0)
 	{
-		si_d_y_err = 0.025E-6;
+		si_d_y_err = 0.007E-6;
 
 		return 0;
 	}

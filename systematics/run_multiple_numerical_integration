@@ -16,10 +16,10 @@ function RunOneDiagonal()
 	echo "* $ds, $dgn"
 
 	tag="$ds/numerical_integration_$dgn"
-	./numerical_integration "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+	#./numerical_integration "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
 
 	tag="$ds/numerical_integration_full_$dgn"
-	./numerical_integration_full "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+	#./numerical_integration_full "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
 }
 #----------------------------------------------------------------------------------------------------
 
@@ -34,18 +34,15 @@ function RunOneDataset()
 
 	wait
 
-	# TODO
-	#tag="$ds/matrix_numerical_integration"
-	#./matrix_numerical_integration "${ds}" "${tag}.root" &> "${tag}.log"
+	tag="$ds/matrix_numerical_integration"
+	./matrix_numerical_integration "${ds}" "${tag}.root" &> "${tag}.log"
 }
 
 #----------------------------------------------------------------------------------------------------
 
 make "numerical_integration" || exit 1
 make "numerical_integration_full" || exit 2
-
-# TODO
-#make "matrix_numerical_integration" || exit 3
+make "matrix_numerical_integration" || exit 3
 
 for ds in ${datasets[*]}
 do

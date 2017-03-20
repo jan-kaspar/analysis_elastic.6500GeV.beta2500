@@ -57,11 +57,9 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 
 	// select binnings and diagonals
 	vector<string> binnings;
-	binnings.push_back("ob-0-1");
-	binnings.push_back("ob-1-4");
-	binnings.push_back("ob-3-4");
-	binnings.push_back("ob-5-4");
-	binnings.push_back("ob-1-10");
+	binnings.push_back("ob-1-20-0.05");
+	//binnings.push_back("ob-2-10-0.05");
+	//binnings.push_back("ob-3-5-0.05");
 
 	vector<string> diagonals;
 	diagonals.push_back("45b_56t");
@@ -74,11 +72,13 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 	{
 		Mode *m = NULL;
 		for (unsigned int mi = 0; mi < modes.size(); mi++)
+		{
 			if (modes[mi].tag.compare(contributions[ci]) == 0)
 			{
 				m = & modes[mi];
 				break;
 			}
+		}
 
 		if (m == NULL)
 		{
@@ -127,8 +127,8 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 
 			// build binning
 			Analysis anal;
-			anal.t_min = 0.; anal.t_max = 0.4;
-			anal.t_min_full = 0.; anal.t_max_full = 0.42;
+			anal.t_min = 8E-4; anal.t_max = 1.0;
+			anal.t_min_full = 0.; anal.t_max_full = 1.1;
 
 			unsigned int bins;
 			double *bin_edges;
@@ -236,33 +236,29 @@ int main(int argc, const char **argv)
 	string inputDir = argv[1];
 	string outputFileName = argv[2];
 
-	string fn_ni_45b = inputDir + "/numerical_integration_45b_56t.root";
-	string fn_ni_45t = inputDir + "/numerical_integration_45t_56b.root";
-	string fn_nid_45b = inputDir + "/numerical_integration_double_45b_56t.root";
-	string fn_nid_45t = inputDir + "/numerical_integration_double_45t_56b.root";
+	string fn_ni_45b = inputDir + "/numerical_integration_full_45b_56t.root";
+	string fn_ni_45t = inputDir + "/numerical_integration_full_45t_56b.root";
 
 	// TODO: back to C+ppp3
-	string t_dist_type = "exp1";
-	//string t_dist_type = "data fit, C+exp3";
-	//string t_dist_type = "model, C+ppp3";
+	string t_dist_type = "first fit";
 
 	// analyses cuts
-	double t_min_45b = 3.401E-3;
-	double t_min_45t = 0.61E-3;
+	double t_min_45b = 0.8E-3;
+	double t_min_45t = 0.6E-3;
 
 	// get input
 	TFile *f_ni_45b = TFile::Open(fn_ni_45b.c_str());
 	TFile *f_ni_45t = TFile::Open(fn_ni_45t.c_str());
-	TFile *f_nid_45b = TFile::Open(fn_nid_45b.c_str());
-	TFile *f_nid_45t = TFile::Open(fn_nid_45t.c_str());
 
-	if (!f_ni_45b || !f_ni_45t || !f_nid_45b || !f_nid_45t)
+	if (!f_ni_45b || !f_ni_45t)
 	{
 		printf("ERROR: can't open input files.\n");
 		return 1;
 	}
 
 	// get graphs of cross-section with and without acceptance
+	// TODO
+	/*
 	TGraph *g_acc_dsdt_45b = (TGraph*) f_ni_45b->Get(("none/" + t_dist_type + "/g_h_obs").c_str());
 	TGraph *g_acc_dsdt_45t = (TGraph*) f_ni_45t->Get(("none/" + t_dist_type + "/g_h_obs").c_str());
 	TGraph *g_dsdt_45b = (TGraph*) f_ni_45b->Get(("none/" + t_dist_type + "/g_h_p").c_str());
@@ -273,35 +269,42 @@ int main(int argc, const char **argv)
 		printf("ERROR: can't load observed cross-section graphs.\n");
 		return 1;
 	}
+	*/
 
 	// prepare output
 	TFile *f_out = new TFile(outputFileName.c_str(), "recreate");
 
 	// ---------- give source information for all modes ----------
 
-	AddMode("alig-sh-thx", "s", "alig-sh-thx/<TDIST>/g_r", 1., coFull);
-	AddMode("alig-sh-thy:D+0,R+1", "s", "alig-sh-thy:D+0,R+1/<TDIST>/g_r", 1., coFull);
-	AddMode("alig-sh-thy:D+1,R+0", "s", "alig-sh-thy:D+1,R+0/<TDIST>/g_r", 1., coFull);
+	AddMode("alig-sh-thx", "s", "<TDIST>/alig-sh-thx/g_eff", 1., coFull);
+	AddMode("alig-sh-thy", "s", "<TDIST>/alig-sh-thy/g_eff", 1., coFull);
 	
-	AddMode("thx-thy-tilt", "s", "thx-thy-tilt/<TDIST>/g_r", 1., coFull);
+	AddMode("thx-thy-tilt", "s", "<TDIST>/thx-thy-tilt/g_eff", 1., coFull);
 	
-	AddMode("opt-scale-m1", "s", "opt-m1/<TDIST>/g_r", 1., coFull);
-	AddMode("opt-scale-m2", "s", "opt-m2/<TDIST>/g_r", 1., coFull);
+	AddMode("opt-m1", "s", "<TDIST>/opt-m1/g_eff", 1., coFull);
+	AddMode("opt-m2", "s", "<TDIST>/opt-m2/g_eff", 1., coFull);
 
-	AddMode("acc-corr-sigma-unc", "d", "x+0,y+0/<TDIST>/sigma offset/systematic effect", 1., coFull);
-	AddMode("acc-corr-sigma-asym", "d", "x+0,y+0/<TDIST>/sigma asymmetry/systematic effect", 1., coFull);
-	AddMode("acc-corr-non-gauss", "d", "x+0,y+0/<TDIST>/non-gauss/systematic effect", 1., coFull);
-
-	AddMode("eff-slp", "s", "eff-slp/<TDIST>/g_r", 1., coNo);
-
-	AddMode("beam-mom", "s", "beam-mom/<TDIST>/g_r", 1., coFull);
-	AddMode("beam-mom-alfa", "s", "beam-mom-alfa/<TDIST>/g_r", 1., coFull);
 	
-	AddMode("unsm-sigma-x", "d", "unsmearing correction/<TDIST>/unsm_corr_unc_th_x", 0., coFull);
-	AddMode("unsm-sigma-y", "d", "unsmearing correction/<TDIST>/unsm_corr_unc_th_y", 0., coFull);
-	AddMode("unsm-model", "d", "unsmearing correction/unsm_corr_unc_model", 0., coFull);
+	AddMode("acc-corr-sigma-unc-thx", "s", "<TDIST>/acc-corr-sigma-unc-thx/g_eff", 1., coFull);
+	AddMode("acc-corr-sigma-unc-thy", "s", "<TDIST>/acc-corr-sigma-unc-thy/g_eff", 1., coFull);
+
+	// TODO
+	//AddMode("acc-corr-sigma-asym", "s", "x+0,y+0/<TDIST>/sigma asymmetry/systematic effect", 1., coFull);
+	//AddMode("acc-corr-non-gauss", "s", "x+0,y+0/<TDIST>/non-gauss/systematic effect", 1., coFull);
+
+	AddMode("eff-slp", "s", "<TDIST>/eff-slp/g_eff", 1., coNo);
+
+	AddMode("beam-mom", "s", "<TDIST>/beam-mom/g_eff", 1., coFull);
 	
-	AddMode("norm", "s", "norm/<TDIST>/g_r", 1., coFull);
+	// TODO
+	/*
+	AddMode("unsm-sigma-x", "", "unsmearing correction/<TDIST>/unsm_corr_unc_th_x", 0., coFull);
+	AddMode("unsm-sigma-y", "", "unsmearing correction/<TDIST>/unsm_corr_unc_th_y", 0., coFull);
+	AddMode("unsm-model", "", "unsmearing correction/unsm_corr_unc_model", 0., coFull);
+	*/
+	
+	// TODO
+	//AddMode("norm", "s", "norm/<TDIST>/g_eff", 1., coFull);
 
 	// ---------- process modes ----------
 	for (unsigned int mi = 0; mi < modes.size(); mi++)
@@ -314,6 +317,11 @@ int main(int argc, const char **argv)
 			objPath = objPath.replace(pos, 7, t_dist_type);
 
 		// load input
+		m.g_input_45b = (TGraph *) f_ni_45b->Get(objPath.c_str());
+		m.g_input_45t = (TGraph *) f_ni_45t->Get(objPath.c_str());
+
+		// TODO
+		/*
 		if (m.fileName.compare("s") == 0)
 		{
 			// ROOT-bug workaround
@@ -322,10 +330,8 @@ int main(int argc, const char **argv)
 			string rest = objPath.substr(pos+1);
 			m.g_input_45b = (TGraph *) ((TDirectory *) f_ni_45b->Get(topDir.c_str()))->Get(rest.c_str());
 			m.g_input_45t = (TGraph *) ((TDirectory *) f_ni_45t->Get(topDir.c_str()))->Get(rest.c_str());
-		} else {
-			m.g_input_45b = (TGraph *) f_nid_45b->Get(objPath.c_str());
-			m.g_input_45t = (TGraph *) f_nid_45t->Get(objPath.c_str());
 		}
+		*/
 
 		if (!m.g_input_45b || !m.g_input_45t)
 		{
@@ -347,6 +353,8 @@ int main(int argc, const char **argv)
 			if (t > 0.01)
 				dt = 0.001;
 
+			// TODO
+			/*
 			// full (or corrected) cross-section - gives fully reconstructed bin content
 			double cs_45b = g_dsdt_45b->Eval(t);
 			double cs_45t = g_dsdt_45t->Eval(t);
@@ -364,13 +372,16 @@ int main(int argc, const char **argv)
 			// thus: w = A^2 / cs_obs;
 			double w_45b = (cs_obs_45b > 0.) ? A_45b * A_45b / cs_obs_45b : 0.;
 			double w_45t = (cs_obs_45t > 0.) ? A_45t * A_45t / cs_obs_45t : 0.;
+			*/
+			double w_45b = 1.;
+			double w_45t = 1.;
 
 			// skip points outside final acceptance region
 			if (t < t_min_45b)
 				w_45b = 0.;
 			if (t < t_min_45t)
 				w_45t = 0.;
-
+			
 			// interpolate diagonal modes, unify definition: no effect --> 0
 			double m_45b = m.g_input_45b->Eval(t) - m.ref;
 			double m_45t = m.g_input_45t->Eval(t) - m.ref;
@@ -380,30 +391,37 @@ int main(int argc, const char **argv)
 			m.g_eff_45t->SetPoint(idx, t, (w_45t > 0.) ? m_45t : 0.);	
 
 			// make combination
+			// TODO
+			/*
 			//double S_w = w_45b + w_45t;
 			double S_w_cs = w_45b*cs_45b + w_45t*cs_45t;
 			//double cs_comb = (S_w > 0.) ? S_w_cs / S_w : 0.;	// combined cross-section
 
 			double w_cs_m_45b = w_45b * cs_45b * m_45b;
 			double w_cs_m_45t = w_45t * cs_45t * m_45t;
+			*/
 
 			if (m.corr == coNo)
 			{
-				double m_comb1 = (S_w_cs > 0.) ? w_cs_m_45b / S_w_cs : 0.;
-				double m_comb2 = (S_w_cs > 0.) ? w_cs_m_45t / S_w_cs : 0.;
-				m.g_eff_comb1->SetPoint(idx, t, m_comb1);
-				m.g_eff_comb2->SetPoint(idx, t, m_comb2);
+				// TODO
+				//double m_comb1 = (S_w_cs > 0.) ? w_cs_m_45b / S_w_cs : 0.;
+				//double m_comb2 = (S_w_cs > 0.) ? w_cs_m_45t / S_w_cs : 0.;
+				m.g_eff_comb1->SetPoint(idx, t, m_45b / 2.);
+				m.g_eff_comb2->SetPoint(idx, t, m_45t / 2.);
 			}
 
 			if (m.corr == coFull)
 			{
-				double m_comb = (S_w_cs > 0.) ? (w_cs_m_45b + w_cs_m_45t) / S_w_cs : 0.;
-				m.g_eff_comb1->SetPoint(idx, t, m_comb);
+				// TODO
+				//double m_comb = (S_w_cs > 0.) ? (w_cs_m_45b + w_cs_m_45t) / S_w_cs : 0.;
+				m.g_eff_comb1->SetPoint(idx, t, (m_45b + m_45t) / 2.);
 			}
 
 			if (m.corr == coAntiFull)
 			{
-				double m_comb = (S_w_cs > 0.) ? (w_cs_m_45b - w_cs_m_45t) / S_w_cs : 0.;
+				// TODO
+				//double m_comb = (S_w_cs > 0.) ? (w_cs_m_45b - w_cs_m_45t) / S_w_cs : 0.;
+				double m_comb = (m_45b - m_45t) / 2.;
 				m.g_eff_comb1->SetPoint(idx, t, m_comb);
 			}
 		}
@@ -434,12 +452,14 @@ int main(int argc, const char **argv)
 	}
 	
 	// ---------- build linear covariance matrices ----------
-	
+
 	TDirectory *matricesDir = f_out->mkdir("matrices");
 
 	vector<string> contributions;
 
 	// ----------
+
+	/*
 
 	contributions.clear();
 	contributions.push_back("alig-sh-thx");
@@ -496,48 +516,24 @@ int main(int argc, const char **argv)
 	MakeMatrix(contributions, matricesDir, "unsm-corr");
 
 	// ----------
+	*/
 
 	contributions.clear();
 	contributions.push_back("alig-sh-thx");
-	contributions.push_back("alig-sh-thy:D+0,R+1");
-	contributions.push_back("alig-sh-thy:D+1,R+0");
+	contributions.push_back("alig-sh-thy");
 	contributions.push_back("thx-thy-tilt");
-	contributions.push_back("opt-scale-m1");
-	contributions.push_back("opt-scale-m2");
-	contributions.push_back("acc-corr-sigma-unc");
-	contributions.push_back("acc-corr-sigma-asym");
-	contributions.push_back("acc-corr-non-gauss");
+	contributions.push_back("opt-m1");
+	contributions.push_back("opt-m2");
+	contributions.push_back("acc-corr-sigma-unc-thx");
+	contributions.push_back("acc-corr-sigma-unc-thy");
+	//contributions.push_back("acc-corr-sigma-asym");
+	//contributions.push_back("acc-corr-non-gauss");
 	contributions.push_back("eff-slp");
 	contributions.push_back("beam-mom");
-	contributions.push_back("unsm-sigma-x");
-	contributions.push_back("unsm-sigma-y");
-	contributions.push_back("unsm-model");
-	MakeMatrix(contributions, matricesDir, "all-anal");
-
-	// ----------
-
-	contributions.clear();
-	contributions.push_back("norm");
-	MakeMatrix(contributions, matricesDir, "norm");
-
-	// ----------
-
-	contributions.clear();
-	contributions.push_back("alig-sh-thx");
-	contributions.push_back("alig-sh-thy:D+0,R+1");
-	contributions.push_back("alig-sh-thy:D+1,R+0");
-	contributions.push_back("thx-thy-tilt");
-	contributions.push_back("opt-scale-m1");
-	contributions.push_back("opt-scale-m2");
-	contributions.push_back("acc-corr-sigma-unc");
-	contributions.push_back("acc-corr-sigma-asym");
-	contributions.push_back("acc-corr-non-gauss");
-	contributions.push_back("eff-slp");
-	contributions.push_back("beam-mom");
-	contributions.push_back("unsm-sigma-x");
-	contributions.push_back("unsm-sigma-y");
-	contributions.push_back("unsm-model");
-	contributions.push_back("norm");
+	//contributions.push_back("unsm-sigma-x");
+	//contributions.push_back("unsm-sigma-y");
+	//contributions.push_back("unsm-model");
+	//contributions.push_back("norm");
 	MakeMatrix(contributions, matricesDir, "all");
 
 	delete f_out;
