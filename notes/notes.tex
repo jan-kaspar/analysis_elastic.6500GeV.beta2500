@@ -186,13 +186,19 @@ $$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered even
 
 \> method
 \>> take BX sample, split it into time slices
-\>> evaluate probability of signal that would make impossible to reconstruct elastic event due to too much activity
-\>> typical conditions per RP
+\>> per RP, evaluate frequency of ``destructive`` signal that would break reconstruction if piled up with an elastic event
+
+$$I^{i}_{\rm PU} = {N(\hbox{destructive signal in RP $i$})\over N(\hbox{anything})}$$
+
+\>> typical conditions of ``destructivity``
 \>>> ``pl\_suff'': sufficient number of planes is on
-\>>> ``pat\_suff'': U or V pattern is recognised 
+\>>> ``pat\_suff'': at least one U or V pattern is recognised 
 \>> use OR between left and right arm -- it is sufficient to loose any arm to loose the elastic event
 
-\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
+$$I_{\rm PU} = {N(\hbox{destructive signal in any 220-fr RP})\over N(\hbox{anything})}$$
+
+
+\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm and their combination, per diagonal
 
 \> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
 
