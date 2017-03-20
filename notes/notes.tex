@@ -154,18 +154,21 @@ where symbols $I$ stand for various inefficiencies discussed below.
 \subsection{Trigger efficiency}
 
 \> method:
-\>> take zero-bias (BX) data \TODO: which bit
+\>> take zero-bias (BX) data
+\>>> using bit 9 (e.g.~https://twiki.cern.ch/twiki/bin/view/TOTEM/90m)
+\>>> i.e.~ev.trigger\_bits \& 512
 \>> select elastic events (standard tagging) $\rightarrow$ number of events $N({\rm BX,elastic})$
-\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N({\rm BX,elastic,trigger})$
+\>> out of the selected events, check how many have trigger flag on $\rightarrow$ number of events $N({\rm BX,elastic,trigger})$
+\>>> trigger flag = ev.trigger\_bits \& 7 (i.e.~any of the bits 0, 1 and 2)
 \>> then trigger efficiency is obtained as follows:
 
 $$1 - I_{\rm trig} = {N({\rm BX,elastic,trigger}) \over N({\rm BX,elastic})}$$
 
 \> results:
-\>> fill 5317, diagonal 45 bot -- 56 top: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7914$
-\>> fill 5317, diagonal 45 top -- 56 bot: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7194$
+\>> fill 5317, diagonal 45 bot -- 56 top: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7911$
+\>> fill 5317, diagonal 45 top -- 56 bot: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7190$
 
-\> \TODO: correction applied or not?
+\> this correction is not applied since it does not modify $t$-distribution shape
 
 
 \subsection{DAQ efficiency}
@@ -175,7 +178,7 @@ $$\hbox{DAQ efficiency} = {\hbox{recorded events}\over \hbox{triggered events}} 
 
 \> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
 
-\> \TODO: correction applied or not?
+\> this correction is not applied since it does not modify $t$-distribution shape
 
 
 
@@ -193,6 +196,7 @@ $$\hbox{DAQ efficiency} = {\hbox{recorded events}\over \hbox{triggered events}} 
 
 \> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
 
+\> this correction is not applied since it does not modify $t$-distribution shape
 
 
 \subsection{Uncorrelated single RP inefficiencies (3-out-of-4)}
