@@ -139,37 +139,44 @@
 \>>> at low $|t|$: inefficiency $\O{0.1\un{\%}}$ and flat in $|t|$
 
 %----------------------------------------------------------------------------------------------------
-\section{Efficiency studies, pile-up, ...}
+\section{Efficiency studies}
 
-\subsection{DAQ efficiency}
-
-\> method: per time slice calculate from the trigger block:
-$$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
-
-\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
+\vskip3mm
+Each event is weighted with the following correction factor
+\eqref{
+	{1\over 1 - I_{\rm trig}}\ 
+	{1\over 1 - I_{\rm DAQ}}
+	{1\over 1 - I_{\rm PU}}\ 
+	{1\over 1 - I_{1RP} - I_{\rm 2RP}}\ ,
+}{eff corr}
+where symbols $I$ stand for various inefficiencies discussed below.
 
 \subsection{Trigger efficiency}
 
 \> method:
-\>> take zero-bias (BX) data
-\>> select elastic events (standard tagging) $\rightarrow$ number of events $N(BX,elastic)$
-\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N(BX,elastic,trigger)$
-\>> efficiency = $N(BX,elastic,trigger) / N(BX,elastic)$
+\>> take zero-bias (BX) data \TODO: which bit
+\>> select elastic events (standard tagging) $\rightarrow$ number of events $N({\rm BX,elastic})$
+\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N({\rm BX,elastic,trigger})$
+\>> then trigger efficiency is obtained as follows:
+
+$$1 - I_{\rm trig} = {N({\rm BX,elastic,trigger}) \over N({\rm BX,elastic})}$$
 
 \> results:
-\>> fill 5317, diagonal 45 bot -- 56 top: $N(BX,elastic) = N(BX,elastic,trigger) = 7914$
-\>> fill 5317, diagonal 45 top -- 56 bot: $N(BX,elastic) = N(BX,elastic,trigger) = 7194$
+\>> fill 5317, diagonal 45 bot -- 56 top: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7914$
+\>> fill 5317, diagonal 45 top -- 56 bot: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7194$
+
+\> \TODO: correction applied or not?
 
 
+\subsection{DAQ efficiency}
 
-\subsection{3-out-of-4 efficiencies}
+\> method: per time slice calculate from the trigger block of raw data:
+$$\hbox{DAQ efficiency} = {\hbox{recorded events}\over \hbox{triggered events}} \equiv 1 - I_{\rm DAQ}$$
 
-\> method: derive from results of the 4-RP analysis
-\>> take the results for 220-fr pots only
+\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
 
-\> uncertainties
-\>> inefficiency at $\th_y^* = 0$: $0.3\un{\%}$
-\>> slope: $15\un{rad^{-1}}$
+\> \TODO: correction applied or not?
+
 
 
 \subsection{Pile-up}
@@ -185,6 +192,35 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 \> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
 
 \> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
+
+
+
+\subsection{Uncorrelated single RP inefficiencies (3-out-of-4)}
+
+\> method: derive from results of the 4-RP analysis
+\>> transfer validation: \plot{efficiencies/eff3outof4_fits_summary_cmp_4rp_anal.pdf}
+\>> take the results for 220-fr pots only
+
+$$I_{\rm 1RP}(\th_y^*) = \sum\limits_{i \in\hbox{\SmallerFonts 220-fr}} I_{\rm 1RP}^i$$
+
+\> typical form of $I_{\rm 1RP}(\th_y^*)$: linear in $\th^*_y$
+\>> value at $\th_y^* = 0$: typically about $6.9\un{\%}$
+\>> slope: typically about $150\un{rad^{-1}}$
+
+\> uncertainties of $I_{\rm 1RP}(\th_y^*)$
+\>> value at $\th_y^* = 0$: $0.3\un{\%}$
+\>> slope: $15\un{rad^{-1}}$
+
+\> this correction is applied since it modifies the $t$-distribution shape
+
+
+\subsection{Correlated RP inefficiencies}
+
+\> \TODO
+
+\> this correction is applied since it modifies the $t$-distribution shape
+
+
 
 %----------------------------------------------------------------------------------------------------
 \section{Alignment}
