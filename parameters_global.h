@@ -34,7 +34,7 @@ void Init_global()
 	anal.si_th_y_1arm_unc = 0.02E-6 / sqrt(2.);
 
 	anal.si_th_y_2arm = anal.si_th_y_1arm / sqrt(2.);
-	anal.si_th_y_2arm_unc = 0E-6;
+	anal.si_th_y_2arm_unc = 0.01E-6;
 
 	anal.si_th_x_1arm_L = 12.5E-6 / sqrt(2.);
 	anal.si_th_x_1arm_R = 12.5E-6 / sqrt(2.);
@@ -46,9 +46,8 @@ void Init_global()
 	anal.si_th_y_LRdiff = anal.si_th_y_1arm * sqrt(2.);
 	anal.si_th_y_LRdiff_unc = 0.007E-6;
 
-	// TODO
-	anal.si_th_x_2arm = 0.3E-6;
-	anal.si_th_x_2arm_unc = 0E-6;
+	anal.si_th_x_2arm = 0.29E-6;
+	anal.si_th_x_2arm_unc = 0.04E-6;
 
 	// alignment-determination settings
 	anal.alignment_t0 = 0.;			// beginning of the first time-slice
