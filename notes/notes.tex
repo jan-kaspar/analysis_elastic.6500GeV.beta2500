@@ -447,11 +447,15 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 %----------------------------------------------------------------------------------------------------
 \section{Binning}
 
-\> method
-\>> at $|t| \approx 10^{-3}\un{GeV^2}$: very fine binning
-\>> at $|t| \approx 10^{-1}\un{GeV^2}$: bin size about $n\times \un{\si}$ of the $t$ smearing
-\>> at $|t| \approx 0.35\un{GeV^2}$: bin size for a fixed statistical uncertainty
-\>> if needed at large $|t|$: constant bin size to avoid excessively large bins
+\> method: binning ``ob-$\langle n\rangle$-$\langle u\rangle$-$\langle w_m\rangle$`` is built as follows
+\>> at low $|t|$ ($|t| \ls 0.4\un{GeV^2}$): bin size about $n\times \si(\hbox{$t$ smearing})$
+\>> at mid $|t|$: bin size for a fixed statistical uncertainty $u\un{\%}$
+\>> if needed at large $|t|$: constant bin size $w_m$ (in $\rm GeV^2$) to avoid excessively large bins
+
+\> binnings used in analysis
+\>> ob-1-20-0.05
+\>> ob-2-10-0.05
+\>> ob-3-5-0.05
 
 \> \plot{binning/bin_size_vs_t.pdf} : visualisation of binning determinants vs.~several binnings used in
 the analysis

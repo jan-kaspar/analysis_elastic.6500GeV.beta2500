@@ -1,11 +1,21 @@
 The steps are as follows.
 
-1. run make
+1. Run make
 
-2. run "./get_acceptance_correction" which will ge it from "../DS-XXX/distributions_XXX.root"
+2. Run "./get_acceptance_correction" which will extract from
+		"../DS-XXX/distributions_XXX.root"
+	object
+		"acceptance correction/ob-1-30-0.05/p_t_full_corr"
+	and save it as
+		"acceptance_correction.root"
 
-3. run "./make_fit" which needs object "ob-1-30-0.05/merged/45b_56t/h_dsdt" from "../DS-merged/merged.root"
+3. Run "./make_fit" which will fit histogram
+		"ob-1-30-0.05/merged/45b_56t/h_dsdt"
+	from
+		"../DS-merged/merged.root"
+	and save into
+		"dN_dt_fit.root"
 
-4. run "./simu"
+4. Run "./simu"
 
-5. run "./make_generators"
+5. Run "./make_generators"

@@ -8,7 +8,7 @@ string files[] = {
 	"DS-merged/merged_old.root",
 };
 
-string binning = "ob-1-20-0.05";
+string binning = "ob-2-10-0.05";
 
 drawGridDef = true;
 
