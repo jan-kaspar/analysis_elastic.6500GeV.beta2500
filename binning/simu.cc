@@ -1,6 +1,7 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TF1.h"
 #include "TProfile.h"
 #include "TRandom2.h"
 #include "TGraphErrors.h"
@@ -34,10 +35,10 @@ void ProfileToRMSGraph(TProfile *p, TGraphErrors *g)
 
 int main()
 {
-	double B = 20.;		// GeV^2
+	// settings
 	double p = 6.5E3;	// GeV
 
-	double si_de_th_x_2arm = 0.30E-6;
+	double si_de_th_x_2arm = 0.29E-6;
 	double si_de_th_y_1arm = 0.26E-6;
 
 	double lcut_th_y_L = 4.3E-6;
@@ -45,7 +46,12 @@ int main()
 	double hcut_th_y_L = 100E-6;
 	double hcut_th_y_R = 100E-6;
 
-	TFile *out_f = new TFile("simu.root", "recreate");
+	// get input
+	TFile *f_in = TFile::Open("dN_dt_fit.root");
+	TF1 *f_dN_dt = (TF1 *) f_in->Get("ff");
+
+	// prepare output
+	TFile *f_out = TFile::Open("simu.root", "recreate");
 
 	TH1D *h_th_x_tr = new TH1D("h_th_x_tr", ";#theta_{x}^{*}  (#murad)", 200, -200E-6, -200E-6);
 	TH1D *h_th_y_tr = new TH1D("h_th_y_tr", ";#theta_{y}^{*}  (#murad)", 200, -200E-6, -200E-6);
@@ -58,11 +64,13 @@ int main()
 	TH2D *h_de_t_vs_t = new TH2D("h_de_t_vs_t", ";t  (GeV^{2});#Delta t  (GeV^{2})", 100, 0., 1.0, 100, 0., 0.);
 	TProfile *p_de_t_vs_t = new TProfile("p_de_t_vs_t", ";t  (GeV^{2})", 1000, 0., 1.0);
 
-	for (unsigned int i = 0; i < 40000000; i++)
+	// simulation loop
+	for (unsigned int i = 0; i < 100000000; i++)
 	{
 		double t = gRandom->Rndm() * 1.2;
 		double phi = gRandom->Rndm() * M_PI;
-		double w = exp(-B*t);
+
+		double w = f_dN_dt->Eval(t);
 
 		double th = sqrt(t) / p;
 		double th_x = th * cos(phi);
@@ -112,5 +120,5 @@ int main()
 	ProfileToRMSGraph(p_de_t_vs_t, g_RMS_de_t_vs_t);
 	g_RMS_de_t_vs_t->Write();
 
-	delete out_f;
+	delete f_out;
 }
