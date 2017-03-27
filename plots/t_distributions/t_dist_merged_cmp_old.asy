@@ -4,8 +4,8 @@ import pad_layout;
 string topDir = "../../";
 
 string files[] = {
-	"DS-merged/merged.root",
 	"DS-merged/merged_old.root",
+	"DS-merged/merged.root",
 };
 
 string binning = "ob-2-10-0.05";
