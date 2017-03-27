@@ -2,10 +2,10 @@ import root;
 import pad_layout;
 
 string datasets[];
-//datasets.push("DS-fill5313");
-//datasets.push("DS-fill5314");
+datasets.push("DS-fill5313");
+datasets.push("DS-fill5314");
 datasets.push("DS-fill5317");
-//datasets.push("DS-fill5321");
+datasets.push("DS-fill5321");
 
 string diagonals[] = { "45b_56t", "45t_56b", "anti_45b_56b", "anti_45t_56t" };
 string dgn_labels[] = { "45 bot -- 56 top", "45 top -- 56 bot", "45 bot -- 56 bot", "45 top -- 56 top" };
