@@ -352,6 +352,7 @@ int main(int argc, char **argv)
 			corrg_pileup = (TGraph *) puF->Get("45t_56b/dgn");
 	}
 
+	// get time-dependent resolution
 	TGraph *g_d_x_RMS = NULL;
 	TGraph *g_d_y_RMS = NULL;
 	if (anal.use_resolution_fits)
@@ -406,10 +407,11 @@ int main(int argc, char **argv)
 
 	if (apply_unsmearing)
 	{
-		TFile *unsmearing_correction_file = TFile::Open(unsmearing_file.c_str());
+		string path = inputDir + "/" + unsmearing_file;
+		TFile *unsmearing_correction_file = TFile::Open(path.c_str());
 		if (!unsmearing_correction_file)
 		{
-			printf("ERROR: unfolding file `%s' can not be opened.\n", unsmearing_file.c_str());
+			printf("ERROR: unfolding file `%s' can not be opened.\n", path.c_str());
 			return 101;
 		} else {
 			for (unsigned int bi = 0; bi < binnings.size(); ++bi)
