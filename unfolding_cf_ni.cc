@@ -230,7 +230,7 @@ void MakeCorrectionHistograms(const vector<TH1D *> binning_hists)
 
 			double v_corr;
 
-			if (l+w < 3E-4 || l > 0.3)
+			if (l+w < 3E-4 || l > 1.)
 			{
 				v_corr = 0.;
 			} else {
@@ -258,12 +258,11 @@ void MakeCorrectionHistograms(const vector<TH1D *> binning_hists)
 
 //----------------------------------------------------------------------------------------------------
 
-void ProcessOne(const vector<TH1D *> /*binning_hists*/)
+void ProcessOne(const vector<TH1D *> binning_hists)
 {
 	MakeGraphs();
 
-	// TODO
-	//MakeCorrectionHistograms(binning_hists);
+	MakeCorrectionHistograms(binning_hists);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -293,7 +292,7 @@ int main(int argc, const char **argv)
 	
 	// binnings
 	vector<string> binnings;
-	binnings.push_back("ub");
+	//binnings.push_back("ub");
 	binnings.push_back("ob-1-20-0.05");
 	binnings.push_back("ob-2-10-0.05");
 	binnings.push_back("ob-3-5-0.05");
