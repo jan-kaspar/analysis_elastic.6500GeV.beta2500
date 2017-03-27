@@ -305,7 +305,7 @@ int main(int argc, char **argv)
 	
 	// binnings
 	vector<string> binnings;
-	binnings.push_back("ub");
+	//binnings.push_back("ub");
 	binnings.push_back("ob-1-20-0.05");
 	binnings.push_back("ob-2-10-0.05");
 	binnings.push_back("ob-3-5-0.05");
@@ -395,14 +395,14 @@ int main(int argc, char **argv)
 		}
 	}
 
-	// get unsmearing correction
+	// get unsmearing corrections
 	bool apply_unsmearing = (unsmearing_file != "");
 
 	printf("\n>> unsmearing_file = %s\n", unsmearing_file.c_str());
 	printf(">> unsmearing_object = %s\n", unsmearing_object.c_str());
 	printf(">> apply_unsmearing = %i\n", apply_unsmearing);
 
-	TGraph *unsmearing_correction = NULL;
+	map<unsigned int, TH1D*> unsmearing_corrections;
 
 	if (apply_unsmearing)
 	{
@@ -412,11 +412,23 @@ int main(int argc, char **argv)
 			printf("ERROR: unfolding file `%s' can not be opened.\n", unsmearing_file.c_str());
 			return 101;
 		} else {
-			unsmearing_correction = (TGraph *) unsmearing_correction_file->Get(unsmearing_object.c_str());
-			if (!unsmearing_correction)
+			for (unsigned int bi = 0; bi < binnings.size(); ++bi)
 			{
-				printf("ERROR: unsmearing correction object `%s' cannot be loaded.\n", unsmearing_object.c_str());
-				return 102;
+				string obj_path = unsmearing_object;
+				size_t pos = obj_path.find("<binning>");
+				if (pos != string::npos)
+				{
+					obj_path.replace(pos, 9, binnings[bi]);
+				}
+
+				TH1D *h = (TH1D *) unsmearing_correction_file->Get(obj_path.c_str());
+				if (h == NULL)
+				{
+					printf("ERROR: unsmearing correction object `%s' cannot be loaded.\n", obj_path.c_str());
+					return 102;
+				}
+
+				unsmearing_corrections[bi] = h;
 			}
 		}
 	}
@@ -1580,11 +1592,10 @@ int main(int argc, char **argv)
 
 		for (int bin = 1; bin <= bh_t_normalized_unsmeared[bi]->GetNbinsX(); ++bin)
 		{
-			double c = bh_t_normalized_unsmeared[bi]->GetBinCenter(bin);
 			double v = bh_t_normalized_unsmeared[bi]->GetBinContent(bin);
 			double v_u = bh_t_normalized_unsmeared[bi]->GetBinError(bin);
 
-			double corr = (apply_unsmearing) ? unsmearing_correction->Eval(c) : 0.;
+			double corr = (apply_unsmearing) ? unsmearing_corrections[bi]->GetBinContent(bin) : 0.;
 
 			bh_t_normalized_unsmeared[bi]->SetBinContent(bin, v * corr);
 			bh_t_normalized_unsmeared[bi]->SetBinError(bin, v_u * corr);
