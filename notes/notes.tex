@@ -425,23 +425,56 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 \> \plot{acceptance_correction/acc_cmp_fill.pdf} : verification of the assumed $\ph$ symmetry
 
 
+\subsection{Program implementation, validation}
+
+\> there are two implementations of \Eq{acc model}
+\>> ``old''
+\>>> assumes no dependence of acceptance condition of $d_x$, thus integrates over $d_y$ only
+\>>> assumes Gaussian distribution of $d_y$
+\>> ``new'': no assumptions needed, implemented as numerical integration using routines from GSL
+\>>> for performance optimisation, this implementation {\it may} assume gaussianity of $d_y$
+
+\> \plot{acceptance_correction/validation/validation_vs_old.pdf} : comparison of old and new implementations; \TODO: add comment
+
+\> \plot{acceptance_correction/validation/validation_gaussian_approx.pdf} : for the new implementation, comparison of results with and without the gaussian optimisation; \TODO: add comment
+
+\> \plot{acceptance_correction/validation/validation_with_mc.pdf}
+\>> comparison of MC simulations with smearing and
+\>>> green: no fiducial cuts, no correction
+\>>> red: standard fiducial cuts, standard correction
+\>> \TODO: add comment
+
 
 
 
 %----------------------------------------------------------------------------------------------------
 \section{Unfolding of resolution effects}
 
-\> method (preliminary)
-\>> a first fit of data with model including both Coulomb and hadronic contributions
-\>> this fit serves as an input (truth) to simulation (numerical integration) with and without smearing effects
+\> method
+\>> take a fit of data with model including both Coulomb and hadronic contributions
+\>> this fits serves as an input (truth) to simulation with and without smearing effects
 \>> ratio of these two curves gives unfolding correction
-\>> \TODO: write that one makes ratio of \Eq{sm model th corr} and $H_{\rm true}(\th)$ in order to account for the small bias introduced in acceptance correction handling
+\eqref{U(\th) = {H_{\rm smear,corr}(\th)\over h_{\rm true}(\th)}}{unfold corr}
+where the numerator comes from \Eq{sm model th corr} and therefore this correction takes into account the small bias introduced in acceptance correction handling
+\>>> in practice the correction $U$ is evaluated as a function of $t$
 
-\> results (preliminary)
-\>> for the moment only at low $|t|$: \plot{unfolding/cmp_mc_num_int.pdf}
-\>>> as expected: effect in general small (very small beam divergence) and only present at low $|t|$ (strong non-linearity due to Coulomb)
+\> there are two evaluations of \Eq{unfold corr}
+\>> numerical integration: fast, accurate
+\>> Monte Carlo: very simple implementation, needs long computing time for reasonable accuracy
+\>> \plot{unfolding/cmp_mc_num_int.pdf} : comparison of the two methods -- very good agreement
 
+\> \plot{unfolding/num_int_model_cmp.pdf} : dependence on the initial data fit
+\>> differences only at high $|t|$, always below $0.1\un{\%}$
+\>> the fit "fit2-1" doesn't describe the dip well and should be thus handled with caution
 
+\> results -- as expected
+\>>> effects in general small -- very small beam divergence
+\>>> effects only present at low $|t|$ (strong non-linearity due to Coulomb) and at dip region
+
+\> \TODO: add comments on uncertainty
+\>> model dependence
+\>> dependence on $\si(m_x)$
+\>> dependence on $\si(m_y)$
 
 
 %----------------------------------------------------------------------------------------------------
