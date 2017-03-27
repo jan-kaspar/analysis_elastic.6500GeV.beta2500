@@ -1,5 +1,6 @@
 #include "common_definitions.h"
 #include "common_algorithms.h"
+#include "AcceptanceCalculator.h"
 #include "parameters.h"
 #include "common.h"
 
@@ -152,8 +153,14 @@ int main(int argc, char **argv)
 	
 	// binnings
 	vector<string> binnings;
-	binnings.push_back("ub");
-	binnings.push_back("ob-1-30-0.05");
+	//binnings.push_back("ub");
+	binnings.push_back("ob-1-20-0.05");
+	binnings.push_back("ob-2-10-0.05");
+	binnings.push_back("ob-3-5-0.05");
+
+	// initialise acceptance calculation
+	AcceptanceCalculator accCalc;
+	accCalc.Init(th_y_sign, anal);
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
@@ -174,6 +181,33 @@ int main(int argc, char **argv)
 	ch_in->SetBranchAddress("event_num", &ev.event_num);
 	ch_in->SetBranchAddress("trigger_num", &ev.trigger_num);
 	ch_in->SetBranchAddress("trigger_bits", &ev.trigger_bits);
+
+	// get time-dependent resolution
+	TGraph *g_d_x_RMS = NULL;
+	TGraph *g_d_y_RMS = NULL;
+	if (anal.use_resolution_fits)
+	{
+		string fake_diagonal = "45b_56t";	// fake, but with existing resolution fits
+
+		string path = inputDir + "/resolution_fit_" + fake_diagonal + ".root";
+		TFile *resFile = TFile::Open(path.c_str());
+		if (!resFile)
+		{
+			printf("ERROR: resolution file `%s' cannot be opened.\n", path.c_str());
+			return 1000;
+		}
+
+		g_d_x_RMS = (TGraph *) resFile->Get("d_x/g_fits");
+		g_d_y_RMS = (TGraph *) resFile->Get("d_y/g_fits");
+
+		printf("\n>> using time-dependent resolutions: %p, %p\n", g_d_x_RMS, g_d_y_RMS);
+
+		if (g_d_x_RMS == NULL || g_d_y_RMS == NULL)
+		{
+			printf("ERROR: can't load resolution objects.\n");
+			return 1001;
+		}
+	}
 
 	// init output files
 	TFile *outF = new TFile((outputDir+"/distributions_anti_" + argv[1] + ".root").c_str(), "recreate");
@@ -273,6 +307,7 @@ int main(int argc, char **argv)
 	TH1D *h_th_y_L = new TH1D("h_th_y_L", ";#theta_{y}^{L}", 960, -120E-6, +120E-6); h_th_y_L->SetLineColor(4);
 	TH1D *h_th_y_R = new TH1D("h_th_y_R", ";#theta_{y}^{R}", 960, -120E-6, +120E-6); h_th_y_R->SetLineColor(2);
 #endif
+
 	
 	// book acceptance-correction histograms
 	TProfile *p_t_ub_div_corr = new TProfile("p_t_ub_div_corr", ";t_ub_{y}", 2000., 0., 0.2);
@@ -296,9 +331,20 @@ int main(int argc, char **argv)
 		bp_t_full_corr[bi] = new TProfile("p_t_full_corr", ";t", N_bins, bin_edges, "s");
 	}
 
-	TH2D *h_th_y_vs_th_x_before = new TH2D("h_th_y_vs_th_x_before", ";#theta_{x};#theta_{y}", 150, -150E-6, +150E-6, 150, -150E-6, +150E-6); h_th_y_vs_th_x_before->Sumw2();
-	TH2D *h_th_y_vs_th_x_after = new TH2D("h_th_y_vs_th_x_after", ";#theta_{x};#theta_{y}", 150, -150E-6, +150E-6, 150, -150E-6, +150E-6); h_th_y_vs_th_x_after->Sumw2();
-	TH2D *h_th_vs_phi_after = new TH2D("h_th_vs_phi_after", ";#phi;#theta", 100, 0, 0, 100, 0, 0); h_th_vs_phi_after->Sumw2();
+	TH2D *h_th_y_vs_th_x_before = new TH2D("h_th_y_vs_th_x_before", ";#theta_{x};#theta_{y}", 150, -300E-6, +300E-6, 150, -150E-6, +150E-6); h_th_y_vs_th_x_before->Sumw2();
+	TH2D *h_th_y_vs_th_x_after = new TH2D("h_th_y_vs_th_x_after", ";#theta_{x};#theta_{y}", 150, -300E-6, +300E-6, 150, -150E-6, +150E-6); h_th_y_vs_th_x_after->Sumw2();
+	TH2D *h_th_vs_phi_after = new TH2D("h_th_vs_phi_after", ";#phi;#theta", 50, -M_PI, +M_PI, 50, 150E-6, 550E-6); h_th_vs_phi_after->Sumw2();
+
+	// time-dependence histograms
+	double period_len = 5.*60.;	// s
+	signed int period_min = floor(timestamp_min / period_len);
+	signed int period_max = floor(timestamp_max / period_len);
+	unsigned int time_bins = period_max - period_min + 1;
+	double time_min = period_min * period_len;
+	double time_max = (period_max+1) * period_len;
+
+	TProfile *p_input_d_x_rms_vs_time = new TProfile("p_input_d_x_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
+	TProfile *p_input_d_y_rms_vs_time = new TProfile("p_input_d_y_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
 
 	// event loop
 	for (int ev_idx = 0; ev_idx < ch_in->GetEntries(); ++ev_idx)
@@ -315,8 +361,26 @@ int main(int argc, char **argv)
 		if (anal.SkipTime(ev.timestamp))
 			continue;
 
+		// apply fine alignment
+		HitData h_al = ev.h;
+		for (unsigned int i = 0; i < alignmentSources.size(); ++i)
+		{
+			AlignmentData alData = alignmentSources[i].Eval(ev.timestamp);
+			h_al = h_al.ApplyAlignment(alData);
+		}
+
+		// coordinate inversion in sector 45
+		h_al.L_1_F.y = - h_al.L_1_F.y;
+        h_al.L_2_F.y = - h_al.L_2_F.y;
+
+		// fill pre-selection histograms
+		h_y_L_1_F_vs_x_L_1_F_al_nosel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
+		h_y_L_2_F_vs_x_L_2_F_al_nosel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
+		h_y_R_1_F_vs_x_R_1_F_al_nosel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
+		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
+
 		// diagonal cut
-		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.L_2_F.v && ev.h.R_2_F.v && ev.h.R_2_F.v);
+		bool allDiagonalRPs = (ev.h.L_2_F.v && ev.h.R_2_F.v);
 		if (!allDiagonalRPs)
 			continue;
 		
@@ -326,23 +390,6 @@ int main(int argc, char **argv)
 		if (SkipBunch(run, ev.bunch_num))
 			continue;
 
-		// zero bias event?
-		//bool zero_bias_event = IsZeroBias(ev.trigger_bits, ev.run_num, ev.event_num);
-
-		// apply fine alignment
-		HitData h_al = ev.h;
-		for (unsigned int i = 0; i < alignmentSources.size(); ++i)
-		{
-			AlignmentData alData = alignmentSources[i].Eval(ev.timestamp);
-			h_al = h_al.ApplyAlignment(alData);
-		}
-
-		// fill pre-selection histograms
-		h_y_L_1_F_vs_x_L_1_F_al_nosel->Fill(h_al.L_1_F.x, h_al.L_1_F.y);
-		h_y_L_2_F_vs_x_L_2_F_al_nosel->Fill(h_al.L_2_F.x, h_al.L_2_F.y);
-		h_y_R_1_F_vs_x_R_1_F_al_nosel->Fill(h_al.R_1_F.x, h_al.R_1_F.y);
-		h_y_R_2_F_vs_x_R_2_F_al_nosel->Fill(h_al.R_2_F.x, h_al.R_2_F.y);
-
 		if (detailsLevel >= 2)
 		{
 			h_timestamp_B0->Fill(ev.timestamp);
@@ -350,13 +397,6 @@ int main(int argc, char **argv)
 			//g_ev_num_vs_timestamp->SetPoint(g_ev_num_vs_timestamp->GetN(), ev.timestamp, ev.event_num);
 			//g_tr_num_vs_timestamp->SetPoint(g_tr_num_vs_timestamp->GetN(), ev.timestamp, ev.trigger_num);
 		}
-
-		// coordinate inversion in sector 45
-		//h_al.x_L_1_F = - h_al.x_L_1_F;
-        //h_al.x_L_2_F = - h_al.x_L_2_F;
-
-		h_al.L_1_F.y = - h_al.L_1_F.y;
-        h_al.L_2_F.y = - h_al.L_2_F.y;
 
 		// run reconstruction
 		Kinematics k = DoReconstruction(h_al, env);
@@ -368,20 +408,11 @@ int main(int argc, char **argv)
 
 		// fill no-cut histograms
 		for (unsigned int ci = 1; ci <= anal.N_cuts; ++ci)
-		{
-			//h2_cq_full[ci]->Fill(ccb[ci]*cqa[ci] - cca[ci]*cqb[ci], cca[ci]*cqa[ci] + ccb[ci]*cqb[ci] + ccc[ci]);
 			h2_cq_full[ci]->Fill(cd.cqa[ci], cd.cqb[ci]);
-		}
 		
 		// apply elastic cut
 		if (!select)
 			continue;
-
-		// enforce RP trigger (vertical || horizontal)
-		/*
-		if ((ev.trigger_bits & 3) == 0)
-			continue;
-		*/
 
 		// histograms
 		h_timestamp_sel->Fill(ev.timestamp);
@@ -455,10 +486,19 @@ int main(int argc, char **argv)
 		h_th_y_R->Fill(k.th_y_R);
 		*/
 
+		// set time-dependent resolutions
+		if (anal.use_resolution_fits)
+		{
+			anal.si_th_x_LRdiff = accCalc.anal.si_th_x_LRdiff = g_d_x_RMS->Eval(ev.timestamp);
+			anal.si_th_y_LRdiff = accCalc.anal.si_th_y_LRdiff = g_d_y_RMS->Eval(ev.timestamp);
+		}
+
+		p_input_d_x_rms_vs_time->Fill(ev.timestamp, anal.si_th_x_LRdiff);
+		p_input_d_y_rms_vs_time->Fill(ev.timestamp, anal.si_th_y_LRdiff);
+
 		// calculate acceptance divergence correction
 		double phi_corr = 0., div_corr = 0.;
-		
-		bool skip = CalculateAcceptanceCorrections(th_y_sign, k, anal, phi_corr, div_corr);
+		bool skip = accCalc.Calculate(k, phi_corr, div_corr);
 
 		for (unsigned int bi = 0; bi < binnings.size(); bi++)
 		{
@@ -714,6 +754,11 @@ int main(int argc, char **argv)
 
 		g->Write();
 	}
+
+	gDirectory = outF->mkdir("time dependences");
+
+	p_input_d_x_rms_vs_time->Write();
+	p_input_d_y_rms_vs_time->Write();
 
 	TDirectory *accDir = outF->mkdir("acceptance correction");
 	for (unsigned int bi = 0; bi < binnings.size(); bi++)
