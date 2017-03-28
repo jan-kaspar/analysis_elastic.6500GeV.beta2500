@@ -164,9 +164,11 @@ bool CalculateAcceptanceCorrections(double th_y_sign,
 	
 	double th_y_abs = th_y_sign * k.th_y;
 
+	const double si_th_y_1arm = anal.si_th_y_LRdiff / sqrt(2.);
+
 	double UB_y = min(anal.fc_R_h.th_y_0 - th_y_abs, th_y_abs - anal.fc_L_l.th_y_0);
 	double LB_y = max(anal.fc_R_l.th_y_0 - th_y_abs, th_y_abs - anal.fc_L_h.th_y_0);
-	double F_y = (UB_y > LB_y) ? ( TMath::Erf(UB_y / anal.si_th_y_1arm) - TMath::Erf(LB_y / anal.si_th_y_1arm) ) / 2. : 0.;
+	double F_y = (UB_y > LB_y) ? ( TMath::Erf(UB_y / si_th_y_1arm) - TMath::Erf(LB_y / si_th_y_1arm) ) / 2. : 0.;
 
 	div_corr = 1./ F_y;
 
