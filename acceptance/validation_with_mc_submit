@@ -1,31 +1,39 @@
 #!/bin/bash
 
 configs=()
-config_options=()
 
-configs=(
-#	"0.013 1E7 old flat"
-#	"0.013 1E7 new flat"
-#	"0.013 1E7 new curved"
+#configs=(
+#	#"0.006 1E8 corr old flat"
+#	#"0.006 1E8 uncorr old flat"
+#
+#	#"0.08 1E8 corr old flat"
+#	#"0.08 1E8 uncorr old flat"
+#
+#	"1.1 1E8 corr old flat"
+#	"1.1 1E8 uncorr old flat"
+#)
 
-#	"0.100 1E8 new curved"
-#	"1.100 1E8 new curved"
+for t_max in "0.006" "0.08" "1.1"
+do
+	for corr_set in "corr" "uncorr"
+	do
+		# TODO: final statistics 1E9 : expected to run for ~6h
 
-	"0.013 2E8 new curved"
-)
-
-#config+=("t_max=0.10,events=1E6,old"); config_options+=("-t-max 0.1 -events 1E6 -old-acc")
+		configs+=("$t_max 1E7 $corr_set old flat")
+		configs+=("$t_max 1E7 $corr_set new flat")
+		configs+=("$t_max 1E7 $corr_set new curved")
+	done
+done
 
 seeds=(
 	1
-	2
-	3
 )
 
 #----------------------------------------------------------------------------------------------------
 
 #batch_queue="8nm"
-batch_queue="1nh"
+#batch_queue="1nh"
+batch_queue="1nd"
 
 batch_resources=""
 #batch_resources="pool>10000" # require more than 10 GB of space in the pool directory
@@ -39,8 +47,9 @@ function ParseConfig
 {
 	t_max="$1"
 	events="$2"
-	alg="$3"
-	cuts="$4"
+	md_corr="$3"
+	alg="$4"
+	cuts="$5"
 }
 
 #----------------------------------------------------------------------------------------------------
@@ -62,12 +71,17 @@ function SubmitOne()
 
 	chmod u+x "$job_file"
 
+	# execute job locally
+	#"$job_file" &
+
 	# submit job
-	#bsub -q "$batch_queue" -R "$batch_resources" $batch_options `pwd -P`"/$job_file"
-	"$job_file" &
+	bsub -q "$batch_queue" -R "$batch_resources" $batch_options `pwd -P`"/$job_file"
 }
 
 #----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
+
+make "validation_with_mc" || exit 1
 
 for config in "${configs[@]}"
 do
@@ -75,8 +89,8 @@ do
 
 	for seed in ${seeds[*]}
 	do
-		dir="simulations/$t_max,$events,$alg,$cuts/seed$seed"
-		options="-t-max $t_max -events $events -alg-$alg -cuts-$cuts -seed $seed"
+		dir="simulations/$t_max,$events,$md_corr,$alg,$cuts/seed$seed"
+		options="-t-max $t_max -events $events -md-$md_corr -alg-$alg -cuts-$cuts -seed $seed"
 
 		SubmitOne
 	done
