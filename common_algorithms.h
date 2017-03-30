@@ -152,17 +152,15 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 
 //----------------------------------------------------------------------------------------------------
 
-bool CalculateAcceptanceCorrections(double th_y_sign,
-		const Kinematics &k, const Analysis &anal,
-		double &phi_corr, double &div_corr)
+bool CalculateAcceptanceCorrectionSmearing(double th_y_sign, const Kinematics &k, const Analysis &anal, double &corr_smear)
 {
-	// ---------- smearing component ----------
+	corr_smear = 0.;
 
 	if ((th_y_sign * k.th_y_L < anal.fc_L_l.th_y_0) || (th_y_sign * k.th_y_R < anal.fc_R_l.th_y_0)
 		|| (th_y_sign * k.th_y_L > anal.fc_L_h.th_y_0) || (th_y_sign * k.th_y_R > anal.fc_R_h.th_y_0))
 		return true;
 	
-	double th_y_abs = th_y_sign * k.th_y;
+	const double th_y_abs = th_y_sign * k.th_y;
 
 	const double si_th_y_1arm = anal.si_th_y_LRdiff / sqrt(2.);
 
@@ -170,12 +168,21 @@ bool CalculateAcceptanceCorrections(double th_y_sign,
 	double LB_y = max(anal.fc_R_l.th_y_0 - th_y_abs, th_y_abs - anal.fc_L_h.th_y_0);
 	double F_y = (UB_y > LB_y) ? ( TMath::Erf(UB_y / si_th_y_1arm) - TMath::Erf(LB_y / si_th_y_1arm) ) / 2. : 0.;
 
-	div_corr = 1./ F_y;
+	corr_smear = 1./ F_y;
 
-	// ---------- phi component ----------
-	
+	return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+bool CalculateAcceptanceCorrectionPhi(double th_y_sign, const Kinematics &k, const Analysis &anal, double &corr_phi)
+{
+	corr_phi = 0.;
+
 	double th_y_lcut = anal.fc_G_l.th_y_0;
 	double th_y_hcut = anal.fc_G_h.th_y_0;
+
+	const double th_y_abs = th_y_sign * k.th_y;
 
 	if (th_y_abs <= th_y_lcut || th_y_abs >= th_y_hcut)
 		return true;
@@ -218,9 +225,21 @@ bool CalculateAcceptanceCorrections(double th_y_sign,
 		phiSum += phi_end - phi_start;
 	}
 	
-	phi_corr = 2. * M_PI / phiSum;
+	corr_phi = 2. * M_PI / phiSum;
 
 	return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+bool CalculateAcceptanceCorrections(double th_y_sign, const Kinematics &k, const Analysis &anal, double &corr_phi, double &corr_smear)
+{
+	bool skip_smear = CalculateAcceptanceCorrectionSmearing(th_y_sign, k, anal, corr_smear);
+	if (skip_smear)
+		return true;
+
+	bool skip_phi = CalculateAcceptanceCorrectionPhi(th_y_sign, k, anal, corr_phi);
+	return skip_phi;
 }
 
 //----------------------------------------------------------------------------------------------------
