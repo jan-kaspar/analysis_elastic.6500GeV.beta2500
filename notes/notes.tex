@@ -471,16 +471,26 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 \>> ``new'': no assumptions needed, implemented as numerical integration using routines from GSL
 \>>> for performance optimisation, this implementation {\it may} assume gaussianity of $d_y$
 
-\> \plot{acceptance_correction/validation/validation_vs_old.pdf} : comparison of old and new implementations; \TODO: add comment
+\> \plot{acceptance_correction/validation/validation_vs_old.pdf} : comparison of old and new implementations -- perfect agreement
 
-\> \plot{acceptance_correction/validation/validation_gaussian_approx.pdf} : for the new implementation, comparison of results with and without the gaussian optimisation; \TODO: add comment
+\> \plot{acceptance_correction/validation/validation_gaussian_approx.pdf} : for the new implementation, comparison of results with and without the gaussian optimisation -- perfect agreement
 
-\> \plot{acceptance_correction/validation/validation_with_mc.pdf}
-\>> comparison of MC simulations with smearing and
-\>>> green: no fiducial cuts, no correction
-\>>> red: standard fiducial cuts, standard correction
-\>> \TODO: add comment
+\> below a study with MC is presented; two versions of simulation have been considered:
+\>> ``corr'': including the correlation between $m_x$ and $d_x$ ($\rh \approx 0.2$) and correlation between $m_y$ and $d_y$ ($\rh\approx 0.02$)
+\>> ``uncorr'': disregarding the correlations
+\>> it will be shown that the correlation has no significant effect
 
+\> \plot{acceptance_correction/validation/validation_with_mc_th_y_acc.pdf} : smearing acceptance as a function of $\theta^*_y$ for 3 bands of $\th^*_x$
+\>> MC (violet) vs.~calculated correction (black): perfect agreement
+
+\> \plot{acceptance_correction/validation/validation_with_mc_th_y_hist_after_corr.pdf} : for 3 bands of $\th^*_x$, ratio of $\theta^*_y$ distributions -- with smearing only and with smearing+fiducial cuts+smearing acceptance correction
+\>> perfectly compatible with 1
+
+\> \plot{acceptance_correction/validation/validation_with_mc_t_dist_cmp.pdf} : comparison of $t$-distributions
+\>> black and red histograms perfectly compatible
+
+\> \plot{acceptance_correction/validation/validation_with_mc_t_unsmear_corr.pdf} : comparison of "unsmearing" correction from this MC study (red, blue) and from a dedicated calculation (black)
+\>> perfect compatibility
 
 
 

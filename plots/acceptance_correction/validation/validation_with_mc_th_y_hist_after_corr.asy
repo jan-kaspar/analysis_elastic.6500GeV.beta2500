@@ -4,11 +4,13 @@ import pad_layout;
 string topDir = "../../../acceptance/";
 
 string rows[] = {
-	"simulations/0.08,1E7,uncorr,old,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E7,uncorr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,uncorr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,uncorr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E9,uncorr,new,curved/seed1/validation_with_mc.root",
 
-	"simulations/0.08,1E7,corr,old,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E7,corr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,corr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,corr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E9,corr,new,curved/seed1/validation_with_mc.root",
 };
 
 string th_x_ranges[] = {
@@ -40,7 +42,7 @@ for (string row : rows)
 	{
 		string dir = "th_x_ranges/" + th_x_range + "/";
 
-		NewPad("$\theta^*_y\ung{\mu rad}$");
+		NewPad("$\theta^*_y\ung{\mu rad}$", "$\hbox{smearing + fiducial cuts + smearing corr.} \over \hbox{smearing}$");
 		draw(scale(1e6, 1), RootGetObject(f, dir + "h_th_ratio_cut_corr_over_no_cut"), "eb", magenta);
 		
 		limits((4, 0.8), (6, 1.1), Crop);

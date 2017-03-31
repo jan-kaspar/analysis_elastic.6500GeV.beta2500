@@ -17,11 +17,10 @@ for t_max in "0.006" "0.08" "1.1"
 do
 	for corr_set in "corr" "uncorr"
 	do
-		# TODO: final statistics 1E9 : expected to run for ~6h
-
-		configs+=("$t_max 1E7 $corr_set old flat")
-		configs+=("$t_max 1E7 $corr_set new flat")
-		configs+=("$t_max 1E7 $corr_set new curved")
+		# final statistics 1E9 : expected to run for ~6h
+		configs+=("$t_max 1E9 $corr_set old flat")
+		configs+=("$t_max 1E9 $corr_set new flat")
+		configs+=("$t_max 1E9 $corr_set new curved")
 	done
 done
 

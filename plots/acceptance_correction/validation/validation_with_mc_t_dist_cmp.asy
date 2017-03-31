@@ -4,11 +4,13 @@ import pad_layout;
 string topDir = "../../../acceptance/";
 
 string rows[] = {
-	"simulations/<t_max>,1E7,uncorr,old,flat/seed1/validation_with_mc.root",
-	"simulations/<t_max>,1E7,uncorr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E9,uncorr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E9,uncorr,new,flat/seed1/validation_with_mc.root",
+	"simulations/<t_max>,1E9,uncorr,new,curved/seed1/validation_with_mc.root",
 
-	"simulations/<t_max>,1E7,corr,old,flat/seed1/validation_with_mc.root",
-	"simulations/<t_max>,1E7,corr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E9,corr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E9,corr,new,flat/seed1/validation_with_mc.root",
+	"simulations/<t_max>,1E9,corr,new,curved/seed1/validation_with_mc.root",
 };
 
 //----------------------------------------------------------------------------------------------------
