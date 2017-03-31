@@ -4,6 +4,8 @@
 *.pdf
 *.out
 
+!.gitignore
+
 DS-merged/merge
 
 alignment/print_fit
