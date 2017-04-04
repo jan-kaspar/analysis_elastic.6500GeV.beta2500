@@ -68,6 +68,8 @@ int main()
 	datasets.push_back("DS-fill5317");
 	datasets.push_back("DS-fill5321");
 
+	datasets.push_back("DS-simulation");
+
 	vector<string> diagonals;
 	diagonals.push_back("45b_56t");
 	diagonals.push_back("45t_56b");

@@ -555,7 +555,28 @@ the analysis
 %----------------------------------------------------------------------------------------------------
 \section{Validation of analysis chain}
 
-\TODO
+\> method
+\>> simulate data in the same format (distilled ntuple) as the LHC data
+\>> run exactly the same analysis chain as for the LHC data
+\>> compare MC truth with analysis results
+
+\> MC simulation (program ``simulate\_distill``)
+\>> inverse-CDF generation of $t$ according to a data fit including both hadronic and Coulomb components
+\>> simulated: vertex smearing, beam divergence, proton transport (linear), RP resolution
+\>> time-dependence of vertex RMS: linear from $530$ to $630\un{\mu m}$
+\>> simulated 3-out-of-4 and 2-out-of-4 inefficiency, $\th^*_y$ dependent
+\>>> according to the fit copied from the 4-RP analysis (the same as used in the analysis)
+
+\> analysis
+\>> the same configuration as for the LHC data (``parameters\_global.h``, the same cuts)
+\>> time-dependent resolution curves determined from the simulated sample (by program ``resolution\_fit``)
+\>> normalisation determined as for LHC data (by program ``normalisation/normalisation``)
+
+\> results
+\>> \plot{chain_validation/resolutions_vs_time.pdf} : resolution as function of time
+\>>> as expected: linear dependence, very small effect for $\th_y^*$ (almost parallel-to-point focusing)
+\>> \plot{chain_validation/t_dist_cmp_truth.pdf} : comparison of $t$-distributions, MC truth vs.\ reconstructed
+\>>> perfect agreement
 
 
 

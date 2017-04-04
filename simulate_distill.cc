@@ -9,6 +9,7 @@
 #include "TChain.h"
 #include "TH1D.h"
 #include "TSpline.h"
+#include "TF1.h"
 
 using namespace std;
 
@@ -41,6 +42,8 @@ TGraph* BuildCDF(TGraph *g_df)
 
 TGraph* BuildICDF(TGraph *g_cdf, double t_min, double t_max)
 {
+	printf(">> BuildICDF\n");
+
 	// prepare normalized inverse c.d.f
 	int i_min = 0, i_max = g_cdf->GetN() - 1;	// default index range
 	for (int i = 0; i < g_cdf->GetN(); i++)
@@ -55,7 +58,7 @@ TGraph* BuildICDF(TGraph *g_cdf, double t_min, double t_max)
 			break;
 		}
 	}
-	
+
 	double p_min = 0., p_max = 0.;
 	double t_min_real = 0., t_max_real = 0.;
 	g_cdf->GetPoint(i_min, t_min_real, p_min);
@@ -96,10 +99,11 @@ TSpline* BuildSpline(TGraph *g)
 int main(int argc, char **argv)
 {
 	// defaults
-	unsigned long n_events = (unsigned long) 1E5;
+	unsigned long n_events = (unsigned long) 4E7;
 	string dsdt_model_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root";
 	string dsdt_model_object = "variant 2/g_dsdt_CH";
 	unsigned int seed = 1;
+	double de_si_vtx = 50E-3;
 
 	// parse command line
 	if (argc != 2)
@@ -123,6 +127,7 @@ int main(int argc, char **argv)
 	printf("dsdt_model_file = %s\n", dsdt_model_file.c_str());
 	printf("dsdt_model_object = %s\n", dsdt_model_object.c_str());
 	printf("seed = %u\n", seed);
+	printf("de_si_vtx = %E mm\n", de_si_vtx);
 
 	// prevent overwriting experimental data
 	if (!simulated_dataset)
@@ -162,14 +167,49 @@ int main(int argc, char **argv)
 
 	// t_min ~ 8E-4 GeV^2 --> theta_min ~ 4.3 urad
 	// theta_min - 4 * si(m_x) ~ 4.3 - 4*0.33 ~ 3 urad --> t ~ 3.8E-4 GeV^2
-	TGraph *g_icdf = BuildICDF(g_df, 3.8E-4, anal.t_max_full);
+	TGraph *g_icdf = BuildICDF(g_cdf, 3.8E-4, anal.t_max_full);
 
 	TSpline *s_icdf = BuildSpline(g_icdf);
 
 	delete f_in_dsdt;
 
+	// get th_y* dependent efficiency correction
+	TF1 *f_3outof4_efficiency_L_2_F = NULL;
+	TF1 *f_3outof4_efficiency_R_2_F = NULL;
+	if (anal.use_3outof4_efficiency_fits)
+	{
+		string path = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/efficiency_fits/global_fit.root";
+		TFile *effFile = TFile::Open(path.c_str());
+		if (!effFile)
+			printf("ERROR: 3-out-of-4 efficiency file `%s' cannot be opened.\n", path.c_str());
+
+		string diagonal = argv[1];
+		f_3outof4_efficiency_L_2_F = (TF1 *) effFile->Get( (diagonal + "/L_2_F/pol1").c_str() );
+		f_3outof4_efficiency_R_2_F = (TF1 *) effFile->Get( (diagonal + "/R_2_F/pol1").c_str() );
+
+		printf("\n>> using 3-out-of-4 fits: %p, %p\n",
+			f_3outof4_efficiency_L_2_F, f_3outof4_efficiency_R_2_F);
+
+		if (!f_3outof4_efficiency_L_2_F || !f_3outof4_efficiency_R_2_F)
+		{
+			printf("ERROR: some of the 3-out-of-4 graphs can not be loaded.\n");
+			return 100;
+		}
+	}
+
+	// simulate vertex growth
+	const double si_vtx_x_beg = env.si_vtx_x - de_si_vtx;
+	const double si_vtx_x_end = env.si_vtx_x + de_si_vtx;
+
+	const double si_vtx_y_beg = env.si_vtx_y - de_si_vtx;
+	const double si_vtx_y_end = env.si_vtx_y + de_si_vtx;
+
+	printf("\n");
+	printf("si_vtx_x_beg = %E, si_vtx_x_end = %E\n", si_vtx_x_beg, si_vtx_x_end);
+	printf("si_vtx_y_beg = %E, si_vtx_y_end = %E\n", si_vtx_y_beg, si_vtx_y_end);
+
 	// ouput file
-	string fn_out = string("distill_") + argv[1] + "_new.root";
+	string fn_out = string("distill_") + argv[1] + ".root";
 	TFile *f_out = TFile::Open(fn_out.c_str(), "recreate");
 
 	// set up output tree
@@ -195,6 +235,14 @@ int main(int argc, char **argv)
 	// loop over the chain entries
 	for (unsigned int long evi = 0; evi < n_events; evi++)
 	{
+		// generate timestamp
+		double event_ratio = double(evi) / double(n_events);
+		unsigned int timestamp = timestamp_min + event_ratio * (timestamp_max - timestamp_min);
+
+		// update time-dependent parameters
+		env.si_vtx_x = si_vtx_x_beg + event_ratio * (si_vtx_x_end - si_vtx_x_beg);
+		env.si_vtx_y = si_vtx_y_beg + event_ratio * (si_vtx_y_end - si_vtx_y_beg);
+
 		// generate true event
 		Kinematics k_tr;
 		k_tr.t = s_icdf->Eval(gRandom->Rndm());
@@ -235,17 +283,38 @@ int main(int argc, char **argv)
 		ev.h.R_1_F.y = 0.;
 
 		// set (fake) meta data
-		ev.timestamp = double(evi) / double(n_events) * (timestamp_max - timestamp_min) + timestamp_min;
+		ev.timestamp = timestamp;
 		ev.run_num = 0;
 		ev.bunch_num = 0;
 		ev.event_num = 0;
 		ev.trigger_num = 0;
 		ev.trigger_bits = 0;
 
-		// TODO: cut off low-|t| events
+		// simulate reconstruction
+		Kinematics k_re = DoReconstruction(ev.h, env);
 
-		// TODO: apply inefficiencies
+		// cut off low-|t| events
+		if (k_re.t < 6E-4)
+			continue;
 
+		// determine inefficiencies
+		double inefficiency_3outof4 = anal.inefficiency_3outof4;
+		if (anal.use_3outof4_efficiency_fits)
+		{
+			const double th_y_abs = fabs(k_re.th_y);
+
+			inefficiency_3outof4 = 0.;
+			inefficiency_3outof4 += 1. - f_3outof4_efficiency_L_2_F->Eval(th_y_abs);
+			inefficiency_3outof4 += 1. - f_3outof4_efficiency_R_2_F->Eval(th_y_abs);
+		}
+
+		const double inefficiency_Noutof4 = inefficiency_3outof4 + anal.inefficiency_shower_near;
+
+		// apply inefficiencies
+		if (gRandom->Rndm() < inefficiency_Noutof4)
+			continue;
+
+		// write data
 		outT->Fill();
 	}
 
