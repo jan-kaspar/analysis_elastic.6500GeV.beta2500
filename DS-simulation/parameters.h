@@ -7,9 +7,11 @@ void Init_base()
 	// load global settings
 	Init_global();
 
-	// TODO: use the same as in the analysis
-	anal.use_resolution_fits = false;
-	anal.use_3outof4_efficiency_fits = false;
+	simulated_dataset = true;
+
+	// same as in data analysis
+	anal.use_resolution_fits = true;
+	anal.use_3outof4_efficiency_fits = true;
 	anal.use_pileup_efficiency_fits = false;
 }
 

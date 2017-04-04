@@ -124,6 +124,13 @@ int main(int argc, char **argv)
 	printf("dsdt_model_object = %s\n", dsdt_model_object.c_str());
 	printf("seed = %u\n", seed);
 
+	// prevent overwriting experimental data
+	if (!simulated_dataset)
+	{
+		printf("ERROR: this dataset is not for simulation.\n");
+		return 50;
+	}
+
 	// print info
 	printf("\n");
 	printf("------------------------------ environment ------------------------------\n");

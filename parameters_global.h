@@ -14,6 +14,8 @@ string unsmearing_object;
 
 string luminosity_data_file;
 
+bool simulated_dataset = false;
+
 //----------------------------------------------------------------------------------------------------
 
 void Init_global()
