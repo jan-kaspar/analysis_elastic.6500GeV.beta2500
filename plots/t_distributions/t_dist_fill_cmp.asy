@@ -31,7 +31,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		pen p = StdPen(dgni + 1);
-		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "normalization/"+binning+"/h_t_normalized"),
+		draw(RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "normalization+unfolding/"+binning+"/h_t_normalized_unsmeared"),
 			"d0,eb", p, diagLabels[dgni]);
 	}
 

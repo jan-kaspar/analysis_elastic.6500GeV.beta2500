@@ -22,6 +22,9 @@ for (int bi : binnings.keys)
 
 	string binning = binnings[bi];
 
+	NewPad(false);
+	label("{\SetFontSizesXX " + binning + "}");
+
 	// ----------
 
 	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{mb/GeV^2}$");
