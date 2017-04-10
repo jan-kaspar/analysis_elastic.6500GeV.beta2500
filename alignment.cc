@@ -712,7 +712,7 @@ void DoVerticalAlignment(TGraph *g_t, TGraph *gw_t, TGraph *g_b, TGraph *gw_b,
 	// evaluate beam positions
 	double de_y_min_diff = - (-y_min_b + y_min_t + bsh_min_diff) / 2.;
 	double de_y_prob = - (-y_min_b + y_min_t + bsh_prob) / 2.;
-	double de_y_mean_diff_sq = - (-y_min_b + y_min_t + bsh_mean_diff_sq) / 2., de_y_unc_mean_diff_sq = bsh_unc_mean_diff_sq / 2.; // TODO: uncertainty
+	double de_y_mean_diff_sq = - (-y_min_b + y_min_t + bsh_mean_diff_sq) / 2., de_y_unc_mean_diff_sq = bsh_unc_mean_diff_sq / 2.;
 	double de_y_hist_chi_sq = - (-y_min_b + y_min_t + bsh_hist_chi_sq) / 2., de_y_unc_hist_chi_sq = bsh_unc_hist_chi_sq / 2.;
 	
 	printf("\tde_y:\n\t\tmin_diff :     %.0f um\n\t\tprob :         %.0f um\n\t\tmean_diff_sq : (%.0f +- %.0f) um\n\t\thist_chi_sq :  (%.0f +- %.0f) um\n",
@@ -781,10 +781,6 @@ int main(int argc, char **argv)
 
 	for (unsigned int pi = 0; pi < periods.size(); pi++)
 	{
-		// TODO: remove
-		//if (pi > 4)
-		//	break;
-
 		printf("\n\n************************************************** period %i **************************************************\n", periods[pi]);
 		sprintf(buf, "period %i", periods[pi]);
 		TDirectory *perDir = outF->mkdir(buf);

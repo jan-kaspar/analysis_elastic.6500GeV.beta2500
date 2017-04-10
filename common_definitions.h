@@ -293,16 +293,6 @@ struct HitData
 
 		return r;
 	}
-
-	// TODO: remove hard-coded z positions
-	/*
-	HitData ApplyInterpolatedAlignment(const AlignmentData &a, double sN, double sF) const
-	{
-		AlignmentData a_int = a.Interpolate(214.628, 220.000, sN, sF);
-
-		return ApplyAlignment(a_int);
-	}
-	*/
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -638,22 +628,29 @@ struct CutData
 
 struct FiducialCut
 {
-	double th_x_0, th_y_0;	// rad
+	double th_y_0;			// rad
+	double th_x_m, th_x_p;	// rad
 	double al_m, al_p; 		// slope th_y vs. th_x, 1
 
-	FiducialCut(double _tx0=0., double _ty0=0., double _alm=0., double _alp=0.) :
-		th_x_0(_tx0), th_y_0(_ty0), al_m(_alm), al_p(_alp)
+	FiducialCut(double _ty0=0., double _txm=0., double _alm=0., double _txp=0., double _alp=0.) :
+		th_y_0(_ty0), th_x_m(_txm), th_x_p(_txp), al_m(_alm), al_p(_alp)
 	{
 	}
 
 	double GetThYLimit(double th_x) const
 	{
-		return (th_x > th_x_0) ? (th_y_0 + al_p * (th_x - th_x_0)) : (th_y_0 + al_m * (th_x - th_x_0));
+		if (th_x < th_x_m)
+			return th_y_0 + al_m * (th_x - th_x_m);
+
+		if (th_x > th_x_p)
+			return th_y_0 + al_p * (th_x - th_x_p);
+
+		return th_y_0;
 	}
 
 	void Print() const
 	{
-		printf("th_x_0=%E, th_y_0=%E, al_m=%E, al_p=%E\n", th_x_0, th_y_0, al_m, al_p);
+		printf("th_y_0=%E, th_x_m=%E, th_x_p=%E, al_m=%E, al_p=%E\n", th_y_0, th_x_m, th_x_p, al_m, al_p);
 	}
 
 	vector<double> GetIntersectionPhis(double th) const
@@ -662,38 +659,53 @@ struct FiducialCut
 	
 		double A, B, C, D, p, phi;
 	
-		// try positve side
+		// th_x > th_x_p
 		A = 1. + al_p * al_p;
-		B = 2. * th_x_0 + 2. * th_y_0 * al_p;
-		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		B = 2. * th_x_p + 2. * th_y_0 * al_p;
+		C = th_x_p * th_x_p + th_y_0 * th_y_0 - th * th;
 		D = B*B - 4.*A*C;
 		if (D > 0.)
 		{
 			p = (-B + sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_p * p, th_x_p + p);
 			if (p > 0.)
 				phis.push_back(phi);
 	
 			p = (-B - sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_p * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_p * p, th_x_p + p);
 			if (p > 0.)
 				phis.push_back(phi);
 		}
+
+		// th_x_m < th_x < th_x_p
+		{
+			double phi0 = asin(th_y_0 / th);
+
+			double phi = phi0;
+			double th_x = th * cos(phi);
+			if (th_x_m < th_x && th_x < th_x_p)
+				phis.push_back(phi);
+
+			phi = M_PI - phi0;
+			th_x = th * cos(phi);
+			if (th_x_m < th_x && th_x < th_x_p)
+				phis.push_back(phi);
+		}
 	
-		// try negative side
+		// th_x < th_x_m
 		A = 1. + al_m * al_m;
-		B = 2. * th_x_0 + 2. * th_y_0 * al_m;
-		C = th_x_0 * th_x_0 + th_y_0 * th_y_0 - th * th;
+		B = 2. * th_x_m + 2. * th_y_0 * al_m;
+		C = th_x_m * th_x_m + th_y_0 * th_y_0 - th * th;
 		D = B*B - 4.*A*C;
 		if (D > 0.)
 		{
 			p = (-B + sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_m * p, th_x_m + p);
 			if (p < 0.)
 				phis.push_back(phi);
 	
 			p = (-B - sqrt(D)) / 2. / A;
-			phi = atan2(th_y_0 + al_m * p, th_x_0 + p);
+			phi = atan2(th_y_0 + al_m * p, th_x_m + p);
 			if (p < 0.)
 				phis.push_back(phi);
 		}
@@ -730,14 +742,6 @@ struct Analysis
 	double cca[10], ccb[10], ccc[10], csi[10];
 	std::vector<unsigned int> cuts;	// list of active cuts
 
-	// analysis cuts (rad)
-	// TODO: eventually remove
-	double th_y_lcut_L, th_y_lcut_R, th_y_lcut;
-	double th_y_hcut_L, th_y_hcut_R, th_y_hcut;
-	
-	double th_x_lcut;
-	double th_x_hcut;
-
 	// fiducial cuts
 	FiducialCut fc_L_l, fc_L_h;
 	FiducialCut fc_R_l, fc_R_h;
@@ -749,13 +753,18 @@ struct Analysis
 	double si_th_x_1arm_unc;
 	double si_th_x_2arm;
 	double si_th_x_2arm_unc;
+	double si_th_x_LRdiff;
+	double si_th_x_LRdiff_unc;
 
 	double si_th_y_1arm;
 	double si_th_y_1arm_unc;
 	double si_th_y_2arm;
 	double si_th_y_2arm_unc;
+	double si_th_y_LRdiff;
+	double si_th_y_LRdiff_unc;
 
 	// efficiency parameters
+	bool use_resolution_fits;				// whether to use time-dependent fits of resolution curves
 	bool use_3outof4_efficiency_fits;		// whether to use time-dependent fits of 3-out-of-4 efficiency
 	bool use_pileup_efficiency_fits;		// whether to use time-dependent fits of pile-up efficiency
 
@@ -859,18 +868,15 @@ struct Analysis
 		printf("fc_G_l: "); fc_G_l.Print();
 		printf("fc_G_h: "); fc_G_h.Print();
 		
-		// TODO: remove
-		printf("th_x_lcut=%E\n", th_x_lcut);
-		printf("th_x_hcut=%E\n", th_x_hcut);
-		printf("th_y_lcut_L=%E, th_y_lcut_R=%E, th_y_lcut=%E\n", th_y_lcut_L, th_y_lcut_R, th_y_lcut);
-		printf("th_y_hcut_L=%E, th_y_hcut_R=%E, th_y_hcut=%E\n", th_y_hcut_L, th_y_hcut_R, th_y_hcut);
-
 		printf("\n");
 		printf("smearing parameters:\n");
 		printf("si_th_x_1arm_L=%E, si_th_x_1arm_R=%E, si_th_x_1arm_unc=%E\n", si_th_x_1arm_L, si_th_x_1arm_R, si_th_x_1arm_unc);
 		printf("si_th_x_2arm=%E, si_th_x_2arm_unc=%E\n", si_th_x_2arm, si_th_x_2arm_unc);
+		printf("si_th_x_LRDiff=%E, si_th_x_LRdiff_unc=%E\n", si_th_x_LRdiff, si_th_x_LRdiff_unc);
 		printf("si_th_y_1arm=%E, si_th_y_1arm_unc=%E\n", si_th_y_1arm, si_th_y_1arm_unc);
 		printf("si_th_y_2arm=%E, si_th_y_2arm_unc=%E\n", si_th_y_2arm, si_th_y_2arm_unc);
+		printf("si_th_y_LRDiff=%E, si_th_y_LRdiff_unc=%E\n", si_th_y_LRdiff, si_th_y_LRdiff_unc);
+		printf("use_resolution_fits = %i\n", use_resolution_fits);
 	
 		printf("\n");
 		printf("normalisation parameters:\n");

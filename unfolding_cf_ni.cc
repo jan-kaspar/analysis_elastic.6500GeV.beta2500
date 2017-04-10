@@ -102,7 +102,7 @@ double IntegOverMY(double x, double *p, const void *)
 
 //----------------------------------------------------------------------------------------------------
 
-double dist_th_x_th_y_sm(double th_x, double th_y)
+double dist_th_x_th_y_smea(double th_x, double th_y)
 {
 	double param[] = { th_x, th_y };
 	double range = n_sm_si * si_m_y;
@@ -121,18 +121,56 @@ double IntegOverPhi(double x, double *p, const void *)
 	double th_x = th * cos(phi);
 	double th_y = th * sin(phi);
 
-	return dist_th_x_th_y_sm(th_x, th_y);
+	return dist_th_x_th_y_smea(th_x, th_y);
 }
 
 //----------------------------------------------------------------------------------------------------
 
 double dist_t_sm(double t)
 {
-	double precision = 1E-2;
 	double th = sqrt(t) / env.p;
-	double param[] = { th };
 
-	return RealIntegrate(IntegOverPhi, param, NULL, 0., 2.*M_PI, 0., precision, int_ws_phi_size, int_ws_phi, "dist_t_sm") / 2. / M_PI;
+	// get all intersections of const-th circle with acceptance boundaries
+	set<double> phis;
+
+	for (const auto &phi : anal.fc_G_l.GetIntersectionPhis(th))
+		phis.insert(phi);
+
+	for (const auto &phi : anal.fc_G_h.GetIntersectionPhis(th))
+		phis.insert(phi);
+
+	// the number of intersections must be even
+	if ((phis.size() % 2) == 1)
+	{
+		printf("ERROR: odd number of intersections in acceptance calculation\n");
+	}
+
+	// no intersection => no acceptances
+	if (phis.size() == 0)
+		return 0.;
+
+	// calculate integrals over phi sections
+	double param[] = { th };
+	const double rel_precision = 1E-3;
+
+	double phiSum = 0.;
+	double integralSum = 0.;
+
+	for (set<double>::iterator it = phis.begin(); it != phis.end(); ++it)
+	{
+		double phi_start = *it;
+		++it;
+		double phi_end = *it;
+
+		phiSum += phi_end - phi_start;
+
+		if (th_y_sign == +1)
+			integralSum += RealIntegrate(IntegOverPhi, param, NULL, phi_start, phi_end, 0., rel_precision, int_ws_phi_size, int_ws_phi, "dist_reco_t");
+		else
+			integralSum += RealIntegrate(IntegOverPhi, param, NULL, -phi_end, -phi_start, 0., rel_precision, int_ws_phi_size, int_ws_phi, "dist_reco_t");
+	}
+
+	return integralSum / phiSum;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -192,7 +230,7 @@ void MakeCorrectionHistograms(const vector<TH1D *> binning_hists)
 
 			double v_corr;
 
-			if (l+w < 3E-4 || l > 0.3)
+			if (l+w < 3E-4 || l > 1.)
 			{
 				v_corr = 0.;
 			} else {
@@ -223,6 +261,7 @@ void MakeCorrectionHistograms(const vector<TH1D *> binning_hists)
 void ProcessOne(const vector<TH1D *> binning_hists)
 {
 	MakeGraphs();
+
 	MakeCorrectionHistograms(binning_hists);
 }
 
@@ -253,20 +292,17 @@ int main(int argc, const char **argv)
 	
 	// binnings
 	vector<string> binnings;
-	binnings.push_back("ub");
+	//binnings.push_back("ub");
 	binnings.push_back("ob-1-20-0.05");
 	binnings.push_back("ob-2-10-0.05");
 	binnings.push_back("ob-3-5-0.05");
 
 	// models
 	vector<Model> models = {
-		{ "first_fit", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fit/do_fit.root", "g_dsdt_CH" }
+		{ "fit2-1", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 1/g_dsdt_CH" },
+		{ "fit2-2", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 2/g_dsdt_CH" },
+		{ "fit2-4", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 4/g_dsdt_CH" }
 	};
-
-	// smearing sigmas
-	n_sm_si = 5;
-	si_m_x = anal.si_th_x_2arm;
-	si_m_y = anal.si_th_y_2arm;
 
 	// print info
 	printf("\n");
@@ -276,6 +312,11 @@ int main(int argc, const char **argv)
 	printf("------------------------------- analysis --------------------------------\n");
 	anal.Print();
 	printf("\n");
+
+	// smearing sigmas
+	n_sm_si = 5;
+	si_m_x = anal.si_th_x_2arm;
+	si_m_y = anal.si_th_y_2arm;
 
 	// build binnings
 	vector<TH1D *> binning_hists;
@@ -291,7 +332,7 @@ int main(int argc, const char **argv)
 	}
 
 	// prepare output
-	string fn_out = string("unfolding_cf_") + argv[1] + ".root";
+	string fn_out = string("unfolding_cf_ni_") + argv[1] + ".root";
 	TFile *f_out = new TFile(fn_out.c_str(), "recreate");
 	if (f_out->IsZombie())
 	{

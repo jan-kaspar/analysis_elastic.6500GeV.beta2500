@@ -7,11 +7,11 @@ void Environment::InitNominal()
 	si_de_p = 1E-3 * p;
 
 	// beam divergence (one-arm angular smearing without detector effects) (rad)
-	si_th_x_L = si_th_x_R = 0.35E-6;
+	si_th_x_L = si_th_x_R = 0.33E-6;
 	si_th_y_L = si_th_y_R = 0.37E-6 / sqrt(2.);
 
 	// vertex smearing (mm)
-	si_vtx_x = si_vtx_y = 600E-3;
+	si_vtx_x = si_vtx_y = 580E-3;
 
 	// pitch-induced error (mm), later adjusted by parameters.h
 	si_de_P_L = si_de_P_R = 12E-3;
@@ -62,14 +62,12 @@ void Environment::InitNominal()
 	*/
 
 	// alignment uncertainties
-	// TODO
 	si_de_x = 0E-3;
 	si_de_y_R = 0E-3;
 	si_de_y_D = 0E-3;
 	si_tilt = 0E-3;
 
 	// other uncertainties
-	// TODO
 	si_th_y_RL_assym_unc = 0.;
 }
 
