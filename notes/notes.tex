@@ -52,10 +52,21 @@
 
 \> RPs used (track required): 220-fr unit in both arms
 
+
+
 %----------------------------------------------------------------------------------------------------
 \section{Datasets}
 
 \> fills: 5313, 5314, 5317, 5321
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Ntuples}
+
+\> current: /eos/totem/data/offline/2016/2500m/version1/
+
+
 
 %----------------------------------------------------------------------------------------------------
 \section{Beam conditions}
@@ -68,15 +79,6 @@
 \>> \plot{common/multitrack_rates_vs_time.pdf}: details for the unresolved category
 
 
-%----------------------------------------------------------------------------------------------------
-\section{Ntuples}
-
-\> current: /eos/totem/data/offline/2016/2500m/version1/
-
-%----------------------------------------------------------------------------------------------------
-\section{Hit distributions}
-
-\> \plot{hit_distributions/hit_distributions.pdf}: hit distribution after elastic event selection
 
 %----------------------------------------------------------------------------------------------------
 \section{Reconstruction formulae}
@@ -86,6 +88,66 @@
 \>>> using different RPs as input
 \>>> combining the input in various ways
 \>> studying the impact of various effects: beam divergence, vertex, pitch, ...
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Alignment}
+
+\subsection{(Re)determination}
+
+\> assumption: track-based (relative) alignment already performed
+
+\> method: applied per unit, applied per time slice, illustrated in \plot{alignment/alignment_method.pdf}
+\>> hits in the top and bottom RP fitted with a ~vertical line $\rightarrow$ horizontal alignment and tilt
+\>> build $y$ histograms from top and bottom RPs, find the centre of symmetry $\rightarrow$ vertical alignment
+
+\> current n-tuples contain alignment $\rightarrow$ expect corrections compatible with 0
+
+\> \plot{alignment/alignment_details_DS-fill5313.pdf}: detailed example of the method
+
+\> summary of (re)alignment results per fill
+\>> \plot{alignment/alignment_DS-fill5313.pdf}
+\>> \plot{alignment/alignment_DS-fill5314.pdf}
+\>> \plot{alignment/alignment_DS-fill5317.pdf}
+\>> \plot{alignment/alignment_DS-fill5321.pdf}
+
+
+\subsection{Validation}
+
+\> \plot{angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
+
+\> \plot{mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
+
+\> \plot{mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Optics}
+
+\subsection{Validation}
+
+\> \plot{optics/optics_test_summary.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles plotted as a function of the scattering angle
+\>> shifts (fit extrapolated to 0): due to misalignments
+\>> tilts (slope): due to optics
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Resolution}
+
+\> method
+\>> horizontal plane
+\>>> left-right difference of $\th_x^*$ sensitive to beam divergence and detector (RP) resolution
+\>>> beam divergence determined from $\si(x^*)$
+\>>> detector resolution then deconvolved from $\De^{R-L} \th_x^*$ and $\si(x^*)$ and is checked to be time-independent
+\>> vertical plane
+\>>> left-right difference of $\th_y^*$ directly probes the vertical beam divergence (the detector component is negligible)
+
+\> \plot{resolutions/resolutions_vs_time.pdf}: summary of resolution components as a function of time
+
+
 
 %----------------------------------------------------------------------------------------------------
 \section{Cuts/elastic tagging}
@@ -102,9 +164,30 @@
 
 \> all cuts applied at $n_\si = 4$ level
 
+\TODO
+\iffalse
+\> \plot{cut_parameters_vs_time.pdf} : cut parameters as function of time
+\>> mean: maximum offset from zero about $0.15\un{\si}$
+\>>> negligible impact as cuts applied at $n_\si$
+\>> sigma: taking the maximum for cuts
+\>>> cut 1: $\si = 14\un{\mu rad}$
+\>>> cut 2: $\si = 0.4\un{\mu rad}$
+\fi
+
+
 
 %----------------------------------------------------------------------------------------------------
-\section{Efficiency and purity of cuts, background}
+\section{Hit distributions}
+
+\> \plot{hit_distributions/hit_distributions.pdf}: hit distribution after elastic event selection
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Background, efficiency and purity of cuts}
+
+\TODO: as in 2RP analysis
+
 
 \> background studies
 \>> \plot{background,cut_efficiency/cut_distributions.pdf}: distributions of cut discriminators under various cut combinations
@@ -118,6 +201,33 @@
 
 \> study of signal loss due to cuts
 \>> \plot{background,cut_efficiency/t_distributions_n_si.pdf}: $t$ distribution at different cut levels
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Acceptance correction}
+
+\> method
+\>> known acceptance limitations: sensor edges (low $|\th_y^*|$), LHC apertures (high $|\th_y^*|$)
+\>> acceptance region determined empirically by looking at the reconstructed $\th_y^*$ vs.~$\th_x^*$ distributions, separately in the left and right arm
+\>> due to the presence of the tilted RPs (210-far), the acceptance limitations due to the sensors edges are both $\th_y^*$ and $\th_x^*$ dependent
+\>> assuming that the smearing in $\th_{x, y}^*$ is independent and has the same sigma left and right, then:
+$$h_{\rm observed}(\th_x^*, \th_y^*) = A_{\rm sm}(\th_x^*, \th_y^*)\ h_{\rm smeared}(\th_x^*, \th_y^*)$$
+where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scattering angles reconstructed via left-right average and $A_{\rm sm}$ is the ``smearing'' contribution to the acceptance
+\>> $A_{\rm sm}$ is calculated as the probability that any of the two protons leaves the fiducial region due to smearing -- this time it requires two-fold integral
+\>> another acceptance factor, $A_{\rm geom}$, is given by the fraction of const-$\th^*$ arc within the fiducial region
+\>>> for this, another set of fiducial cuts, ``global'', is used -- in order to avoid to corners with high smearing correction
+
+\> \plot{acceptance_correction/acc_cmp_fill.pdf}: shows the region of acceptance in $\th_x^*$ vs.~$\th_y^*$, per fill
+
+\> \plot{acceptance_correction/acc_cmp_fill_details.pdf}: shows the details of acceptance limitations due to the sensor edges and the corresponding fiducial cuts
+
+\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts in the left and right arm and the global cuts
+
+
+%\> \plot{acceptance_correction/acc_phi_lab.pdf}
+
+
 
 %----------------------------------------------------------------------------------------------------
 \section{Efficiency studies, pile-up, ...}
@@ -184,90 +294,17 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 
 \> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
 
-%----------------------------------------------------------------------------------------------------
-\section{Alignment verification}
-
-\subsection{(Re)determination}
-
-\> assumption: track-based (relative) alignment already performed
-
-\> method: applied per unit, applied per time slice, illustrated in \plot{alignment/alignment_method.pdf}
-\>> hits in the top and bottom RP fitted with a ~vertical line $\rightarrow$ horizontal alignment and tilt
-\>> build $y$ histograms from top and bottom RPs, find the centre of symmetry $\rightarrow$ vertical alignment
-
-\> current n-tuples contain alignment $\rightarrow$ expect corrections compatible with 0
-
-\> \plot{alignment/alignment_details_DS-fill5313.pdf}: detailed example of the method
-
-\> summary of (re)alignment results per fill
-\>> \plot{alignment/alignment_DS-fill5313.pdf}
-\>> \plot{alignment/alignment_DS-fill5314.pdf}
-\>> \plot{alignment/alignment_DS-fill5317.pdf}
-\>> \plot{alignment/alignment_DS-fill5321.pdf}
-
-
-\subsection{Validation}
-
-\> \plot{angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
-
-\> \plot{mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
-
-\> \plot{mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
-
-
-
-%----------------------------------------------------------------------------------------------------
-\section{Optics}
-
-\subsection{Validation}
-
-\> \plot{optics/optics_test_summary.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles plotted as a function of the scattering angle
-\>> shifts (fit extrapolated to 0): due to misalignments
-\>> tilts (slope): due to optics
-
-
-
-%----------------------------------------------------------------------------------------------------
-\section{Resolutions}
-
-\> method
-\>> horizontal plane
-\>>> left-right difference of $\th_x^*$ sensitive to beam divergence and detector (RP) resolution
-\>>> beam divergence determined from $\si(x^*)$
-\>>> detector resolution then deconvolved from $\De^{R-L} \th_x^*$ and $\si(x^*)$ and is checked to be time-independent
-\>> vertical plane
-\>>> left-right difference of $\th_y^*$ directly probes the vertical beam divergence (the detector component is negligible)
-
-\> \plot{resolutions/resolutions_vs_time.pdf}: summary of resolution components as a function of time
-
-
-%----------------------------------------------------------------------------------------------------
-\section{Acceptance correction}
-
-\> method
-\>> known acceptance limitations: sensor edges (low $|\th_y^*|$), LHC apertures (high $|\th_y^*|$)
-\>> acceptance region determined empirically by looking at the reconstructed $\th_y^*$ vs.~$\th_x^*$ distributions, separately in the left and right arm
-\>> due to the presence of the tilted RPs (210-far), the acceptance limitations due to the sensors edges are both $\th_y^*$ and $\th_x^*$ dependent
-\>> assuming that the smearing in $\th_{x, y}^*$ is independent and has the same sigma left and right, then:
-$$h_{\rm observed}(\th_x^*, \th_y^*) = A_{\rm sm}(\th_x^*, \th_y^*)\ h_{\rm smeared}(\th_x^*, \th_y^*)$$
-where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scattering angles reconstructed via left-right average and $A_{\rm sm}$ is the ``smearing'' contribution to the acceptance
-\>> $A_{\rm sm}$ is calculated as the probability that any of the two protons leaves the fiducial region due to smearing -- this time it requires two-fold integral
-\>> another acceptance factor, $A_{\rm geom}$, is given by the fraction of const-$\th^*$ arc within the fiducial region
-\>>> for this, another set of fiducial cuts, ``global'', is used -- in order to avoid to corners with high smearing correction
-
-\> \plot{acceptance_correction/acc_cmp_fill.pdf}: shows the region of acceptance in $\th_x^*$ vs.~$\th_y^*$, per fill
-
-\> \plot{acceptance_correction/acc_cmp_fill_details.pdf}: shows the details of acceptance limitations due to the sensor edges and the corresponding fiducial cuts
-
-\> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts in the left and right arm and the global cuts
-
-
-%\> \plot{acceptance_correction/acc_phi_lab.pdf}
-
 
 
 %----------------------------------------------------------------------------------------------------
 \section{Unfolding of resolution effects}
+
+\> not done yet
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Normalisation}
 
 \> not done yet
 
@@ -290,9 +327,8 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Normalisation}
+\section{Validation of analysis chain}
 
-\> not done yet
 
 
 %----------------------------------------------------------------------------------------------------
