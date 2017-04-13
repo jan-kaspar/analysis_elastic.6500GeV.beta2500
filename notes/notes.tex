@@ -83,6 +83,8 @@
 %----------------------------------------------------------------------------------------------------
 \section{Reconstruction formulae}
 
+\> method: study various reconstruction formulae with MC
+
 \> \plot{reconstruction_formulae/plot_formulae_graphs.pdf} : study of performance of various reconstruction formulae
 \>> formulae
 \>>> using different RPs as input
@@ -91,19 +93,25 @@
 
 \> \plot{reconstruction_formulae/plot_formulae_correlation.pdf} : study of left-right correlations of angle reconstruction errors
 
-\> horizontal plane
+\> observations for horizontal plane
 \>> single arm: best is the ``regression'' formula with vertex-contribution suppression; the leading error comes from detector resolution
 \>> double arm: vertex cancels automatically due to the optics symmetry, thus:
 \>>> best: LR average of ``hit'' formula
 \>>> LR average of ``regression'' formula is worse -- the error induced by detector resolution is amplified by the (unnecessary) vertex-suppression on single-arm level
-\>> optimal solution would be
-\>>> ``regression'' formula for cuts
-\>>> ``hit'' formula for the rest; acceptance calculation assumes that double-arm reconstruction is LR average of single-arm values
-\>>> not yet implemented -- only one reconstruction is performed so far
+\>> therefore two different reconstructions used in the analysis: ``regression'' formula for cuts, ``hit'' formula for the rest
 
-\> formulae currently used
+\> formulae used for cuts
 \>> horizontal plane
-\>>> single arm: $\displaystyle \th_x^{*,LR} = \mp { v_x^{210F}\,x^{220F} - v^{220F}\,x^{210F} \over v^{210F}\,L^{220F} - v^{220F}\,L^{210F} }$
+\>>> single arm: $\displaystyle \th_x^{*,LR} = \mp { v_x^{210F}\,x^{220F} - v^{220F}\,x^{210F} \over v^{210F}\,L^{220F} - v^{220F}\,L^{210F} }$,
+$\displaystyle x^{*,LR} = { x^{210F}\,L_x^{220F} - x^{220F}\,L_x^{210F} \over v^{210F}\,L^{220F} - v^{220F}\,L^{210F} }$
+\>>> double arm: average of single arm, $\th_x^* = (\th_x^{*,R} + \th_x^{*,L}) / 2$
+\>> vertical plane
+\>>> single arm: $\displaystyle \th_y^{*,LR} = \mp {1\over 2} \left( {y^{210F}\over L_y^{210F}} + {y^{220F}\over L_y^{220F}} \right)$
+\>>> double arm: average of single arm, $\th_y^* = (\th_y^{*,R} + \th_y^{*,L}) / 2$
+
+\> formulae used for the rest (distributions etc.)
+\>> horizontal plane
+\>>> single arm: $\displaystyle \th_x^{*,LR} = \mp {1\over 2} \left( {x^{210F}\over L_x^{210F}} + {x^{220F}\over L_x^{220F}} \right)$
 \>>> double arm: average of single arm, $\th_x^* = (\th_x^{*,R} + \th_x^{*,L}) / 2$
 \>> vertical plane
 \>>> single arm: $\displaystyle \th_y^{*,LR} = \mp {1\over 2} \left( {y^{210F}\over L_y^{210F}} + {y^{220F}\over L_y^{220F}} \right)$
@@ -112,33 +120,64 @@
 %----------------------------------------------------------------------------------------------------
 \section{Alignment}
 
-\subsection{(Re)determination}
+\subsection{Determination}
 
-\> assumption: track-based (relative) alignment already performed
+\> method: standard procedure
+\>> beam-based alignment: before data-taking
+\>> track-based alignment: relative alignment between RP sensors
+\>> alignment with elastics: absolute alignment wrt.~LHC beam
 
-\> method: applied per unit, applied per time slice, illustrated in \plot{alignment/alignment_method.pdf}
-\>> hits in the top and bottom RP fitted with a ~vertical line $\rightarrow$ horizontal alignment and tilt
-\>> build $y$ histograms from top and bottom RPs, find the centre of symmetry $\rightarrow$ vertical alignment
+\> uncertainty of track-based alignment
+\>> horizontal shift: $5\un{\mu m}$
+\>> vertical shift: $5\un{\mu m}$
+\>> rotation about $z$: $1\un{mrad}$
 
-\> current n-tuples contain alignment $\rightarrow$ expect corrections compatible with 0
+\> uncertainty of elastic alignment
+\>> horizontal shift: $25\un{\mu m}$
+\>> vertical shift: $100\un{\mu m}$
+\>> rotation about $z$: $2\un{mrad}$
 
-\> \plot{alignment/alignment_details_DS-fill5313.pdf}: detailed example of the method
+\> induced uncertainties
+\>> shift in 2-arm $\th_x^*$: $TODO\un{\mu rad}$
+\>> shift in 2-arm $\th_y^*$: $TODO\un{\mu rad}$
+\>> rotation about z: $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = TODO$
 
-\> summary of (re)alignment results per fill
+\subsection{Validation: elastic alignment repeated}
+
+\> elastic alignment: method
+\>> applied per unit and per time slice
+\>> illustrated in \plot{alignment/alignment_method.pdf}
+\>>> hits in the top and bottom RP fitted with a ~vertical line (red) $\rightarrow$ horizontal alignment and tilt
+\>>> build $y$ histograms from top and bottom RPs, find the centre of symmetry (blue line) $\rightarrow$ vertical alignment
+\>> \plot{alignment/alignment_details_DS-fill5313.pdf}: example of technical details of the method
+
+\> concept: current n-tuples contain alignment $\rightarrow$ expect corrections compatible with 0
+
+\> results
 \>> \plot{alignment/alignment_DS-fill5313.pdf}
 \>> \plot{alignment/alignment_DS-fill5314.pdf}
 \>> \plot{alignment/alignment_DS-fill5317.pdf}
 \>> \plot{alignment/alignment_DS-fill5321.pdf}
 
+\> observations: results compatible with 0, as expected
 
 \subsection{Validation}
 
-\> \plot{angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
+\> \plot{alignment/angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
 
-\> \plot{mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
+\> \plot{alignment/mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
 
-\> \plot{mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
+\> \plot{alignment/mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
 
+\> observations (2 arm): \TODO
+\iffalse
+\>> shift in $\th_x^*$: $\De^{R-L} \th_x^*$ up to $1\un{\mu rad}$, the above estimate gives RMS of $0.7\un{\mu rad}$ thus quite compatible; maximum of $\De^{R-L} \th_x^*$ only occurs seldom; for safety take $0.5\un{\mu rad}$ for the two-arm uncertainty
+\>> shift in $\th_y^*$: compatible with above estimate $0.24\un{\mu rad}$
+\>> rotation about z: $\si(C) \approx 0.005$ significantly better than the above estimate, use this value
+\>> 2D Gaussian fit of $\th^*_y$ vs $\th^*_x$ distributions combined from the two diagonals (program alignment\_final) gives centre positions
+\>>> $|\th^*_x| < 0.03\un{\mu rad}$
+\>>> $|\th^*_y| < 0.06\un{\mu rad}$
+\fi
 
 
 %----------------------------------------------------------------------------------------------------
@@ -179,6 +218,7 @@
 \>> cut 1: $q_a = \th_x^{*R}$, $q_b = \th_x^{*L}$; \plot{cuts/cut_1.pdf}
 \>> cut 2: $q_a = \th_y^{*R}$, $q_b = \th_y^{*L}$; \plot{cuts/cut_2.pdf}
 \>> cut 7: $q_a = \th_x^*$, $q_b = x^{*R} - x^{*L}$; \plot{cuts/cut_7.pdf}
+\>> \TODO: why not cuts 3+4, cuts 5+6?
 
 \> all cuts applied at $n_\si = 4$ level
 

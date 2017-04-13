@@ -9,7 +9,7 @@
 
 //----------------------------------------------------------------------------------------------------
 
-Kinematics DoReconstruction(const HitData &h, const Environment & env)
+Kinematics DoReconstructionForCuts(const HitData &h, const Environment & env)
 {
 	Kinematics k;
 
@@ -28,19 +28,62 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 	double D_x_R = + env.v_x_R_1_F * env.L_x_R_2_F - env.v_x_R_2_F * env.L_x_R_1_F;
 	k.th_x_R = (env.v_x_R_1_F * h.R_2_F.x - env.v_x_R_2_F * h.R_1_F.x) / D_x_R;
 	k.vtx_x_R = (+ h.R_1_F.x * env.L_x_R_2_F - h.R_2_F.x * env.L_x_R_1_F) / D_x_R;
-	
-	k.th_y_L_1_F = - h.L_1_F.y / env.L_y_L_1_F;
-  	k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
-  	k.th_y_L = (k.th_y_L_1_F + k.th_y_L_2_F) / 2.;
-  	
-	k.th_y_R_1_F = + h.R_1_F.y / env.L_y_R_1_F;
-  	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
-  	k.th_y_R = (k.th_y_R_1_F + k.th_y_R_2_F) / 2.;
 
-	// double-arm kinematics reconstruction	
+	k.th_y_L_1_F = - h.L_1_F.y / env.L_y_L_1_F;
+	k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
+	k.th_y_L = (k.th_y_L_1_F + k.th_y_L_2_F) / 2.;
+
+	k.th_y_R_1_F = + h.R_1_F.y / env.L_y_R_1_F;
+	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
+	k.th_y_R = (k.th_y_R_1_F + k.th_y_R_2_F) / 2.;
+
+	// double-arm kinematics reconstruction
 	k.th_x = (k.th_x_L + k.th_x_R) / 2.;
 	k.th_y = (k.th_y_L + k.th_y_R) / 2.;
-	
+
+	k.vtx_x = (k.vtx_x_L + k.vtx_x_R) / 2.;
+	k.vtx_y = (k.vtx_y_L + k.vtx_y_R) / 2.;
+
+	// theta reconstruction
+	double th_sq = k.th_x*k.th_x + k.th_y*k.th_y;
+	k.th = sqrt(th_sq);
+	k.phi = atan2(k.th_y, k.th_x);
+
+	// t reconstruction
+	k.t_x = env.p*env.p * k.th_x * k.th_x;
+	k.t_y = env.p*env.p * k.th_y * k.th_y;
+	k.t = k.t_x + k.t_y;
+
+	return k;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+Kinematics DoReconstructionMain(const HitData &h, const Environment & env)
+{
+	Kinematics k;
+
+	// single-arm kinematics reconstruction
+	k.th_x_L_1_F = - h.L_1_F.x / env.L_x_L_1_F;
+	k.th_x_L_2_F = - h.L_2_F.x / env.L_x_L_2_F;
+	k.th_x_L = (k.th_x_L_1_F + k.th_x_L_2_F) / 2.;
+
+	k.th_x_R_1_F = + h.R_1_F.x / env.L_x_R_1_F;
+	k.th_x_R_2_F = + h.R_2_F.x / env.L_x_R_2_F;
+	k.th_x_R = (k.th_x_R_1_F + k.th_x_R_2_F) / 2.;
+
+	k.th_y_L_1_F = - h.L_1_F.y / env.L_y_L_1_F;
+	k.th_y_L_2_F = - h.L_2_F.y / env.L_y_L_2_F;
+	k.th_y_L = (k.th_y_L_1_F + k.th_y_L_2_F) / 2.;
+
+	k.th_y_R_1_F = + h.R_1_F.y / env.L_y_R_1_F;
+	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
+	k.th_y_R = (k.th_y_R_1_F + k.th_y_R_2_F) / 2.;
+
+	// double-arm kinematics reconstruction
+	k.th_x = (k.th_x_L + k.th_x_R) / 2.;
+	k.th_y = (k.th_y_L + k.th_y_R) / 2.;
+
 	k.vtx_x = (k.vtx_x_L + k.vtx_x_R) / 2.;
 	k.vtx_y = (k.vtx_y_L + k.vtx_y_R) / 2.;
 
@@ -64,7 +107,7 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 {
 	if (verbose)
 		printf(">> BuildBinning(%s)\n", type.c_str());
-	
+
 	std::vector<double> be;
 	double w;
 
@@ -95,7 +138,7 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 
 	// between t_min and t_max
 	unsigned int N_bins_cen = 200;
-	
+
 	if (type.compare("eb") == 0)
 	{
 		double B = 3.;
@@ -109,7 +152,7 @@ void BuildBinning(const Analysis &anal, const string &type, double* &binEdges, u
 		size_t p1 = type.find("-", 0);
 		size_t p2 = type.find("-", p1 + 1);
 		size_t p3 = type.find("-", p2 + 1);
-		
+
 		double n_smearing_sigmas = atof(type.substr(p1+1, p2-p1-1).c_str());
 		string stat_unc_label = type.substr(p2+1, p3-p2-1);
 		double bs_max = atof(type.substr(p3+1).c_str());
@@ -163,7 +206,7 @@ bool CalculateAcceptanceCorrectionSmearing(double th_y_sign, const Kinematics &k
 	if ((th_y_sign * k.th_y_L < anal.fc_L_l.th_y_0) || (th_y_sign * k.th_y_R < anal.fc_R_l.th_y_0)
 		|| (th_y_sign * k.th_y_L > anal.fc_L_h.th_y_0) || (th_y_sign * k.th_y_R > anal.fc_R_h.th_y_0))
 		return true;
-	
+
 	const double th_y_abs = th_y_sign * k.th_y;
 
 	const double si_th_y_1arm = anal.si_th_y_LRdiff / sqrt(2.);
@@ -200,7 +243,7 @@ bool CalculateAcceptanceCorrectionPhi(double th_y_sign, const Kinematics &k, con
 		phis.insert(phi);
 		phis.insert(M_PI - phi);
 	}
-	
+
 	if (k.th > th_y_hcut)
 	{
 		double phi = asin(th_y_hcut / k.th);
@@ -228,7 +271,7 @@ bool CalculateAcceptanceCorrectionPhi(double th_y_sign, const Kinematics &k, con
 
 		phiSum += phi_end - phi_start;
 	}
-	
+
 	corr_phi = 2. * M_PI / phiSum;
 
 	return false;
@@ -267,7 +310,7 @@ bool SkipBunch(unsigned int run, unsigned bunch)
 		return false;
 
 	const std::vector<unsigned int> &bunches = bunchMap[run];
-	
+
 	return (find(bunches.begin(), bunches.end(), bunch) == bunches.end());
 }
 
@@ -284,7 +327,7 @@ unsigned int NonCollidingBunch(unsigned int /*run*/, unsigned /*bunch*/)
 		if (bunch == 991)
 			return 2;
 	}
-	
+
 	if (run >= 8333 && run <= 8341)
 	{
 		if (bunch == 900)

@@ -359,11 +359,12 @@ int main(int argc, char **argv)
         h_al.L_2_F.y = - h_al.L_2_F.y;
 
 		// run reconstruction
-		Kinematics k = DoReconstruction(h_al, env);
+		Kinematics k = DoReconstructionMain(h_al, env);
+		Kinematics k_cuts = DoReconstructionForCuts(h_al, env);
 
 		// cut evaluation
 		CutData cd;
-		bool select = anal.EvaluateCuts(h_al, k, cd);
+		bool select = anal.EvaluateCuts(h_al, k_cuts, cd);
 		//bool bckg = !select;
 
 		// fill no-cut histograms
