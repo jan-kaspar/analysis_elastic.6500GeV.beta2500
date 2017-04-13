@@ -138,9 +138,9 @@ $\displaystyle x^{*,LR} = { x^{210F}\,L_x^{220F} - x^{220F}\,L_x^{210F} \over v^
 \>> rotation about $z$: $2\un{mrad}$
 
 \> induced uncertainties
-\>> shift in 2-arm $\th_x^*$: $TODO\un{\mu rad}$
-\>> shift in 2-arm $\th_y^*$: $TODO\un{\mu rad}$
-\>> rotation about z: $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = TODO$
+\>> $\th_x^*$: $0.5\un{\mu rad}$ (220-fr), $0.35\un{\mu rad}$ (210-fr), $0.30\un{\mu rad}$ (single arm), $0.22\un{\mu rad}$ (double arm)
+\>> $\th_y^*$: $0.41\un{\mu rad}$ (210-fr), $0.35\un{\mu rad}$ (220-fr), $0.27\un{\mu rad}$ (single arm), $0.19\un{\mu rad}$ (double arm)
+\>> rotation about z: $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.0068$ (210-far), $0.0115$ (220-far), $0.0064$ (single arm), $0.0045$ (double arm)
 
 \subsection{Validation: elastic alignment repeated}
 
@@ -169,15 +169,12 @@ $\displaystyle x^{*,LR} = { x^{210F}\,L_x^{220F} - x^{220F}\,L_x^{210F} \over v^
 
 \> \plot{alignment/mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
 
-\> observations (2 arm): \TODO
-\iffalse
-\>> shift in $\th_x^*$: $\De^{R-L} \th_x^*$ up to $1\un{\mu rad}$, the above estimate gives RMS of $0.7\un{\mu rad}$ thus quite compatible; maximum of $\De^{R-L} \th_x^*$ only occurs seldom; for safety take $0.5\un{\mu rad}$ for the two-arm uncertainty
-\>> shift in $\th_y^*$: compatible with above estimate $0.24\un{\mu rad}$
-\>> rotation about z: $\si(C) \approx 0.005$ significantly better than the above estimate, use this value
-\>> 2D Gaussian fit of $\th^*_y$ vs $\th^*_x$ distributions combined from the two diagonals (program alignment\_final) gives centre positions
-\>>> $|\th^*_x| < 0.03\un{\mu rad}$
-\>>> $|\th^*_y| < 0.06\un{\mu rad}$
-\fi
+\> 2D Gaussian fit of $\th^*_y$ vs $\th^*_x$ distributions combined from the two diagonals (program alignment\_final) gives centre positions
+\>> $|\th^*_x| < 0.03\un{\mu rad}$
+\>> $|\th^*_y| < 0.08\un{\mu rad}$
+
+\> observations: effects possibly due to misalignment within the tolerances above (induced uncertainties)
+
 
 
 %----------------------------------------------------------------------------------------------------

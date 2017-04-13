@@ -16,9 +16,13 @@ diagonals.push("45b_56t"); diagonal_labels.push("45 bot -- 56 top"); diagonal_pe
 diagonals.push("45t_56b"); diagonal_labels.push("45 top -- 56 bot"); diagonal_pens.push(red);
 
 string arms[], arm_labels[];
+arms.push("_L1F"); arm_labels.push("left arm, 210-far");
+arms.push("_L2F"); arm_labels.push("left arm, 220-far");
 arms.push("_L"); arm_labels.push("left arm");
+arms.push("_R1F"); arm_labels.push("right arm, 210-far");
+arms.push("_R2F"); arm_labels.push("right arm, 220-far");
 arms.push("_R"); arm_labels.push("right arm");
-//arms.push(""); arm_labels.push("double arm");
+arms.push(""); arm_labels.push("double arm");
 
 xTicksDef = LeftTicks(Step=1, step=0.5);
 
@@ -46,8 +50,8 @@ for (int ai : arms.keys)
 	{
 		NewPad("time $\ung{h}$", "mean of $\th_x^*\ung{\mu rad}$");
 
-		currentpad.yTicks = RightTicks(2., 1);
-		real y_min = -4, y_max = +4;
+		currentpad.yTicks = RightTicks(0.5, 0.1);
+		real y_min = -2, y_max = +2;
 
 		DrawRunBands(dataset_fills[dsi], y_min, y_max);
 
