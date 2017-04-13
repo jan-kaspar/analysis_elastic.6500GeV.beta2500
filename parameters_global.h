@@ -62,9 +62,7 @@ void Init_global()
 	anal.alignmentYRanges["R_2_F"] = Analysis::AlignmentYRange(-20.0, -4.0, +4.0, +20.0);
 
 	// correction settings
-	// TODO: revert to true
-	//anal.use_resolution_fits = true;
-	anal.use_resolution_fits = false;
+	anal.use_resolution_fits = true;
 
 	anal.use_3outof4_efficiency_fits = true;
 	anal.inefficiency_3outof4 = 0.;

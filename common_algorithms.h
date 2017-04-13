@@ -13,13 +13,14 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 {
 	Kinematics k;
 
-	// single-arm kinematics reconstruction
+	// single-RP kinematics reconstruction
 	k.th_x_L_1_F = - h.L_1_F.x / env.L_x_L_1_F;
 	k.th_x_L_2_F = - h.L_2_F.x / env.L_x_L_2_F;
 
 	k.th_x_R_1_F = + h.R_1_F.x / env.L_x_R_1_F;
 	k.th_x_R_2_F = + h.R_2_F.x / env.L_x_R_2_F;
 
+	// single-arm kinematics reconstruction
 	double D_x_L = - env.v_x_L_1_F * env.L_x_L_2_F + env.v_x_L_2_F * env.L_x_L_1_F;
 	k.th_x_L = (env.v_x_L_1_F * h.L_2_F.x - env.v_x_L_2_F * h.L_1_F.x) / D_x_L;
 	k.vtx_x_L = (- h.L_1_F.x * env.L_x_L_2_F + h.L_2_F.x * env.L_x_L_1_F) / D_x_L;
@@ -35,17 +36,8 @@ Kinematics DoReconstruction(const HitData &h, const Environment & env)
 	k.th_y_R_1_F = + h.R_1_F.y / env.L_y_R_1_F;
   	k.th_y_R_2_F = + h.R_2_F.y / env.L_y_R_2_F;
   	k.th_y_R = (k.th_y_R_1_F + k.th_y_R_2_F) / 2.;
-	
-	double D_y_L = - env.v_y_L_1_F * env.L_y_L_2_F + env.v_y_L_2_F * env.L_y_L_1_F;
-	//k.th_y_L = (env.v_y_L_1_F * h.L_2_F.y - env.v_y_L_2_F * h.L_1_F.y) / D_y_L;
-	k.vtx_y_L = (- h.L_1_F.y * env.L_y_L_2_F + h.L_2_F.y * env.L_y_L_1_F) / D_y_L;
 
-	double D_y_R = + env.v_y_R_1_F * env.L_y_R_2_F - env.v_y_R_2_F * env.L_y_R_1_F;
-	//k.th_y_R = (env.v_y_R_1_F * h.R_2_F.y - env.v_y_R_2_F * h.R_1_F.y) / D_y_R;
-	k.vtx_y_R = (+ h.R_1_F.y * env.L_y_R_2_F - h.R_2_F.y * env.L_y_R_1_F) / D_y_R;
-
-	// double-arm kinematics reconstruction
-	
+	// double-arm kinematics reconstruction	
 	k.th_x = (k.th_x_L + k.th_x_R) / 2.;
 	k.th_y = (k.th_y_L + k.th_y_R) / 2.;
 	

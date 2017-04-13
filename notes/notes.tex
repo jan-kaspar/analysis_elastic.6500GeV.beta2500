@@ -89,7 +89,25 @@
 \>>> combining the input in various ways
 \>> studying the impact of various effects: beam divergence, vertex, pitch, ...
 
+\> \plot{reconstruction_formulae/plot_formulae_correlation.pdf} : study of left-right correlations of angle reconstruction errors
 
+\> horizontal plane
+\>> single arm: best is the ``regression'' formula with vertex-contribution suppression; the leading error comes from detector resolution
+\>> double arm: vertex cancels automatically due to the optics symmetry, thus:
+\>>> best: LR average of ``hit'' formula
+\>>> LR average of ``regression'' formula is worse -- the error induced by detector resolution is amplified by the (unnecessary) vertex-suppression on single-arm level
+\>> optimal solution would be
+\>>> ``regression'' formula for cuts
+\>>> ``hit'' formula for the rest; acceptance calculation assumes that double-arm reconstruction is LR average of single-arm values
+\>>> not yet implemented -- only one reconstruction is performed so far
+
+\> formulae currently used
+\>> horizontal plane
+\>>> single arm: $\displaystyle \th_x^{*,LR} = \mp { v_x^{210F}\,x^{220F} - v^{220F}\,x^{210F} \over v^{210F}\,L^{220F} - v^{220F}\,L^{210F} }$
+\>>> double arm: average of single arm, $\th_x^* = (\th_x^{*,R} + \th_x^{*,L}) / 2$
+\>> vertical plane
+\>>> single arm: $\displaystyle \th_y^{*,LR} = \mp {1\over 2} \left( {y^{210F}\over L_y^{210F}} + {y^{220F}\over L_y^{220F}} \right)$
+\>>> double arm: average of single arm, $\th_y^* = (\th_y^{*,R} + \th_y^{*,L}) / 2$
 
 %----------------------------------------------------------------------------------------------------
 \section{Alignment}
