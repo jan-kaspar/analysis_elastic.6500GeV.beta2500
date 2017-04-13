@@ -551,7 +551,10 @@ int main(int argc, char **argv)
 
 	TH2D *h_th_x_diffLR_vs_vtx_x = new TH2D("h_th_x_diffLR_vs_vtx_x", ";vtx_{x};#theta_{x}^{R} - #theta_{x}^{L}", 100, -300E-3, +300E-3, 120, -120E-6, +120E-6);
 
-	TProfile *p_th_x_diffLR_vs_th_x = new TProfile("p_th_x_diffLR_vs_th_x", ";#theta_{x};#theta_{x}^{R} - #theta_{x}^{L}", 200, -100E-6, +100E-6);
+	TProfile *p_th_x_diffLR_vs_th_x = new TProfile("p_th_x_diffLR_vs_th_x", ";#theta_{x};#theta_{x}^{R} - #theta_{x}^{L}", 100, -100E-6, +100E-6);
+	TProfile *p_th_x_L_diff12_vs_th_x_L = new TProfile("p_th_x_L_diff12_vs_th_x_L", ";#theta_{x}^{L};#theta_{x}^{L2F} - #theta_{x}^{L1F}", 100, -500E-6, +500E-6);
+	TProfile *p_th_x_R_diff12_vs_th_x_R = new TProfile("p_th_x_R_diff12_vs_th_x_R", ";#theta_{x}^{R};#theta_{x}^{R2F} - #theta_{x}^{R1F}", 100, -500E-6, +500E-6);
+
 	TProfile *p_th_y_diffLR_vs_th_y = new TProfile("p_th_y_diffLR_vs_th_y", ";#theta_{y};#theta_{y}^{R} - #theta_{y}^{L}", 200, -100E-6, +100E-6);
 	TProfile *p_th_y_L_diff12_vs_th_y_L = new TProfile("p_th_y_L_diff12_vs_th_y_L", ";#theta_{y}^{L};#theta_{y}^{L2F} - #theta_{y}^{L1F}", 200, -500E-6, +500E-6);
 	TProfile *p_th_y_R_diff12_vs_th_y_R = new TProfile("p_th_y_R_diff12_vs_th_y_R", ";#theta_{y}^{R};#theta_{y}^{R2F} - #theta_{y}^{R1F}", 200, -500E-6, +500E-6);
@@ -1122,26 +1125,32 @@ int main(int argc, char **argv)
 		h_y_R_ratioFN_vs_y_R_N->Fill(h_al.y_R_N, h_al.y_R_F / h_al.y_R_N);
 		*/
 
-		th_x_diffLR->Fill(k.th_x_R - k.th_x_L);
-		th_y_diffLR->Fill(k.th_y_R - k.th_y_L);
-
-		th_x_diffLF->Fill(k.th_x_L - k.th_x);
-		th_x_diffRF->Fill(k.th_x_R - k.th_x);
-
-		h_th_x_diffLR_vs_th_x->Fill(k.th_x, k.th_x_R - k.th_x_L);
-		h_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
-		h_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
-
-		p_th_x_diffLR_vs_th_x->Fill(k.th_x, k.th_x_R - k.th_x_L);
-		p_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
-		p_th_y_L_diff12_vs_th_y_L->Fill(k.th_y_L, k.th_y_L_2_F - k.th_y_L_1_F);
-		p_th_y_R_diff12_vs_th_y_R->Fill(k.th_y_R, k.th_y_R_2_F - k.th_y_R_1_F);
-
-		p_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
-
 		double safe_th_y_min = anal.fc_G_l.th_y_0 + 6E-6;
 		double safe_th_y_max = anal.fc_G_h.th_y_0 - 5E-6;
 		bool safe = fabs(k.th_y) > safe_th_y_min && fabs(k.th_y) < safe_th_y_max;
+
+		if (safe)
+		{
+			th_x_diffLR->Fill(k.th_x_R - k.th_x_L);
+			th_y_diffLR->Fill(k.th_y_R - k.th_y_L);
+
+			th_x_diffLF->Fill(k.th_x_L - k.th_x);
+			th_x_diffRF->Fill(k.th_x_R - k.th_x);
+
+			h_th_x_diffLR_vs_th_x->Fill(k.th_x, k.th_x_R - k.th_x_L);
+			h_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
+			h_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
+
+			p_th_x_diffLR_vs_th_x->Fill(k.th_x, k.th_x_R - k.th_x_L);
+			p_th_x_L_diff12_vs_th_x_L->Fill(k.th_x_L, k.th_x_L_2_F - k.th_x_L_1_F);
+			p_th_x_R_diff12_vs_th_x_R->Fill(k.th_x_R, k.th_x_R_2_F - k.th_x_R_1_F);
+
+			p_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
+			p_th_y_L_diff12_vs_th_y_L->Fill(k.th_y_L, k.th_y_L_2_F - k.th_y_L_1_F);
+			p_th_y_R_diff12_vs_th_y_R->Fill(k.th_y_R, k.th_y_R_2_F - k.th_y_R_1_F);
+
+			p_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
+		}
 
 		if (safe)
 		{
@@ -1484,6 +1493,11 @@ int main(int argc, char **argv)
 
 	printf("\n* fitting p_th_x_diffLR_vs_th_x\n");
 	p_th_x_diffLR_vs_th_x->Fit("pol1", "", "", -80E-6, +80E-6);
+	printf("\n* fitting p_th_x_L_diff12_vs_th_x_L\n");
+	p_th_x_L_diff12_vs_th_x_L->Fit("pol1", "", "", -80E-6, +80E-6);
+	printf("\n* fitting p_th_x_R_diff12_vs_th_x_R\n");
+	p_th_x_R_diff12_vs_th_x_R->Fit("pol1", "", "", -80E-6, +80E-6);
+
 	printf("\n* fitting p_th_y_diffLR_vs_th_y\n");
 	p_th_y_diffLR_vs_th_y->Fit("pol1", "", "", th_y_low_bound, th_y_high_bound);
 	printf("\n* fitting p_th_y_L_diff12_vs_th_y_L\n");
@@ -1833,6 +1847,9 @@ int main(int argc, char **argv)
 	h_th_x_diffLR_vs_vtx_x->Write();
 
 	p_th_x_diffLR_vs_th_x->Write();
+	p_th_x_L_diff12_vs_th_x_L->Write();
+	p_th_x_R_diff12_vs_th_x_R->Write();
+
 	p_th_y_diffLR_vs_th_y->Write();
 	p_th_y_L_diff12_vs_th_y_L->Write();
 	p_th_y_R_diff12_vs_th_y_R->Write();

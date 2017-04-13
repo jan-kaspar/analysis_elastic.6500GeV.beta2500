@@ -19,6 +19,9 @@ real y_min[];
 real y_max[];
 
 plot.push("p_th_x_diffLR_vs_th_x"); lab_h.push("$\th_x^{*}\ung{\mu rad}$"); lab_v.push("$\De^{R-L}\th_x^{*}\ung{\mu rad}$"); y_min.push(-4); y_max.push(4);
+plot.push("p_th_x_L_diff12_vs_th_x_L"); lab_h.push("$\th_x^{*L}\ung{\mu rad}$"); lab_v.push("$\De^{220F-210F}\th_x^{*L}\ung{\mu rad}$"); y_min.push(-4); y_max.push(4);
+plot.push("p_th_x_R_diff12_vs_th_x_R"); lab_h.push("$\th_x^{*R}\ung{\mu rad}$"); lab_v.push("$\De^{220F-210F}\th_x^{*R}\ung{\mu rad}$"); y_min.push(-4); y_max.push(4);
+
 plot.push("p_th_y_diffLR_vs_th_y"); lab_h.push("$\th_y^{*}\ung{\mu rad}$"); lab_v.push("$\De^{R-L}\th_y^{*}\ung{\mu rad}$"); y_min.push(-0.5); y_max.push(0.5);
 plot.push("p_th_y_L_diff12_vs_th_y_L"); lab_h.push("$\th_y^{*L}\ung{\mu rad}$"); lab_v.push("$\De^{220F-210F}\th_y^{*L}\ung{\mu rad}$"); y_min.push(-0.1); y_max.push(0.1);
 plot.push("p_th_y_R_diff12_vs_th_y_R"); lab_h.push("$\th_y^{*R}\ung{\mu rad}$"); lab_v.push("$\De^{220F-210F}\th_y^{*R}\ung{\mu rad}$"); y_min.push(-0.1); y_max.push(0.1);
