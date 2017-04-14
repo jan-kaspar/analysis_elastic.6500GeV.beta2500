@@ -95,9 +95,7 @@ void Init_global_45b_56t()
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
-	// TODO
-	//unsmearing_file = "unfolding_cf_ni_45b_56t.root";
-	unsmearing_file = "";
+	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
 	unsmearing_object = "fit2-2/<binning>";
 }
 
@@ -116,8 +114,6 @@ void Init_global_45t_56b()
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
-	// TODO
-	//unsmearing_file = "unfolding_cf_ni_45b_56t.root";
-	unsmearing_file = "";
+	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
 	unsmearing_object = "fit2-2/<binning>";
 }
