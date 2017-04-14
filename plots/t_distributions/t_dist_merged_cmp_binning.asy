@@ -22,6 +22,9 @@ for (int bi : binnings.keys)
 
 	string binning = binnings[bi];
 
+	NewPad(false);
+	label("{\SetFontSizesXX " + binning + "}");
+
 	// ----------
 
 	NewPad("$|t|\ung{GeV^2}$", "$\d\si/\d t\ung{mb/GeV^2}$");
@@ -41,4 +44,5 @@ for (int bi : binnings.keys)
 
 	limits((0, 400), (0.01, 1000), Crop);
 
+	yaxis(XEquals(1.2e-3, false), dashed);
 }
