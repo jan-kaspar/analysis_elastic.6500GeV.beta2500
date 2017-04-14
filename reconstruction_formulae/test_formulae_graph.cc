@@ -141,13 +141,13 @@ int main()
 	/*
 	env_nom.si_vtx_x = 480E-3;							// mm
 	env_nom.si_th_x_L = env_nom.si_th_x_R = 0.27E-6;	// rad
-	env_nom.si_de_P_L = env_nom.si_de_P_R = 11E-3;		// mm
+	env_nom.si_de_P_L = env_nom.si_de_P_R = 10.5E-3;	// mm
 	*/
 
 	// case 2
 	env_nom.si_vtx_x = 680E-3;							// mm
 	env_nom.si_th_x_L = env_nom.si_th_x_R = 0.39E-6;	// rad
-	env_nom.si_de_P_L = env_nom.si_de_P_R = 12E-3;		// mm
+	env_nom.si_de_P_L = env_nom.si_de_P_R = 11.2E-3;	// mm
 
 	env_nom.Print();
 

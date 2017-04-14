@@ -48,8 +48,8 @@ void Init_global()
 	anal.si_th_x_LRdiff = 12.5E-6;
 	anal.si_th_x_LRdiff_unc = 0.3E-6;
 
-	anal.si_th_x_2arm = 1E-6;		// due to pitch error much worse than beam divergence, TODO: verify
-	anal.si_th_x_2arm_unc = 0E-6;
+	anal.si_th_x_2arm = 0.26E-6;
+	anal.si_th_x_2arm_unc = 0.04E-6;
 
 	// alignment-determination settings
 	anal.alignment_t0 = 0.;			// beginning of the first time-slice

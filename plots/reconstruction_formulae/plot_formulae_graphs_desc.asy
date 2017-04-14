@@ -49,8 +49,11 @@ void DrawSet(string iq, real scale_x, string unit, string formulae[], string lab
 //----------------------------------------------------------------------------------------------------
 
 string formulae[], labels[];
-formulae.push("theta_x_one_pot_hit_L2F, th_x_L"); labels.push("\vbox{\hbox{$\th_x^*$}\hbox{single RP (left-220-fr)}}");
-formulae.push("theta_x_two_arm_hit_2F_LRavg, th_x"); labels.push("\vbox{\hbox{$\th_x^*$}\hbox{two arms (220-fr only)}}");
+formulae.push("theta_x_one_arm_regr, th_x_L"); labels.push("\vbox{\hbox{reco for cuts}\hbox{$\th_x^*$}\hbox{single arm (45)}}");
+formulae.push("theta_x_one_arm_regr_LRavg, th_x"); labels.push("\vbox{\hbox{reco for cuts}\hbox{$\th_x^*$}\hbox{two arms}}");
+
+formulae.push("theta_x_one_arm_hit, th_x_L"); labels.push("\vbox{\hbox{reco for distributions}\hbox{$\th_x^*$}\hbox{single arm (45)}}");
+formulae.push("theta_x_two_arm_hit_LRavg, th_x"); labels.push("\vbox{\hbox{reco for distributions}\hbox{$\th_x^*$}\hbox{two arms}}");
 
 DrawSet("\th_x", 1e6, "\mu rad", formulae, labels);
 
@@ -59,8 +62,8 @@ GShipout("plot_formulae_graphs_desc_th_x");
 //----------------------------------------------------------------------------------------------------
 
 string formulae[], labels[];
-formulae.push("theta_y_one_pot_hit_L2F, th_y_L"); labels.push("\vbox{\hbox{$\th_y^*$}\hbox{single RP (left-220-fr)}}");
-formulae.push("theta_y_two_arm_hit_2F_LRavg, th_y"); labels.push("\vbox{\hbox{$\th_y^*$}\hbox{two arms (220-fr only)}}");
+formulae.push("theta_y_one_arm_hit, th_y_L"); labels.push("\vbox{\hbox{$\th_y^*$}\hbox{single arm (45)}}");
+formulae.push("theta_y_two_arm_hit_LRavg, th_y"); labels.push("\vbox{\hbox{$\th_y^*$}\hbox{two arms}}");
 
 DrawSet("\th_y", 1e6, "\mu rad", formulae, labels);
 

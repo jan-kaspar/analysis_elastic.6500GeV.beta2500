@@ -696,27 +696,12 @@ int main(int argc, char **argv)
 	TProfile *p_thl_y_L_vs_thl_y_R = new TProfile("p_thl_y_L_vs_thl_y_R", ";#theta_{y,local}^{R}   (rad);#theta_{y,local}^{L}   (rad)", 300, -60E-6, +60E-6);
 
 	// time-dependence histograms
-	double period_len = 10*60.;	// s
+	double period_len = 5*60.;	// s
 	signed int period_min = floor(timestamp_min / period_len);
 	signed int period_max = floor(timestamp_max / period_len);
 	unsigned int time_bins = period_max - period_min + 1;
 	double time_min = period_min * period_len;
 	double time_max = (period_max+1) * period_len;
-
-	TProfile *p_diffLR_th_x_vs_time = new TProfile("p_diffLR_th_x_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{x}", time_bins, time_min, time_max);
-	TGraphErrors *gRMS_diffLR_th_x_vs_time = new TGraphErrors; gRMS_diffLR_th_x_vs_time->SetName("gRMS_diffLR_th_x_vs_time"); gRMS_diffLR_th_x_vs_time->SetTitle(";timestamp;RMS of #Delta^{R-L}#theta_{x}");
-
-	TProfile *p_diffLR_th_y_vs_time = new TProfile("p_diffLR_th_y_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{y}", time_bins, time_min, time_max);
-	TGraphErrors *gRMS_diffLR_th_y_vs_time = new TGraphErrors; gRMS_diffLR_th_y_vs_time->SetName("gRMS_diffLR_th_y_vs_time"); gRMS_diffLR_th_y_vs_time->SetTitle(";timestamp;RMS of #Delta^{R-L}#theta_{y}");
-
-	TProfile *p_diff12_th_y_L_vs_time = new TProfile("p_diff12_th_y_L_vs_time", ";timestamp;mean of #Delta^{F-N}#theta_{y}^{L}", time_bins, time_min, time_max);
-	TGraphErrors *gRMS_diff12_th_y_L_vs_time = new TGraphErrors; gRMS_diff12_th_y_L_vs_time->SetName("gRMS_diff12_th_y_L_vs_time"); gRMS_diff12_th_y_L_vs_time->SetTitle(";timestamp;RMS of #Delta^{2F-1F}#theta_{y}^{L}");
-
-	TProfile *p_diff12_th_y_R_vs_time = new TProfile("p_diff12_th_y_R_vs_time", ";timestamp;mean of #Delta^{F-N}#theta_{y}^{R}", time_bins, time_min, time_max);
-	TGraphErrors *gRMS_diff12_th_y_R_vs_time = new TGraphErrors; gRMS_diff12_th_y_R_vs_time->SetName("gRMS_diff12_th_y_R_vs_time"); gRMS_diff12_th_y_R_vs_time->SetTitle(";timestamp;RMS of #Delta^{2F-1F}#theta_{y}^{R}");
-
-	TProfile *p_vtx_x_vs_time = new TProfile("p_vtx_x_vs_time", ";timestamp;mean of x^{*}", time_bins, time_min, time_max);
-	TGraphErrors *gRMS_vtx_x_vs_time = new TGraphErrors; gRMS_vtx_x_vs_time->SetName("gRMS_vtx_x_vs_time"); gRMS_vtx_x_vs_time->SetTitle(";timestamp;RMS of x^{*}");
 
 	TProfile *p_th_x_L1F_vs_time = new TProfile("p_th_x_L1F_vs_time", ";timestamp;#theta_{x}^{L1F}", time_bins, time_min, time_max);
 	TProfile *p_th_x_L2F_vs_time = new TProfile("p_th_x_L2F_vs_time", ";timestamp;#theta_{x}^{L2F}", time_bins, time_min, time_max);
@@ -729,6 +714,24 @@ int main(int argc, char **argv)
 	TProfile *p_th_y_L_vs_time = new TProfile("p_th_y_L_vs_time", ";timestamp;#theta_{y}^{L}", time_bins, time_min, time_max);
 	TProfile *p_th_y_R_vs_time = new TProfile("p_th_y_R_vs_time", ";timestamp;#theta_{y}^{R}", time_bins, time_min, time_max);
 	TProfile *p_th_y_vs_time = new TProfile("p_th_y_vs_time", ";timestamp;#theta_{y}", time_bins, time_min, time_max);
+
+	TProfile *p_diffLR_th_x_vs_time = new TProfile("p_diffLR_th_x_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{x}", time_bins, time_min, time_max);
+	TProfile *p_diffLR_th_y_vs_time = new TProfile("p_diffLR_th_y_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{y}", time_bins, time_min, time_max);
+	
+	TProfile *p_kin_cuts_th_x_L_vs_time = new TProfile("p_kin_cuts_th_x_L_vs_time", ";timestamp;#theta_{x}^{L}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_th_x_R_vs_time = new TProfile("p_kin_cuts_th_x_R_vs_time", ";timestamp;#theta_{x}^{R}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_th_x_vs_time = new TProfile("p_kin_cuts_th_x_vs_time", ";timestamp;#theta_{x}", time_bins, time_min, time_max);
+
+	TProfile *p_kin_cuts_th_y_L_vs_time = new TProfile("p_kin_cuts_th_y_L_vs_time", ";timestamp;#theta_{y}^{L}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_th_y_R_vs_time = new TProfile("p_kin_cuts_th_y_R_vs_time", ";timestamp;#theta_{y}^{R}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_th_y_vs_time = new TProfile("p_kin_cuts_th_y_vs_time", ";timestamp;#theta_{y}", time_bins, time_min, time_max);
+
+	TProfile *p_kin_cuts_vtx_x_vs_time = new TProfile("p_kin_cuts_vtx_x_vs_time", ";timestamp;mean of x^{*}", time_bins, time_min, time_max);
+
+	TProfile *p_kin_cuts_diffLR_th_x_vs_time = new TProfile("p_kin_cuts_diffLR_th_x_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{x}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_diffLR_th_y_vs_time = new TProfile("p_kin_cuts_diffLR_th_y_vs_time", ";timestamp;mean of #Delta^{R-L}#theta_{y}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_diff12_th_y_L_vs_time = new TProfile("p_kin_cuts_diff12_th_y_L_vs_time", ";timestamp;mean of #Delta^{F-N}#theta_{y}^{L}", time_bins, time_min, time_max);
+	TProfile *p_kin_cuts_diff12_th_y_R_vs_time = new TProfile("p_kin_cuts_diff12_th_y_R_vs_time", ";timestamp;mean of #Delta^{F-N}#theta_{y}^{R}", time_bins, time_min, time_max);
 
 	TProfile *p_input_d_x_rms_vs_time = new TProfile("p_input_d_x_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
 	TProfile *p_input_d_y_rms_vs_time = new TProfile("p_input_d_y_rms_vs_time", ";timestamp", time_bins, time_min, time_max);
@@ -1334,23 +1337,6 @@ int main(int argc, char **argv)
 
 		if (safe)
 		{
-			p_diffLR_th_x_vs_time->Fill(ev.timestamp, k.th_x_R - k.th_x_L);
-			p_diffLR_th_y_vs_time->Fill(ev.timestamp, k.th_y_R - k.th_y_L);
-
-			p_diff12_th_y_L_vs_time->Fill(ev.timestamp, k.th_y_L_2_F - k.th_y_L_1_F);
-			p_diff12_th_y_R_vs_time->Fill(ev.timestamp, k.th_y_R_2_F - k.th_y_R_1_F);
-
-			p_vtx_x_vs_time->Fill(ev.timestamp, k.vtx_x);
-
-			tm_h_th_x_L[period]->Fill(k.th_x_L);
-			tm_h_th_x_R[period]->Fill(k.th_x_R);
-
-			tm_p_diffLR_th_x[period]->Fill(k.th_x, k.th_x_R - k.th_x_L);
-			tm_p_diffLR_th_y[period]->Fill(k.th_y, k.th_y_R - k.th_y_L);
-		}
-
-		if (safe)
-		{
 			p_th_x_L1F_vs_time->Fill(ev.timestamp, k.th_x_L_1_F);
 			p_th_x_L2F_vs_time->Fill(ev.timestamp, k.th_x_L_2_F);
 			p_th_x_L_vs_time->Fill(ev.timestamp, k.th_x_L);
@@ -1362,6 +1348,37 @@ int main(int argc, char **argv)
 			p_th_y_L_vs_time->Fill(ev.timestamp, k.th_y_L);
 			p_th_y_R_vs_time->Fill(ev.timestamp, k.th_y_R);
 			p_th_y_vs_time->Fill(ev.timestamp, k.th_y);
+
+			p_diffLR_th_x_vs_time->Fill(ev.timestamp, k.th_x_R - k.th_x_L);
+			p_diffLR_th_y_vs_time->Fill(ev.timestamp, k.th_y_R - k.th_y_L);
+		}
+
+		if (safe)
+		{
+			p_kin_cuts_th_x_L_vs_time->Fill(ev.timestamp, k_cuts.th_x_L);
+			p_kin_cuts_th_x_R_vs_time->Fill(ev.timestamp, k_cuts.th_x_R);
+			p_kin_cuts_th_x_vs_time->Fill(ev.timestamp, k_cuts.th_x);
+
+			p_kin_cuts_th_y_L_vs_time->Fill(ev.timestamp, k_cuts.th_y_L);
+			p_kin_cuts_th_y_R_vs_time->Fill(ev.timestamp, k_cuts.th_y_R);
+			p_kin_cuts_th_y_vs_time->Fill(ev.timestamp, k_cuts.th_y);
+
+			p_kin_cuts_vtx_x_vs_time->Fill(ev.timestamp, k_cuts.vtx_x);
+
+			p_kin_cuts_diffLR_th_x_vs_time->Fill(ev.timestamp, k_cuts.th_x_R - k_cuts.th_x_L);
+			p_kin_cuts_diffLR_th_y_vs_time->Fill(ev.timestamp, k_cuts.th_y_R - k_cuts.th_y_L);
+
+			p_kin_cuts_diff12_th_y_L_vs_time->Fill(ev.timestamp, k_cuts.th_y_L_2_F - k_cuts.th_y_L_1_F);
+			p_kin_cuts_diff12_th_y_R_vs_time->Fill(ev.timestamp, k_cuts.th_y_R_2_F - k_cuts.th_y_R_1_F);
+		}
+
+		if (safe)
+		{
+			tm_h_th_x_L[period]->Fill(k.th_x_L);
+			tm_h_th_x_R[period]->Fill(k.th_x_R);
+
+			tm_p_diffLR_th_x[period]->Fill(k.th_x, k.th_x_R - k.th_x_L);
+			tm_p_diffLR_th_y[period]->Fill(k.th_y, k.th_y_R - k.th_y_L);
 		}
 
 		// set time-dependent resolutions
@@ -1567,11 +1584,6 @@ int main(int argc, char **argv)
 	p_th_y_LF_vs_th_y_LN->Fit("pol1", "", "", 170E-6, 500E-6);
 	printf("* fitting p_th_y_RF_vs_th_y_RN\n");
 	p_th_y_RF_vs_th_y_RN->Fit("pol1", "", "", 170E-6, 500E-6);
-
-	printf("* fitting p_diffLR_th_x_vs_time\n");
-	p_diffLR_th_x_vs_time->Fit("pol1");
-	printf("* fitting p_diffLR_th_y_vs_time\n");
-	p_diffLR_th_y_vs_time->Fit("pol1");
 
 	printf("* fitting p_th_x_R_vs_time\n");
 	p_th_x_R_vs_time->Fit("pol1");
@@ -2032,61 +2044,35 @@ int main(int argc, char **argv)
 	}
 	g_run_boundaries->Write();
 
-	p_diffLR_th_x_vs_time->Write();
-	ProfileToRMSGraph(p_diffLR_th_x_vs_time, gRMS_diffLR_th_x_vs_time);
-	gRMS_diffLR_th_x_vs_time->Write();
+	for (TProfile *p : 
+		{
+			p_th_x_L1F_vs_time, p_th_x_L2F_vs_time, p_th_x_L_vs_time, p_th_x_R1F_vs_time, p_th_x_R2F_vs_time, p_th_x_R_vs_time, p_th_x_vs_time,
+			p_th_y_L_vs_time, p_th_y_R_vs_time, p_th_y_vs_time,
+			p_diffLR_th_x_vs_time, p_diffLR_th_y_vs_time,
 
-	p_diffLR_th_y_vs_time->Write();
-	ProfileToRMSGraph(p_diffLR_th_y_vs_time, gRMS_diffLR_th_y_vs_time);
-	gRMS_diffLR_th_y_vs_time->Write();
-
-	p_diff12_th_y_L_vs_time->Write();
-	ProfileToRMSGraph(p_diff12_th_y_L_vs_time, gRMS_diff12_th_y_L_vs_time);
-	gRMS_diff12_th_y_L_vs_time->Write();
-
-	p_diff12_th_y_R_vs_time->Write();
-	ProfileToRMSGraph(p_diff12_th_y_R_vs_time, gRMS_diff12_th_y_R_vs_time);
-	gRMS_diff12_th_y_R_vs_time->Write();
-
-	p_vtx_x_vs_time->Write();
-	ProfileToRMSGraph(p_vtx_x_vs_time, gRMS_vtx_x_vs_time);
-	gRMS_vtx_x_vs_time->Write();
-
-	TGraphErrors *g_beam_div_x_vs_time = new TGraphErrors; g_beam_div_x_vs_time->SetName("g_beam_div_x_vs_time"); g_beam_div_x_vs_time->SetTitle(";timestamp;beam divergence in x");
-	TGraphErrors *g_sensor_res_x_vs_time = new TGraphErrors; g_sensor_res_x_vs_time->SetName("g_sensor_res_x_vs_time"); g_sensor_res_x_vs_time->SetTitle(";timestamp;sensor resolution in x");
-	for (int i = 0; i <= gRMS_vtx_x_vs_time->GetN(); ++i)
+			p_kin_cuts_th_x_L_vs_time, p_kin_cuts_th_x_R_vs_time, p_kin_cuts_th_x_vs_time,
+			p_kin_cuts_th_y_L_vs_time, p_kin_cuts_th_y_R_vs_time, p_kin_cuts_th_y_vs_time,
+			p_kin_cuts_vtx_x_vs_time,
+			p_kin_cuts_diffLR_th_x_vs_time, p_kin_cuts_diffLR_th_y_vs_time, p_kin_cuts_diff12_th_y_L_vs_time, p_kin_cuts_diff12_th_y_R_vs_time
+		} )
 	{
-		double time=0., si_diff=0., si_vtx=0.;
-		gRMS_vtx_x_vs_time->GetPoint(i, time, si_vtx);
-		gRMS_diffLR_th_x_vs_time->GetPoint(i, time, si_diff);
+		p->Write();
 
-		double si_bdx = si_vtx * sqrt(2.) / 90. * 1E-3;	// in rad
-		double si_srx = sqrt(si_diff*si_diff/2. - si_bdx*si_bdx);
+		string name = p->GetName();
+		name = name.replace(0, 1, "gRMS");
 
-		g_beam_div_x_vs_time->SetPoint(i, time, si_bdx);
-		g_sensor_res_x_vs_time->SetPoint(i, time, si_srx);
+		TGraphErrors *g = new TGraphErrors;
+		g->SetName(name.c_str());
+		//gRMS_diffLR_th_x_vs_time->SetTitle(";timestamp;RMS of #Delta^{R-L}#theta_{x}");
+		ProfileToRMSGraph(p, g);
+		g->Write();
 	}
-
-	g_beam_div_x_vs_time->Write();
-	g_sensor_res_x_vs_time->Write();
-
-	p_th_x_L1F_vs_time->Write();
-	p_th_x_L2F_vs_time->Write();
-	p_th_x_L_vs_time->Write();
-	p_th_x_R1F_vs_time->Write();
-	p_th_x_R2F_vs_time->Write();
-	p_th_x_R_vs_time->Write();
-	p_th_x_vs_time->Write();
-
-	p_th_y_L_vs_time->Write();
-	p_th_y_R_vs_time->Write();
-	p_th_y_vs_time->Write();
-
-	g_ext_diffLR_th_x_vs_time->Write();
-	g_ext_diffLR_th_y_vs_time->Write();
 
 	p_input_d_x_rms_vs_time->Write();
 	p_input_d_y_rms_vs_time->Write();
+
+	g_ext_diffLR_th_x_vs_time->Write();
+	g_ext_diffLR_th_y_vs_time->Write();
 
 	TDirectory *fidCutDir = outF->mkdir("fiducial cuts");
 	gDirectory = fidCutDir;

@@ -148,7 +148,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		draw(swToHours*scale(1, 1e6),
-			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_x_vs_time"), "p,eb,d0",
+			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_diffLR_th_x_vs_time"), "p,eb,d0",
 			dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 
 	}
@@ -171,7 +171,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		draw(swToHours*scale(1, 1e3),
-			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_vtx_x_vs_time"), "p,eb,d0",
+			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_vtx_x_vs_time"), "p,eb,d0",
 			dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 	}
 
@@ -192,8 +192,8 @@ for (int dsi : datasets.keys)
 
 	for (int dgni : diagonals.keys)
 	{
-		RootObject obj_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_vtx_x_vs_time");
-		RootObject obj_diffRL_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_x_vs_time");
+		RootObject obj_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_vtx_x_vs_time");
+		RootObject obj_diffRL_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_diffLR_th_x_vs_time");
 
 		DrawBeamDivergence(obj_vtx_x, dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 	}
@@ -215,14 +215,14 @@ for (int dsi : datasets.keys)
 
 	for (int dgni : diagonals.keys)
 	{
-		RootObject obj_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_vtx_x_vs_time");
-		RootObject obj_diffRL_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_x_vs_time");
+		RootObject obj_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_vtx_x_vs_time");
+		RootObject obj_diffRL_vtx_x = RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_diffLR_th_x_vs_time");
 
 		DrawMeanSensorResolution(obj_vtx_x, obj_diffRL_vtx_x, dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 	}
 
-	xaxis(YEquals(11.8, false), blue);
-	xaxis(YEquals(11.0, false), red);
+	xaxis(YEquals(11.2, false), blue);
+	xaxis(YEquals(10.5, false), red);
 
 	ylimits(y_min, y_max, Crop);
 	SetPadWidth();
@@ -245,7 +245,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		draw(swToHours*scale(1, 1e6),
-			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_diffLR_th_y_vs_time"), "p,eb,d0",
+			RootGetObject(topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root", "time dependences/gRMS_kin_cuts_diffLR_th_y_vs_time"), "p,eb,d0",
 			dgn_pens[dgni], mCi+2pt+dgn_pens[dgni], dgn_labels[dgni]);
 	}
 	
