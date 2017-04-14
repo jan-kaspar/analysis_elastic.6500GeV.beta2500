@@ -434,30 +434,24 @@ $$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
 %----------------------------------------------------------------------------------------------------
 \section{Unfolding of resolution effects}
 
-\> not done yet
+\> method: the same as in the 2-RP analysis
+\>> \TODO: move the description here
 
 
 
 %----------------------------------------------------------------------------------------------------
 \section{Normalisation}
 
-\> not done yet
-
+\> method
+\>> normalise $\d\si/\d t$ such that $I + S = 29.7\un{mb}$
+\>> $I$ stands for $\d\si/\d t$ fit over $0.01 < |t| < 0.05\un{GeV^2}$, integrated over $0 < |t| < 0.01\un{GeV^2}$
+\>> $S$ stands for histogram integral of bins $0.01 < |t| < 0.5\un{GeV^2}$
 
 
 %----------------------------------------------------------------------------------------------------
 \section{Binning}
 
-\> method
-\>> at $|t| \approx 10^{-3}\un{GeV^2}$: very fine binning
-\>> at $|t| \approx 10^{-1}\un{GeV^2}$: bin size about $1\un{\si}$ of the $t$ smearing
-\>> at $|t| \approx 0.25\un{GeV^2}$: bin size for a fixed statistical uncertainty
-\>> at $|t| \gs 0.3\un{GeV^2}$: constant bin size to avoid excessively large bins
-
-\> \plot{binning/bin_size_vs_t.pdf} : visualisation of binning determinants vs.~several binnings used in
-the analysis
-
-\> currently the ``ob-1-30-0.05'' binning used
+\> using the same binning as in the 2-RP analysis
 
 
 
