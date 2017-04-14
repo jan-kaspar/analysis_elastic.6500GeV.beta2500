@@ -75,6 +75,21 @@ int main()
 			printf("        slope = %.6f +- %.6f\n", ff->GetParameter(1), ff->GetParError(1));
 
 			p_in->Write();
+
+			// ---------- cut 7 ----------
+
+			gDirectory = d_diagonal->mkdir("cut 7");
+			printf("    cut 7\n");
+
+			p_in = (TProfile *) f_in->Get("elastic cuts/cut 7/p_cq7");
+
+			x_min = -60E-6;
+			x_max = +60E-6;
+			p_in->Fit(ff, "Q", "", x_min, x_max);
+
+			printf("        slope = %.0f +- %.0f\n", ff->GetParameter(1), ff->GetParError(1));
+
+			p_in->Write();
 		}
 	}
 
