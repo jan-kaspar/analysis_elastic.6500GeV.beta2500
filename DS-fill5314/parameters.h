@@ -34,7 +34,8 @@ void Init_45b_56t()
 	anal.cut2_a = 1.; anal.cut2_c = +0.02E-6; anal.cut2_si = 0.39E-6;
 	
 	anal.cut5_a = 0.157364; anal.cut5_c = +0.009; anal.cut5_si = 0.019;
-	anal.cut6_a = 0.156546; anal.cut6_c = -0.010; anal.cut6_si = 0.021;
+	// TODO: readjust sigma when/if the reco problem solved
+	anal.cut6_a = 0.156546; anal.cut6_c = -0.010; anal.cut6_si = 0.03;
 
 	anal.cut7_a = -1372; anal.cut7_c = +0.007; anal.cut7_si = 0.20;
 
