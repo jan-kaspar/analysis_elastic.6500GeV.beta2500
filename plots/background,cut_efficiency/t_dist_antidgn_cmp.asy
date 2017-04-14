@@ -14,8 +14,7 @@ string topDir = "../../";
 
 string cut_str = "cuts:1,2,7";
 
-//string binning = "ob-1-30-0.05";
-string binning = "ub";
+string binning = "ob-3-5-0.05";
 
 xSizeDef = 8cm;
 

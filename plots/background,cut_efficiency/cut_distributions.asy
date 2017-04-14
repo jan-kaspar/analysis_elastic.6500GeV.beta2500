@@ -60,22 +60,10 @@ for (int dsi : datasets.keys)
 		combinations.push("no_cuts"); comb_pens.push(gray);
 		combinations.push("cuts:2"); comb_pens.push(red);
 		combinations.push("cuts:2,7"); comb_pens.push(blue);
+		combinations.push("cuts:2,7,5"); comb_pens.push(heavygreen);
+		combinations.push("cuts:2,7,5,6"); comb_pens.push(magenta);
 		
-		// TODO: update sigma
-		MakeComparison("$\De\th_x^*$", 1e6, "\mu rad", "cut 1/h_cq1", xlimit=80, sigma=3, xStep=20, xstep=10, combinations, comb_pens);
-		
-		//--------------------
-		//NewPage();
-		
-		string combinations[];
-		pen comb_pens[];
-		
-		combinations.push("no_cuts"); comb_pens.push(gray);
-		combinations.push("cuts:1"); comb_pens.push(heavygreen);
-		combinations.push("cuts:1,7"); comb_pens.push(magenta);
-		
-		// TODO: update sigma
-		MakeComparison("$\De\th_y^*$", 1e6, "\mu rad", "cut 2/h_cq2", xlimit=15, sigma=0.5, xStep=5, xstep=1, combinations, comb_pens);
+		MakeComparison("$\De\th_x^*$", 1e6, "\mu rad", "cut 1/h_cq1", xlimit=80, sigma=2, xStep=20, xstep=10, combinations, comb_pens);
 		
 		//--------------------
 		//NewPage();
@@ -84,10 +72,25 @@ for (int dsi : datasets.keys)
 		pen comb_pens[];
 		
 		combinations.push("no_cuts"); comb_pens.push(gray);
-		combinations.push("cuts:1"); comb_pens.push(heavygreen);
-		combinations.push("cuts:1,2"); comb_pens.push(orange);
+		combinations.push("cuts:1"); comb_pens.push(red);
+		combinations.push("cuts:1,7"); comb_pens.push(blue);
+		combinations.push("cuts:1,7,5"); comb_pens.push(heavygreen);
+		combinations.push("cuts:1,7,5,6"); comb_pens.push(magenta);
 		
-		// TODO: update sigma
-		MakeComparison("$\De x^*$", 1., "mm", "cut 7/h_cq7", xlimit=10., sigma=0.3, xStep=2., xstep=1, combinations, comb_pens);
+		MakeComparison("$\De\th_y^*$", 1e6, "\mu rad", "cut 2/h_cq2", xlimit=15, sigma=0.39, xStep=5, xstep=1, combinations, comb_pens);
+		
+		//--------------------
+		//NewPage();
+		
+		string combinations[];
+		pen comb_pens[];
+		
+		combinations.push("no_cuts"); comb_pens.push(gray);
+		combinations.push("cuts:1"); comb_pens.push(red);
+		combinations.push("cuts:1,2"); comb_pens.push(blue);
+		combinations.push("cuts:1,2,5"); comb_pens.push(heavygreen);
+		combinations.push("cuts:1,2,5,6"); comb_pens.push(magenta);
+		
+		MakeComparison("$\De x^*$", 1., "mm", "cut 7/h_cq7", xlimit=10., sigma=0.2, xStep=2., xstep=1, combinations, comb_pens);
 	}
 }

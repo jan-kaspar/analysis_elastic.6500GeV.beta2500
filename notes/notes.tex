@@ -246,22 +246,55 @@ $\displaystyle x^{*,LR} = { x^{210F}\,L_x^{220F} - x^{220F}\,L_x^{210F} \over v^
 %----------------------------------------------------------------------------------------------------
 \section{Background, efficiency and purity of cuts}
 
-\TODO: as in 2RP analysis
+\subsection{Background studies}
 
+\> background: non-elastic events passing the tagging cuts
 
-\> background studies
-\>> \plot{background,cut_efficiency/cut_distributions.pdf}: distributions of cut discriminators under various cut combinations
+\> ``anti-diagonal`` data
+\>> from configurations: 45 top -- 56 top, 45 bot -- 56 bot
+\>> sign of $y$ swapped in sector 45 to process the data with the standard chain
+\>> cannot contain any signal
+\>> background expected similar as in diagonals
 
+\> methods
+\>> method 1: plot distributions of cut discriminators under various cut combinations, see\\ \plot{background,cut_efficiency/cut_distributions.pdf}
+\>>> central part (signal): unaffected by cuts
+\>>> tails (background): drops with increasing number of cuts
+\>>> however: unknown interpolation of background from tails to the signal region
+\>> method 2: plot distributions of cut discriminators also for anti-diagonal configurations, see\\ \plot{background,cut_efficiency/cut_dist_antidgn_cmp.pdf}
+\>>> good agreement in tails -- confirmation that the background is indeed similar in diagonals and anti-diagonals
+\>>> anti-diagonals provide shape of interpolation to the signal region -- flat
+
+\> results
 \>> \plot{background,cut_efficiency/cut_dist_antidgn_cmp.pdf}: distributions of cut discriminators, after all available cuts, comparison between diagonal and anti-diagonal configurations
-
-\>> \plot{background,cut_efficiency/t_distributions_cuts.pdf}: $t$-distributions under various cut combinations
+\>>> by comparing the signal (diagonals) and background (anti-diagonals) peak: rough estimate of $B/S \ls 10\cdot10^{-4}$
 
 \>> \plot{background,cut_efficiency/t_dist_antidgn_cmp.pdf}: $t$-distributions, after all available cuts, comparison between diagonal (mostly signal) and anti-diagonal (background) configurations
+\>>> background only available at low $|t|$ where $\ls 10\cdot10^{-4}$
 
+\> additional material
+\>> \plot{background,cut_efficiency/t_distributions_cuts.pdf}: $t$-distributions under various cut combinations
+\>>> gives data reduction by each of the cut
 
-\> study of signal loss due to cuts
-\>> \plot{background,cut_efficiency/t_distributions_n_si.pdf}: $t$ distribution at different cut levels
+\subsection{Study of signal loss due to cuts}
 
+\> method
+\>> plot $t$ distributions at different cut levels ($n_\si$)
+
+\> \plot{background,cut_efficiency/t_distributions_n_si_cmp_fill.pdf}: $t$ distribution at different cut levels, for all fills
+\>> qualitatively similar results from all fills
+
+\> \plot{background,cut_efficiency/t_distributions_n_si_cmp_binning.pdf}: $t$ distribution at different cut levels, for all binnings
+\>> with fine binnings, bands (barely but) visible
+\>>> most likely because of the difference in bin contents is a small integer: 1, 2, 3, ...
+\>>> for $|t| \gs 0.4\un{GeV^2}$, the relative differences are larger when smaller bins -- large interplay with statistics
+
+\> results
+\>> $|t| \ls 0.2\un{GeV^2}$
+\>>> difference between $n_\si = 4$ (standard) and $5$ is about $0.5\un{\%}$ and almost flat
+\>> $|t| \gs 0.4\un{GeV^2}$
+\>>> difference between $n_\si = 4$ (standard) and $5$ is few percent
+\>>> differences covered by statistical uncertainties
 
 
 %----------------------------------------------------------------------------------------------------

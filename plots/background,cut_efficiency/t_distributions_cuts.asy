@@ -2,9 +2,9 @@ import root;
 import pad_layout;
 
 string datasets[];
-datasets.push("DS-fill5313");
+//datasets.push("DS-fill5313");
 //datasets.push("DS-fill5314");
-//datasets.push("DS-fill5317");
+datasets.push("DS-fill5317");
 //datasets.push("DS-fill5321");
 
 string diagonals[] = { "45b_56t", "45t_56b" };
@@ -12,8 +12,8 @@ string dgn_labels[] = { "45b -- 56t", "45t -- 56b" };
 
 string topDir = "../../";
 
-string histogram = "acceptance correction/ob-1-30-0.05/h_t_after";
-string histogram_Nev = "acceptance correction/ob-1-30-0.05/h_t_Nev_after_no_corr";
+string histogram = "acceptance correction/ob-3-5-0.05/h_t_after";
+string histogram_Nev = "acceptance correction/ob-3-5-0.05/h_t_Nev_after_no_corr";
 
 string combinations[];
 pen comb_pens[];
@@ -21,14 +21,13 @@ pen comb_pens[];
 combinations.push("no_cuts"); comb_pens.push(gray);
 combinations.push("cuts:1"); comb_pens.push(black);
 combinations.push("cuts:1,2"); comb_pens.push(red);
-//combinations.push("cuts:1,7"); comb_pens.push(green);
-//combinations.push("cuts:2,7"); comb_pens.push(magenta);
 combinations.push("cuts:1,2,7"); comb_pens.push(blue);
+combinations.push("cuts:1,2,7,5"); comb_pens.push(heavygreen);
+combinations.push("cuts:1,2,7,5,6"); comb_pens.push(magenta);
 
-string ref_comb = "cuts:1,2,7";
+string ref_comb = "cuts:1,2,7,5,6";
 
 xSizeDef = 10cm;
-xTicksDef=LeftTicks(0.05, 0.01);
 
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
@@ -84,7 +83,23 @@ for (int dsi : datasets.keys)
 		NewPad(false);
 		label(replace("{\SetFontSizesXX\vbox{\hbox{"+dataset+"}\hbox{"+dgn_labels[dgi]+"}}}", "_", "\_"));
 
+		//--------------------
+
 		NewPad("$|t|\ung{GeV^2}$", "$\d\sigma/\d t\ung{mb/GeV^2}$");
+		currentpad.xTicks = LeftTicks(0.1, 0.05);
+		scale(Linear, Log);
+		for (int ci : combinations.keys)
+		{
+			string f = topDir+"background_studies/"+dataset+"/"+combinations[ci]+"/distributions_"+diagonal+".root";
+			draw(RootGetObject(f, histogram), "eb", comb_pens[ci]);
+		}
+		
+		limits((0, 1e3), (1.0, 1e8), Crop);
+
+		//--------------------
+
+		NewPad("$|t|\ung{GeV^2}$", "$\d\sigma/\d t\ung{mb/GeV^2}$");
+		currentpad.xTicks = LeftTicks(0.05, 0.01);
 		scale(Linear, Log);
 		for (int ci : combinations.keys)
 		{
@@ -93,13 +108,14 @@ for (int dsi : datasets.keys)
 				label += " (reference)";
 		
 			string f = topDir+"background_studies/"+dataset+"/"+combinations[ci]+"/distributions_"+diagonal+".root";
-			draw(RootGetObject(f, histogram), "eb",
-				comb_pens[ci], label);
+			draw(RootGetObject(f, histogram), "eb", comb_pens[ci], label);
 		}
 		
 		frame fLegend = BuildLegend();
 		
 		limits((0, 1e4), (0.2, 1e9), Crop);
+
+		//--------------------
 		
 		NewPad(false);
 		attach(fLegend);
@@ -114,20 +130,32 @@ for (int dsi : datasets.keys)
 		//--------------------
 
 		NewPad("$|t|\ung{GeV^2}$", "$\d\sigma/\d t$: (test - ref) / ref$\ung{\%}$");
+		currentpad.xTicks = LeftTicks(0.1, 0.05);
 		for (int ci : combinations.keys)
 		{
-			//if (combinations[ci] == ref_comb)
-			//	continue;
-		
 			string f = topDir+"/background_studies/"+dataset+"/"+combinations[ci]+"/distributions_"+diagonal+".root";
 			RootObject o = RootGetObject(f, histogram);
 			PlotRatio(o, ref_o, comb_pens[ci]);
 		}
 		
-		limits((0, -2), (0.2, 10), Crop);
+		limits((0, -2), (1.0, 10), Crop);
+		
+		//--------------------
+
+		NewPad("$|t|\ung{GeV^2}$", "$\d\sigma/\d t$: (test - ref) / ref$\ung{\%}$");
+		currentpad.xTicks = LeftTicks(0.05, 0.01);
+		for (int ci : combinations.keys)
+		{
+			string f = topDir+"/background_studies/"+dataset+"/"+combinations[ci]+"/distributions_"+diagonal+".root";
+			RootObject o = RootGetObject(f, histogram);
+			PlotRatio(o, ref_o, comb_pens[ci]);
+		}
+		
+		limits((0, -1), (0.2, 3), Crop);
 		
 		//--------------------
 		
+		/*
 		NewPad("$|t|\ung{GeV^2}$", "$\d\sigma/\d t$: (test - ref) / ref$\ung{\%}$");
 		for (int ci : combinations.keys)
 		{
@@ -140,9 +168,11 @@ for (int dsi : datasets.keys)
 		}
 		
 		limits((0, -0.5), (0.2, 1.5), Crop);
+		*/
 		
 		//--------------------
 		
+		/*
 		NewPad("$|t|\ung{GeV^2}$", "$N_{ev}$: (test - ref) / ref$\ung{\%}$");
 		for (int ci : combinations.keys)
 		{
@@ -155,5 +185,6 @@ for (int dsi : datasets.keys)
 		}
 		
 		limits((0, -1), (0.2, 20), Crop);
+		*/
 	}
 }
