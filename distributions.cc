@@ -501,9 +501,9 @@ int main(int argc, char **argv)
 		if (i == 2) { x_min = -150E-6; x_max = +150E-6; y_min = -150E-6; y_max = 150E-6; q_max = 15E-6; }
 		if (i == 3) { x_min = -1000E-6; x_max = +1000E-6; y_min = -1.5; y_max = 1.5; }
 		if (i == 4) { x_min = -1000E-6; x_max = +1000E-6; y_min = -1.5; y_max = 1.5; }
-		if (i == 5) { x_min = -30.; x_max = +30.; y_min = -3.; y_max = 3.; q_max = 150E-3; }
-		if (i == 6) { x_min = -30.; x_max = +30.; y_min = -3.; y_max = 3.; q_max = 150E-3; }
-		if (i == 7) { x_min = -200E-6; x_max = +200E-6; y_min = -20.; y_max = +20.; q_max = 10.; }
+		if (i == 5) { x_min = -30.; x_max = +30.; y_min = -5.; y_max = 5.; q_max = 150E-3; }
+		if (i == 6) { x_min = -30.; x_max = +30.; y_min = -5.; y_max = 5.; q_max = 150E-3; }
+		if (i == 7) { x_min = -200E-6; x_max = +200E-6; y_min = -10.; y_max = +10.; q_max = 10.; }
 		if (i == 8) { x_min = -600E-6; x_max = +600E-6; y_min = -4.; y_max = +4.; q_max = 500E-3; }
 
 		if (i == 9) { x_min = -200E-6; x_max = +200E-6; y_min = -200E-6; y_max = 200E-6; q_max = 80E-6; }
@@ -1814,6 +1814,14 @@ int main(int argc, char **argv)
 		gP->Draw("l");
 		gM->Draw("l");
 		c->Write();
+
+		TGraph *g_cut_parameters = new TGraph();
+		g_cut_parameters->SetPoint(0, 0, anal.cca[ci]);
+		g_cut_parameters->SetPoint(1, 1, anal.ccb[ci]);
+		g_cut_parameters->SetPoint(2, 2, anal.ccc[ci]);
+		g_cut_parameters->SetPoint(3, 3, anal.csi[ci]);
+		g_cut_parameters->SetPoint(4, 4, anal.n_si);
+		g_cut_parameters->Write("g_cut_parameters");
 	}
 
 	gDirectory = outF->mkdir("selected - hits");

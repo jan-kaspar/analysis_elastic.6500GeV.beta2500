@@ -84,10 +84,6 @@ void Init_global()
 
 void Init_global_45b_56t()
 {
-	// TODO
-	anal.cut5_a = 0.107200; anal.cut5_c = -0.; anal.cut5_si = 0.016;
-	anal.cut6_a = 0.105559; anal.cut6_c = -0.; anal.cut6_si = 0.019;
-
 	// fiducial cuts
 	anal.fc_L_l = FiducialCut(4E-6, -50E-6, 0., -20E-6, 0.05);
 	anal.fc_L_h = FiducialCut(102E-6, 0., 0., 0., 0.);
@@ -109,10 +105,6 @@ void Init_global_45b_56t()
 
 void Init_global_45t_56b()
 {
-	// TODO
-	anal.cut5_a = 0.10671; anal.cut5_c = 0.; anal.cut5_si = 0.018;
-	anal.cut6_a = 0.10564; anal.cut6_c = 0.; anal.cut6_si = 0.018;
-
 	// fiducial cuts
 	anal.fc_L_l = FiducialCut(4E-6, +15E-6, -0.05, 50E-6, 0.);
 	anal.fc_L_h = FiducialCut(102E-6, 0., 0., 0., 0.);
