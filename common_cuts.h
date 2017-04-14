@@ -37,7 +37,7 @@ void Analysis::BuildCuts()
 	csi[4] = cut4_si;
 	//cuts.push_back(4);
 	
-	// a: y_R_N, b: y_R_F - y_R_N
+	// a: y_R_1_F, b: y_R_2_F - y_R_1_F
 	cqaN[5] = "y^{R,1,F}"; cqbN[5] = "y^{R,2,F} - y^{R,1,F}";
 	cca[5] = -cut5_a;
 	ccb[5] = 1.;
@@ -45,7 +45,7 @@ void Analysis::BuildCuts()
 	csi[5] = cut5_si;
 	cuts.push_back(5);
 	
-	// a: y_L_N, b: y_L_F - y_L_N
+	// a: y_L_1_F, b: y_L_2_F - y_L_1_F
 	cqaN[6] = "y^{L,1,F}"; cqbN[6] = "y^{L,2,F} - y^{L,1,F}";
 	cca[6] = -cut6_a;
 	ccb[6] = 1.;
