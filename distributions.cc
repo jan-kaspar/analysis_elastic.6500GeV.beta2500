@@ -375,7 +375,7 @@ int main(int argc, char **argv)
 	TF1 *f_3outof4_efficiency_R_2_F = NULL;
 	if (anal.use_3outof4_efficiency_fits)
 	{
-		string path = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/4rp/efficiency_fits/global_fit.root";
+		string path = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/4rp-version1/efficiency_fits/global_fit.root";
 		TFile *effFile = TFile::Open(path.c_str());
 		if (!effFile)
 			printf("ERROR: 3-out-of-4 efficiency file `%s' cannot be opened.\n", path.c_str());
