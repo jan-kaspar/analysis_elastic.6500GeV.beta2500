@@ -66,9 +66,7 @@ void Init_global()
 	// correction settings
 	anal.use_resolution_fits = true;
 
-	// TODO: revert to true
-	anal.use_3outof4_efficiency_fits = false;
-	//anal.use_3outof4_efficiency_fits = true;
+	anal.use_3outof4_efficiency_fits = true;
 	anal.inefficiency_3outof4 = 0.;
 	anal.inefficiency_shower_near = 0.03;	// probability of shower created in near and spreading to far: 2 * 1.5%
 
@@ -99,9 +97,7 @@ void Init_global_45b_56t()
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
-	// TODO: revert
-	unsmearing_file = "";
-	//unsmearing_file = "unfolding_cf_ni_45b_56t.root";
+	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
 	unsmearing_object = "fit2-2/<binning>";
 }
 
@@ -120,8 +116,6 @@ void Init_global_45t_56b()
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
-	// TODO: revert
-	unsmearing_file = "";
-	//unsmearing_file = "unfolding_cf_ni_45b_56t.root";
+	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
 	unsmearing_object = "fit2-2/<binning>";
 }
