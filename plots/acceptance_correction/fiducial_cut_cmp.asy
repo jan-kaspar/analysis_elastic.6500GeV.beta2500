@@ -35,8 +35,8 @@ for (int dsi : datasets.keys)
 	{
 		string f = top_dir+"/"+datasets[dsi]+"/distributions_" + diagonals[dgni] + ".root";
 
-		TH2_x_min = -100e-6;
-		TH2_x_max = +100e-6;
+		TH2_x_min = -50e-6;
+		TH2_x_max = +50e-6;
 
 		if (diagonals[dgni] == "45b_56t")
 		{
@@ -53,7 +53,27 @@ for (int dsi : datasets.keys)
 		currentpad.xTicks = LeftTicks(50., 10.);
 
 		for (int ci : cuts.keys)
-			draw(scale(1e6, 1e6), RootGetObject(f, "fiducial cuts/fc_"+cuts[ci]+"_l"), "l", StdPen(ci+1), cut_labels[ci]);
+		{
+			RootObject obj = RootGetObject(f, "fiducial cuts/fc_"+cuts[ci]+"_l");
+			draw(scale(1e6, 1e6), obj, "l", StdPen(ci+1), cut_labels[ci]);
+
+			if (cuts[ci] != "G")
+			{
+				real sh = 2;
+			
+				//draw(shift(+sh, 0)*scale(1e6, 1e6), obj, "l", StdPen(ci+1) + dashed);
+				//draw(shift(-sh, 0)*scale(1e6, 1e6), obj, "l", StdPen(ci+1) + dashed);
+			}
+
+			if (cuts[ci] == "G")
+			{
+				real y = obj.rExec("Eval", 0) * 1e6;
+
+				draw((0, y), mCi+3pt+StdPen(ci+1));
+				pair alig = (diagonals[dgni] == "45b_56t") ? NW : SE;
+				label(format("%#.3f", y), (0, y), alig, StdPen(ci+1));
+			}
+		}
 
 		limits((TH2_x_min*1e6, TH2_y_min*1e6), (TH2_x_max*1e6, TH2_y_max*1e6), Crop);
 		AttachLegend(diagonal_labels[dgni], NW, NW);

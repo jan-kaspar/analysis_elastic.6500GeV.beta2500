@@ -31,12 +31,14 @@ for (int dsi : datasets.keys)
 
 		string f = top_dir+"/"+datasets[dsi]+"/distributions_" + diagonals[dgni] + ".root";
 
-		TH2_x_min = -100e-6;
-		TH2_x_max = +100e-6;
+		//TH2_x_min = -100e-6;
+		//TH2_x_max = +100e-6;
+		TH2_x_min = -50e-6;
+		TH2_x_max = +50e-6;
 
 		if (diagonals[dgni] == "45b_56t")
 		{
-			TH2_y_min = 3e-6;
+			TH2_y_min = +3e-6;
 			TH2_y_max = +9e-6;
 		} else {
 			TH2_y_min = -9e-6;
@@ -64,7 +66,7 @@ for (int dsi : datasets.keys)
 		scale(Linear, Linear, Log);
 		draw(scale(1e6, 1e6), RootGetObject(f, "selected - angles/h_th_y_R_vs_th_x_R"), "def");
 
-		draw(scale(1e6, 1e6), RootGetObject(f, "fiducial cuts/fc_R_l"), "l", black+1pt);
+		draw(scale(1e6, 1e6), RootGetObject(f, "fiducial cuts/fc_R_l"), "l", black+2pt);
 
 		limits((TH2_x_min*1e6, TH2_y_min*1e6), (TH2_x_max*1e6, TH2_y_max*1e6), Crop);
 		AttachLegend("right arm");
@@ -76,7 +78,7 @@ for (int dsi : datasets.keys)
 		scale(Linear, Linear, Log);
 		draw(scale(1e6, 1e6), RootGetObject(f, "selected - angles/h_th_y_vs_th_x"), "def");
 
-		draw(scale(1e6, 1e6), RootGetObject(f, "fiducial cuts/fc_G_l"), "l", black+1pt);
+		draw(scale(1e6, 1e6), RootGetObject(f, "fiducial cuts/fc_G_l"), "l", black+2pt);
 
 		limits((TH2_x_min*1e6, TH2_y_min*1e6), (TH2_x_max*1e6, TH2_y_max*1e6), Crop);
 		AttachLegend("two-arm");

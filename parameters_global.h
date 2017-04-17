@@ -87,13 +87,13 @@ void Init_global()
 void Init_global_45b_56t()
 {
 	// fiducial cuts
-	anal.fc_L_l = FiducialCut(4E-6, -50E-6, 0., -20E-6, 0.05);
+	anal.fc_L_l = FiducialCut(4.4E-6, -50E-6, 0., -20E-6, 0.045);
 	anal.fc_L_h = FiducialCut(102E-6, 0., 0., 0., 0.);
 
-	anal.fc_R_l = FiducialCut(4.1E-6, -50E-6, 0., -12E-6, 0.05);
+	anal.fc_R_l = FiducialCut(4.4E-6, -50E-6, 0., -12E-6, 0.045);
 	anal.fc_R_h = FiducialCut(102E-6, 0., 0., 0., 0.);
 
-	anal.fc_G_l = FiducialCut(4.2E-6, -50E-6, 0., -20E-6, 0.05);
+	anal.fc_G_l = FiducialCut(4.6E-6, -50E-6, 0., -20E-6, 0.045);
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
@@ -106,13 +106,13 @@ void Init_global_45b_56t()
 void Init_global_45t_56b()
 {
 	// fiducial cuts
-	anal.fc_L_l = FiducialCut(4E-6, +15E-6, -0.05, 50E-6, 0.);
+	anal.fc_L_l = FiducialCut(4.4E-6, +20E-6, -0.045, 50E-6, 0.);
 	anal.fc_L_h = FiducialCut(102E-6, 0., 0., 0., 0.);
 
-	anal.fc_R_l = FiducialCut(4E-6, +10E-6, -0.05, 50E-6, 0.);
+	anal.fc_R_l = FiducialCut(4.4E-6, +10E-6, -0.045, 50E-6, 0.);
 	anal.fc_R_h = FiducialCut(102E-6, 0., 0.);
 
-	anal.fc_G_l = FiducialCut(4.1E-6, 17E-6, -0.05, 50E-6, 0.);
+	anal.fc_G_l = FiducialCut(4.6E-6, 20E-6, -0.045, 50E-6, 0.);
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
 	// unfolding settings
