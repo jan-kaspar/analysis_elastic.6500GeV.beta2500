@@ -42,7 +42,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
-		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_diffLR_th_x_vs_time"), "eb,d0", StdPen(dgni+1));
+		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_kin_cuts_diffLR_th_x_vs_time"), "eb,d0", StdPen(dgni+1));
 	}
 
 	ylimits(y_min, y_max, Crop);
@@ -66,7 +66,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
-		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_diff12_th_y_L_vs_time"), "eb,d0", StdPen(dgni+1));
+		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_kin_cuts_diff12_th_y_L_vs_time"), "eb,d0", StdPen(dgni+1));
 	}
 
 	ylimits(y_min, y_max, Crop);
@@ -91,7 +91,7 @@ for (int dsi : datasets.keys)
 	for (int dgni : diagonals.keys)
 	{
 		string f = topDir+datasets[dsi]+"/distributions_"+diagonals[dgni]+".root";
-		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_diff12_th_y_R_vs_time"), "eb,d0", StdPen(dgni+1));
+		draw(scale(1/3600, 1e6), RootGetObject(f, "time dependences/p_kin_cuts_diff12_th_y_R_vs_time"), "eb,d0", StdPen(dgni+1));
 	}
 
 	ylimits(y_min, y_max, Crop);
