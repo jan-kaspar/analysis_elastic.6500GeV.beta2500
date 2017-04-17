@@ -789,8 +789,6 @@ struct Analysis
 	double alignment_t0;	// beginning of the first time-slice
 	double alignment_ts;	// time-slice in s
 	
-	double eff_th_y_min;
-
 	// y ranges for alignment
 	struct AlignmentYRange
 	{
