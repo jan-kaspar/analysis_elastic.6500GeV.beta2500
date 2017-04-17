@@ -435,9 +435,6 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 
 \subsection{Program implementation, validation}
 
-\TODO
-
-\iffalse
 \> there are two implementations of \Eq{acc model}
 \>> ``old''
 \>>> assumes no dependence of acceptance condition of $d_x$, thus integrates over $d_y$ only
@@ -454,6 +451,8 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 \>> ``uncorr'': disregarding the correlations
 \>> it will be shown that the correlation has no significant effect
 
+\TODO: validate the 4 plots (plus text) below
+
 \> \plot{acceptance_correction/validation/validation_with_mc_th_y_acc.pdf} : smearing acceptance as a function of $\theta^*_y$ for 3 bands of $\th^*_x$
 \>> MC (violet) vs.~calculated correction (black): perfect agreement
 
@@ -465,7 +464,6 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 
 \> \plot{acceptance_correction/validation/validation_with_mc_t_unsmear_corr.pdf} : comparison of "unsmearing" correction from this MC study (red, blue) and from a dedicated calculation (black)
 \>> perfect compatibility
-\fi
 
 
 %----------------------------------------------------------------------------------------------------

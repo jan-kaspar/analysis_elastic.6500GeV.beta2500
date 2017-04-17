@@ -1,16 +1,17 @@
 import root;
 import pad_layout;
+include "../../common.asy";
 
 string topDir = "../../../acceptance/";
 
 string rows[] = {
-//	"simulations/0.08,1E9,uncorr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/0.08,1E9,uncorr,new,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E9,uncorr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E7,uncorr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E7,uncorr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E7,uncorr,new,curved/seed1/validation_with_mc.root",
 
-//	"simulations/0.08,1E9,corr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/0.08,1E9,corr,new,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E9,corr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E7,corr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E7,corr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E7,corr,new,curved/seed1/validation_with_mc.root",
 };
 
 string th_x_ranges[] = {
@@ -49,7 +50,7 @@ for (string row : rows)
 		limits((4, 0.4), (6, 1.1), Crop);
 	}
 	
-	//yaxis(XEquals(8e-4, false), dashed);
+	//yaxis(XEquals(t_min, false), dashed);
 }
 
 GShipout(vSkip=1mm);

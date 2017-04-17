@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 
 		// ----- reconstruction -----
 
-		Kinematics k_re = DoReconstruction(h_sm, env_nom);
+		Kinematics k_re = DoReconstructionMain(h_sm, env_nom);
 
 		if (debug)
 		{

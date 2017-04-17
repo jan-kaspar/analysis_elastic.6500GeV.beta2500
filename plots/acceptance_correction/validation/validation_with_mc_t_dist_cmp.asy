@@ -1,16 +1,17 @@
 import root;
 import pad_layout;
+include "../../common.asy";
 
 string topDir = "../../../acceptance/";
 
 string rows[] = {
-//	"simulations/<t_max>,1E9,uncorr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/<t_max>,1E9,uncorr,new,flat/seed1/validation_with_mc.root",
-	"simulations/<t_max>,1E9,uncorr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E7,uncorr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E7,uncorr,new,flat/seed1/validation_with_mc.root",
+	"simulations/<t_max>,1E7,uncorr,new,curved/seed1/validation_with_mc.root",
 
-//	"simulations/<t_max>,1E9,corr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/<t_max>,1E9,corr,new,flat/seed1/validation_with_mc.root",
-	"simulations/<t_max>,1E9,corr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E7,corr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/<t_max>,1E7,corr,new,flat/seed1/validation_with_mc.root",
+	"simulations/<t_max>,1E7,corr,new,curved/seed1/validation_with_mc.root",
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -66,7 +67,7 @@ for (string row : rows)
 	PlotAll(f, binning);
 	limits((0, 5e2), (0.004, 1e3), Crop);
 	
-	yaxis(XEquals(8e-4, false), dashed);
+	yaxis(XEquals(t_min, false), dashed);
 	
 	AttachLegend(NW, NE);
 }
