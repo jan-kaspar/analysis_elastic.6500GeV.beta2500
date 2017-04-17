@@ -1163,11 +1163,12 @@ int main(int argc, char **argv)
 			p_th_x_vs_th_y->Fill(k.th_y, k.th_x);
 			p_th_x_L_vs_th_y_L->Fill(k.th_y_L, k.th_x_L);
 			p_th_x_R_vs_th_y_R->Fill(k.th_y_R, k.th_x_R);
-
-			h_th_y_L_vs_th_x_L->Fill(k.th_x_L, k.th_y_L);
-			h_th_y_R_vs_th_x_R->Fill(k.th_x_R, k.th_y_R);
-			h_th_y_vs_th_x->Fill(k.th_x, k.th_y);
 		}
+
+		// these histograms are used to determine fiducial cuts - should be created WITHOUT the safe condition
+		h_th_y_L_vs_th_x_L->Fill(k.th_x_L, k.th_y_L);
+		h_th_y_R_vs_th_x_R->Fill(k.th_x_R, k.th_y_R);
+		h_th_y_vs_th_x->Fill(k.th_x, k.th_y);
 
 		if (detailsLevel >= 1)
 		{
