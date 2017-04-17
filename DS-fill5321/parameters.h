@@ -7,6 +7,9 @@ void Init_base()
 	// load global settings
 	Init_global();
 
+	// list of (sub-)directories with distilled ntuples
+	distilledNtuples.push_back(".");
+
 	// alignment settings
 	/*
 	AlignmentSource alSrc;

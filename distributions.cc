@@ -316,9 +316,14 @@ int main(int argc, char **argv)
 
 	// get input
 	TChain *ch_in = new TChain("distilled");
-	printf("* distilled chain\n");
-	ch_in->Add((inputDir + "/distill_" + argv[1] + ".root").c_str());
-	printf("    %llu entries\n", ch_in->GetEntries());
+	printf(">> input chain\n");
+	for (const auto &ntupleDir : distilledNtuples)
+	{
+		string f = inputDir + "/" + ntupleDir + "/distill_" + argv[1] + ".root";
+		printf("%s\n", f.c_str());
+		ch_in->Add(f.c_str());
+	}
+	printf("%llu entries\n", ch_in->GetEntries());
 
 	// init output file
 	TFile *outF = TFile::Open((outputDir+"/distributions_" + argv[1] + ".root").c_str(), "recreate");

@@ -9,7 +9,7 @@ void InitInputFiles()
 {
 	input_files.clear();
 
-	std::string prefix = "root://eostotem.cern.ch//eos/totem/data/offline/2016/2500m/version1/";
+	std::string prefix = "root://eostotem.cern.ch//eos/totem/data/offline/2016/2500m/version2/";
 
 	input_files.push_back(prefix + "run_10281.0_ntuple.root");
 	input_files.push_back(prefix + "run_10281.1_ntuple.root");

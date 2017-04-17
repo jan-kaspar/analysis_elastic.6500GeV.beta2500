@@ -7,7 +7,7 @@ shopt -s expand_aliases
 #----------------------------------------------------------------------------------------------------
 
 #input_dir="/eos/totem/user/j/jkaspar/reco/alignment_sr"
-input_dir="/eos/totem/data/offline/2016/2500m/version1"
+input_dir="/eos/totem/data/offline/2016/2500m/version2"
 
 function GetFiles()
 {
