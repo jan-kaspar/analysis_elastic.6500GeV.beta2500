@@ -8,10 +8,9 @@ string topDir = "../../";
 string datasets[], dataset_fills[];
 datasets.push("DS-fill5313"); dataset_fills.push("5313");
 datasets.push("DS-fill5314"); dataset_fills.push("5314");
-/*
-datasets.push("DS-fill5317"); dataset_fills.push("5317");
+datasets.push("DS-fill5317/block1"); dataset_fills.push("5317.1");
+datasets.push("DS-fill5317/block2"); dataset_fills.push("5317.2");
 datasets.push("DS-fill5321"); dataset_fills.push("5321");
-*/
 
 string diagonals[] = { "45b", "45t" };
 string dgn_labels[] = { "45 bot -- 56 top", "45 top -- 56 bot" };

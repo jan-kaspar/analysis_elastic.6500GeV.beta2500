@@ -9,7 +9,6 @@ TH2_palette = Gradient(blue, heavygreen, yellow, red);
 string datasets[], dataset_fills[];
 datasets.push("DS-fill5313"); dataset_fills.push("5313");
 datasets.push("DS-fill5314"); dataset_fills.push("5314");
-//datasets.push("DS-fill5317"); dataset_fills.push("5317");
 datasets.push("DS-fill5317/block1"); dataset_fills.push("5317.1");
 datasets.push("DS-fill5317/block2"); dataset_fills.push("5317.2");
 datasets.push("DS-fill5321"); dataset_fills.push("5321");
