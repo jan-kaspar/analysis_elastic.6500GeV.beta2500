@@ -320,7 +320,7 @@ int main(int argc, char **argv)
 	for (const auto &ntupleDir : distilledNtuples)
 	{
 		string f = inputDir + "/" + ntupleDir + "/distill_" + argv[1] + ".root";
-		printf("%s\n", f.c_str());
+		printf("    %s\n", f.c_str());
 		ch_in->Add(f.c_str());
 	}
 	printf("%llu entries\n", ch_in->GetEntries());
