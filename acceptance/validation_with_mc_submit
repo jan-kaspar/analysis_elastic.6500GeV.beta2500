@@ -1,0 +1,96 @@
+#!/bin/bash
+
+configs=()
+
+#configs=(
+#	#"0.006 1E8 corr old flat"
+#	#"0.006 1E8 uncorr old flat"
+#
+#	#"0.08 1E8 corr old flat"
+#	#"0.08 1E8 uncorr old flat"
+#
+#	"1.1 1E8 corr old flat"
+#	"1.1 1E8 uncorr old flat"
+#)
+
+for t_max in "0.006" "0.08" "1.1"
+do
+	for corr_set in "corr" "uncorr"
+	do
+		# final statistics 1E9 : expected to run for ~6h
+		configs+=("$t_max 1E9 $corr_set old flat")
+		configs+=("$t_max 1E9 $corr_set new flat")
+		configs+=("$t_max 1E9 $corr_set new curved")
+	done
+done
+
+seeds=(
+	1
+)
+
+#----------------------------------------------------------------------------------------------------
+
+#batch_queue="8nm"
+#batch_queue="1nh"
+batch_queue="1nd"
+
+batch_resources=""
+#batch_resources="pool>10000" # require more than 10 GB of space in the pool directory
+
+#batch_options=""
+batch_options="-o /dev/null -e /dev/null"
+
+#----------------------------------------------------------------------------------------------------
+
+function ParseConfig
+{
+	t_max="$1"
+	events="$2"
+	md_corr="$3"
+	alg="$4"
+	cuts="$5"
+}
+
+#----------------------------------------------------------------------------------------------------
+
+function SubmitOne()
+{
+	echo "$dir | $options"
+
+	mkdir -p "$dir"
+
+	job_file="$dir/job"
+
+	# make job script
+	cat "job_template" | sed "
+			s|\$options|$options|g;	
+			s|\$output|$dir/validation_with_mc.root|g;	
+			s|\$log|$dir/log|g;	
+		" > "$job_file"
+
+	chmod u+x "$job_file"
+
+	# execute job locally
+	#"$job_file" &
+
+	# submit job
+	bsub -q "$batch_queue" -R "$batch_resources" $batch_options `pwd -P`"/$job_file"
+}
+
+#----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
+
+make "validation_with_mc" || exit 1
+
+for config in "${configs[@]}"
+do
+	ParseConfig $config
+
+	for seed in ${seeds[*]}
+	do
+		dir="simulations/$t_max,$events,$md_corr,$alg,$cuts/seed$seed"
+		options="-t-max $t_max -events $events -md-$md_corr -alg-$alg -cuts-$cuts -seed $seed"
+
+		SubmitOne
+	done
+done

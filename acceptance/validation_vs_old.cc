@@ -5,7 +5,7 @@
 #include "common_algorithms.h"
 #include "AcceptanceCalculator.h"
 
-#include "parameters.h"
+#include "parameters_old.h"
 
 //----------------------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ int main()
 	accCalc.Init(th_y_sign, anal);
 
 	// prepare output
-	TFile *f_out = TFile::Open("acceptance_test.root", "recreate");
+	TFile *f_out = TFile::Open("validation_vs_old.root", "recreate");
 
 	// run sampling
 	vector<double> th_x_values = {
@@ -54,7 +54,7 @@ int main()
 		g_new->SetName(buf);
 		g_new->SetTitle(";th_y");
 
-		for (double th_y = 0E-6; th_y <= 10E-6; th_y += 0.01E-6)
+		for (double th_y = 0E-6; th_y <= 10E-6; th_y += 0.001E-6)
 		{
 			Kinematics k;
 			k.th_x = k.th_x_L = k.th_x_R = th_x;
@@ -111,7 +111,7 @@ int main()
 	TGraph *g_A_t_new = new TGraph();
 	g_A_t_new->SetName("g_A_t_new");
 
-	for (double t = 0; t <= 1.0; t += 0.01)
+	for (double t = 0; t <= 1.0; t += 0.001)
 	{
 		Kinematics k;
 		k.th = sqrt(t) / env.p;
