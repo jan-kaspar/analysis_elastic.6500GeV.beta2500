@@ -49,8 +49,10 @@ int main(int argc, char **argv)
 		// diagonal settings
 		Init(diagonals[dgni]);
 		
-		double th_y_min = max(anal.th_y_lcut_L, anal.th_y_lcut_R) + 5E-6;
-		double th_y_max = min(anal.th_y_hcut_L, anal.th_y_hcut_R) - 3E-6;
+		//double th_y_min = max(anal.th_y_lcut_L, anal.th_y_lcut_R) + 5E-6;
+		//double th_y_max = min(anal.th_y_hcut_L, anal.th_y_hcut_R) - 3E-6;
+		const double th_y_min = 11E-6;
+		const double th_y_max = 90E-6;
 		
 		printf("th_y_min = %E\n", th_y_min);
 		printf("th_y_max = %E\n", th_y_max);

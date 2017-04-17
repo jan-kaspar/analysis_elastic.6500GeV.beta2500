@@ -24,6 +24,19 @@ ySizeDef = 5cm;
 
 //----------------------------------------------------------------------------------------------------
 
+string TicksDataset(real x)
+{
+	int xi = (int) x;
+	if (xi < 0 || xi >= datasets.length)
+		return "";
+
+	return datasets[xi];
+}
+
+xTicksDef = LeftTicks(rotate(90)*Label(""), TicksDataset, 1., 1.);
+
+//----------------------------------------------------------------------------------------------------
+
 NewPad(false);
 
 for (int dgi : diagonals.keys)
@@ -43,8 +56,8 @@ for (int rpi : rps.keys)
 
 	for (int dgi : diagonals.keys)
 	{
-		pad p_a = NewPad("dataset", "slope$\ung{rad^{-1}}$");
-		pad p_b = NewPad("dataset", "intercept$\ung{\%}$");
+		pad p_a = NewPad("", "slope$\ung{rad^{-1}}$");
+		pad p_b = NewPad("", "intercept$\ung{\%}$");
 
 		// plot fits per dataset
 		for (int dsi : datasets.keys)
@@ -83,15 +96,17 @@ for (int rpi : rps.keys)
 		// finalise pads
 		SetPad(p_a);
 		currentpad.yTicks = RightTicks(50., 10.);
-		string avg_label = format("avg = $%#.1f$", a_g) + format("$\pm %#.1f$", a_g_unc);
-		draw(Label(avg_label, 0.5, S, Fill(white)), (-0.5, a_g)--(datasets.length-0.5, a_g), red);
+		string avg_label = format("global fit: $%#.1f$", a_g) + format("$\pm %#.1f$", a_g_unc);
+		draw((-0.5, a_g)--(datasets.length-0.5, a_g), red, avg_label);
 		limits((-1, -200), (datasets.length, +0), Crop);
+		AttachLegend();
 
 		SetPad(p_b);
 		currentpad.yTicks = RightTicks(1., 0.5);
-		string avg_label = format("avg = $%#.1f$", b_g) + format("$\pm %#.1f$", b_g_unc);
-		draw(Label(avg_label, 0.5, S, Fill(white)), (-0.5, b_g)--(datasets.length-0.5, b_g), blue);
+		string avg_label = format("global fit: $%#.1f$", b_g) + format("$\pm %#.1f$", b_g_unc);
+		draw((-0.5, b_g)--(datasets.length-0.5, b_g), blue, avg_label);
 		limits((-1, 94), (datasets.length, 100), Crop);
+		AttachLegend();
 	}
 
 }

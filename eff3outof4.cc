@@ -53,7 +53,7 @@ struct HistGroup
 
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, "ob-1-30-0.05", bin_edges, N_bins);
+		BuildBinning(anal, "ob-1-20-0.05", bin_edges, N_bins);
 		t = new TH1D("", ";|t|", N_bins, bin_edges);
 		delete [] bin_edges;
 	}
@@ -202,23 +202,32 @@ int main(int argc, char **argv)
 	}
 	printf("\n\n");
 
-	// init files
-	TFile *inF = new TFile((string("distill_") + argv[1] + ".root").c_str());
-	TFile *outF = new TFile((string("eff3outof4_") + argv[1] + ".root").c_str(), "recreate");
+	// get input
+	TChain *ch_in = new TChain("distilled");
+	printf(">> input chain\n");
+	for (const auto &ntupleDir : distilledNtuples)
+	{
+		string f = ntupleDir + "/distill_" + argv[1] + ".root";
+		printf("    %s\n", f.c_str());
+		ch_in->Add(f.c_str());
+	}
+	printf("%llu entries\n", ch_in->GetEntries());
 
-	// get input data
-	TTree *inT = (TTree *) inF->Get("distilled");
+	// set up branches
 	EventRed ev;
-	inT->SetBranchAddress("timestamp", &ev.timestamp);
-	inT->SetBranchAddress("run_num", &ev.run_num);
-	inT->SetBranchAddress("bunch_num", &ev.bunch_num);
-	inT->SetBranchAddress("event_num", &ev.event_num);
-	inT->SetBranchAddress("trigger_bits", &ev.trigger_bits);
+	ch_in->SetBranchAddress("timestamp", &ev.timestamp);
+	ch_in->SetBranchAddress("run_num", &ev.run_num);
+	ch_in->SetBranchAddress("bunch_num", &ev.bunch_num);
+	ch_in->SetBranchAddress("event_num", &ev.event_num);
+	ch_in->SetBranchAddress("trigger_bits", &ev.trigger_bits);
 
-	inT->SetBranchAddress("v_L_1_F", &ev.h.L_1_F.v); inT->SetBranchAddress("x_L_1_F", &ev.h.L_1_F.x); inT->SetBranchAddress("y_L_1_F", &ev.h.L_1_F.y);
-	inT->SetBranchAddress("v_L_2_F", &ev.h.L_2_F.v); inT->SetBranchAddress("x_L_2_F", &ev.h.L_2_F.x); inT->SetBranchAddress("y_L_2_F", &ev.h.L_2_F.y);
-	inT->SetBranchAddress("v_R_1_F", &ev.h.R_1_F.v); inT->SetBranchAddress("x_R_1_F", &ev.h.R_1_F.x); inT->SetBranchAddress("y_R_1_F", &ev.h.R_1_F.y);
-	inT->SetBranchAddress("v_R_2_F", &ev.h.R_2_F.v); inT->SetBranchAddress("x_R_2_F", &ev.h.R_2_F.x); inT->SetBranchAddress("y_R_2_F", &ev.h.R_2_F.y);	
+	ch_in->SetBranchAddress("v_L_1_F", &ev.h.L_1_F.v); ch_in->SetBranchAddress("x_L_1_F", &ev.h.L_1_F.x); ch_in->SetBranchAddress("y_L_1_F", &ev.h.L_1_F.y);
+	ch_in->SetBranchAddress("v_L_2_F", &ev.h.L_2_F.v); ch_in->SetBranchAddress("x_L_2_F", &ev.h.L_2_F.x); ch_in->SetBranchAddress("y_L_2_F", &ev.h.L_2_F.y);
+	ch_in->SetBranchAddress("v_R_1_F", &ev.h.R_1_F.v); ch_in->SetBranchAddress("x_R_1_F", &ev.h.R_1_F.x); ch_in->SetBranchAddress("y_R_1_F", &ev.h.R_1_F.y);
+	ch_in->SetBranchAddress("v_R_2_F", &ev.h.R_2_F.v); ch_in->SetBranchAddress("x_R_2_F", &ev.h.R_2_F.x); ch_in->SetBranchAddress("y_R_2_F", &ev.h.R_2_F.y);
+
+	// prepare output
+	TFile *outF = new TFile((string("eff3outof4_") + argv[1] + ".root").c_str(), "recreate");
 
 	// tolerances (= 1 sigma of left-right difference)
 	double si_de_th_x = 12E-6;
@@ -246,9 +255,9 @@ int main(int argc, char **argv)
 	vector< vector<HistGroup> > h_sel(rps.size(), vector<HistGroup>(n_si.size())), h_full(rps.size(), vector<HistGroup>(n_si.size()));
 
 	// build histograms
-	for (int ev_idx = 0; ev_idx < inT->GetEntries(); ++ev_idx)
+	for (int ev_idx = 0; ev_idx < ch_in->GetEntries(); ++ev_idx)
 	{
-		inT->GetEntry(ev_idx);
+		ch_in->GetEntry(ev_idx);
 		
 		// choose the desired trigger
 		if ((ev.trigger_bits & 7) == 0)	// RP trigger only
@@ -366,11 +375,11 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_x->Draw("same");
 			c->Write("th_x comparison");
 
-			TH1D *h_simple_ratio_vs_th_x = MakeSimpleRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -20E-6, 20E-6, false);
+			TH1D *h_simple_ratio_vs_th_x = MakeSimpleRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -30E-6, 30E-6, false);
 			h_simple_ratio_vs_th_x->SetName("h_simple_ratio.th_x");
 			h_simple_ratio_vs_th_x->Write();
 
-			TH1D *h_refined_ratio_vs_th_x = MakeRefinedRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -20E-6, 20E-6, false);
+			TH1D *h_refined_ratio_vs_th_x = MakeRefinedRatio(h_full[rpi][nsi].th_x, h_sel[rpi][nsi].th_x, ff, -30E-6, 30E-6, false);
 			h_refined_ratio_vs_th_x->SetName("h_refined_ratio.th_x");
 			h_refined_ratio_vs_th_x->Write();
 
@@ -389,11 +398,11 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_y->Draw("same");
 			c->Write("th_y comparison");
 
-			TH1D *h_simple_ratio_vs_th_y = MakeSimpleRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, anal.eff_th_y_min, 100E-6, false);
+			TH1D *h_simple_ratio_vs_th_y = MakeSimpleRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, 10E-6, 90E-6, false);
 			h_simple_ratio_vs_th_y->SetName("h_simple_ratio.th_y");
 			h_simple_ratio_vs_th_y->Write();
 
-			TH1D *h_refined_ratio_vs_th_y = MakeRefinedRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, anal.eff_th_y_min, 100E-6, false);
+			TH1D *h_refined_ratio_vs_th_y = MakeRefinedRatio(h_full[rpi][nsi].th_y, h_sel[rpi][nsi].th_y, ff, 10E-6, 90E-6, false);
 			h_refined_ratio_vs_th_y->SetName("h_refined_ratio.th_y");
 			h_refined_ratio_vs_th_y->Write();
 
@@ -412,11 +421,11 @@ int main(int argc, char **argv)
 			h_full[rpi][nsi].th_y_xcut->Draw("same");
 			c->Write("th_y comparison");
 
-			TH1D *h_simple_ratio_vs_th_y_cut = MakeSimpleRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, anal.eff_th_y_min, 100E-6, true);
+			TH1D *h_simple_ratio_vs_th_y_cut = MakeSimpleRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, 10E-6, 90E-6, true);
 			h_simple_ratio_vs_th_y_cut->SetName("h_simple_ratio.th_y");
 			h_simple_ratio_vs_th_y_cut->Write();
 
-			TH1D *h_refined_ratio_vs_th_y_cut = MakeRefinedRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, anal.eff_th_y_min, 100E-6, true);
+			TH1D *h_refined_ratio_vs_th_y_cut = MakeRefinedRatio(h_full[rpi][nsi].th_y_xcut, h_sel[rpi][nsi].th_y_xcut, ff, 10E-6, 90E-6, true);
 			h_refined_ratio_vs_th_y_cut->SetName("h_refined_ratio.th_y");
 			h_refined_ratio_vs_th_y_cut->Write();
 
@@ -464,7 +473,7 @@ int main(int argc, char **argv)
 					h_ratio->SetBinError(bi, s);
 				}
 
-				h_ratio->Fit(f_const, "Q", "", anal.eff_th_y_min, 100E-6);
+				h_ratio->Fit(f_const, "Q", "", 10E-6, 90E-6);
 
 				double eff = f_const->GetParameter(0);
 				double eff_u = f_const->GetParError(0);

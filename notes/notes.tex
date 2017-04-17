@@ -363,69 +363,124 @@ where $h$ stands for event distribution, $\th_x^*$ and $\th_y^*$ are the scatter
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Efficiency studies, pile-up, ...}
+\section{Efficiency studies}
 
-\subsection{DAQ efficiency}
-
-\> method: per time slice calculate from the trigger block:
-$$\hbox{DAQ efficiency} = \hbox{recorded events} / \hbox{triggered events}$$
-
-\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
+\vskip3mm
+Each event is weighted with the following correction factor
+\eqref{
+	{1\over 1 - I_{\rm trig}}\ 
+	{1\over 1 - I_{\rm DAQ}}
+	{1\over 1 - I_{\rm PU}}\ 
+	{1\over 1 - I_{1RP} - I_{\rm 2RP}}\ ,
+}{eff corr}
+where symbols $I$ stand for various inefficiencies discussed below.
 
 \subsection{Trigger efficiency}
 
 \> method:
 \>> take zero-bias (BX) data
-\>> select elastic events (standard tagging) $\rightarrow$ number of events $N(BX,elastic)$
-\>> out of the selected events, check how many have trigger flag $\rightarrow$ number of events $N(BX,elastic,trigger)$
-\>> efficiency = $N(BX,elastic,trigger) / N(BX,elastic)$
+\>>> using bit 9 (e.g.~https://twiki.cern.ch/twiki/bin/view/TOTEM/90m)
+\>>> i.e.~ev.trigger\_bits \& 512
+\>> select elastic events (standard tagging) $\rightarrow$ number of events $N({\rm BX,elastic})$
+\>> out of the selected events, check how many have trigger flag on $\rightarrow$ number of events $N({\rm BX,elastic,trigger})$
+\>>> trigger flag = ev.trigger\_bits \& 7 (i.e.~any of the bits 0, 1 and 2)
+\>> then trigger efficiency is obtained as follows:
+
+$$1 - I_{\rm trig} = {N({\rm BX,elastic,trigger}) \over N({\rm BX,elastic})}$$
 
 \> results:
-\>> fill 5317, diagonal 45 bot -- 56 top: $N(BX,elastic) = N(BX,elastic,trigger) = 7280$
+\>> fill 5317, diagonal 45 bot -- 56 top: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 7185$
+\>> fill 5317, diagonal 45 top -- 56 bot: $N({\rm BX,elastic}) = N({\rm BX,elastic,trigger}) = 6648$
 
-\subsection{3-out-of-4 efficiencies}
-
-\> method
-\>> remove a RP from the elastic selection
-\>> redo a simplified analysis without the RP
-\>> for tagged events, look how often the studied RP has a track (compatible with the tagged event)
-
-\> study with tracks
-\>> \plot{efficiencies/eff3outof4_fits.pdf}: efficiency as function of $\th_y^*$
-\>> \plot{efficiencies/eff3outof4_2D.pdf}: efficiency as function of $\th_x^*$ and $\th_y^*$
-\>> \plot{efficiencies/eff3outof4_n_si_cmp.pdf}: efficiency as function of $\th_y^*$, for different choices of the selection $n_\si$
-\>> \plot{efficiencies/eff3outof4_vs_time.pdf}: efficiency as function of time
-
-\> study with lower-level signals (patterns, hits, ...)
-\>> \plot{efficiencies/eff3outof4_details.pdf}: (in)efficiencies as function of $\th_y^*$
-\>> \plot{efficiencies/eff3outof4_details_2D.pdf}: (in)efficiencies as function of $\th_x^*$ and $\th_y^*$
+\> this correction is not applied since it does not modify $t$-distribution shape
 
 
 
+\subsection{DAQ efficiency}
 
-\iffalse
-\> \plot{efficiencies/eff3outof4.pdf} : single RP inefficiencies WITHOUT the cut in $\th_x^*$
+\> method: per time slice calculate from the trigger block of raw data:
+$$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered events})} \equiv 1 - I_{\rm DAQ}$$
 
-\> \plot{efficiencies/eff3outof4_2D.pdf} : single RP inefficiencies as function of $\th_x^*$ and $\th_y^*$
-\>> clearly indicates the inefficiency due to the horizontal RPs
-\>> vertical dashed lines show the $\th_x^*$ cut to select only region with reasonable efficiency
+\> \plot{efficiencies/daq_efficiency.pdf}: DAQ efficiency as function of time
 
-\> \plot{efficiencies/eff3outof4_afterCut.pdf} : single RP inefficiencies WITH the cut in $\th_x^*$
-\>> red: with the $\th_x^*$ cut, green: without
-\>> with cut: plateau flat
-\fi
+\> this correction is not applied since it does not modify $t$-distribution shape
+
+
 
 \subsection{Pile-up}
 
-\> method
-\>> take BX sample
-\>> evaluate probability of signal that could ``hide'' elastic event, typical conditions:
-\>>> ``pl\_suff'': sufficient number of planes is on
-\>>> ``pat\_suff'': U or V pattern is recognised 
+\TODO
 
-\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm, each RP and their combinations
+\iffalse
+\> method
+\>> take BX sample, split it into time slices
+\>> per RP, evaluate frequency of ``destructive`` signal that would break reconstruction if piled up with an elastic event
+
+$$I^{i}_{\rm PU} = {N(\hbox{destructive signal in RP $i$})\over N(\hbox{anything})}$$
+
+\>> typical conditions of ``destructivity``
+\>>> ``pl\_suff'': sufficient number of planes is on
+\>>> ``pat\_suff'': at least one U or V pattern is recognised 
+\>> use OR between left and right arm -- it is sufficient to loose any arm to loose the elastic event
+
+$$I_{\rm PU} = {N(\hbox{destructive signal in any 220-fr RP})\over N(\hbox{anything})}$$
+
+
+\> \plot{efficiencies/pileup_details.pdf}: contributions from each arm and their combination, per diagonal
 
 \> \plot{efficiencies/pileup.pdf}: final inefficiency as a function of time
+
+\> this correction is not applied since it does not modify $t$-distribution shape
+\fi
+
+
+\subsection{Uncorrelated single RP inefficiencies (3-out-of-4)}
+
+\> method
+\>> remove a RP from the elastic selection
+\>> redo a simplified analysis without the RP under test
+\>> for selected events, look how often the studied RP has a track (compatible with the tagged event)
+
+\> study with reconstructed tracks
+\>> \plot{efficiencies/eff3outof4_fits.pdf}: efficiency as function of $\th_y^*$
+\>>> observation: the efficiency plateau has a slope
+\>> \plot{efficiencies/eff3outof4_2D.pdf}: efficiency as function of $\th_x^*$ and $\th_y^*$
+\>>> no significant phase-space dependence observed
+\>> \plot{efficiencies/eff3outof4_n_si_cmp.pdf}: efficiency as function of $\th_y^*$, for different choices of the selection $n_\si$
+\>>> no significant dependence on $n_\si$ observed
+\>> \plot{efficiencies/eff3outof4_vs_time.pdf}: efficiency as function of time
+\>> \plot{efficiencies/eff3outof4_fits_summary.pdf}: summary of plateau fit results (slope and intercept)
+\>>> good agreement among datasets
+
+\> study with also lower-level objects (patterns, hits, ...)
+\>> \plot{efficiencies/eff3outof4_details.pdf}: (in)efficiencies as function of $\th_y^*$
+\>> \plot{efficiencies/eff3outof4_details_2D.pdf}: (in)efficiencies as function of $\th_x^*$ and $\th_y^*$
+
+\> final correction derived from the solid lines in \plot{efficiencies/eff3outof4_fits_summary.pdf} by summing over the RPs:
+
+$$I_{\rm 1RP}(\th_y^*) = \sum\limits_{i \in\hbox{\SmallerFonts 220-fr}} I_{\rm 1RP}^i(\th_y^*)$$
+
+\>> value at $\th_y^* = 0$: typically about $10.5\un{\%}$, uncertainty $0.4\un{\%}$
+\>> slope: typically about $250\un{rad^{-1}}$, uncertainty $20\un{rad^{-1}}$
+
+\> this correction is applied since it modifies the $t$-distribution shape
+
+
+
+\subsection{Correlated RP inefficiencies}
+
+\TODO
+
+\> typical case: shower initiated upstream (210-far) propagates downstream (220-far)
+\>> this is not included in the uncorrelated single-RP inefficiency above
+
+\> method: external study (Geant4, data driven check at $\sqrt s = 8\un{TeV}$)
+\>> inefficiency per arm: $(1.5 \pm 0.7)\un{\%}$ (e.g.~from 1km or non-exponential paper)
+\>> total inefficiency (two arms):
+
+$$I_{2RP} = (3 \pm 1)\un{\%}$$
+
+\> this correction is applied since it modifies the $t$-distribution shape
 
 
 
