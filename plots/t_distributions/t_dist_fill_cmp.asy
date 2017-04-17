@@ -1,5 +1,6 @@
 import root;
 import pad_layout;
+include "../common.asy";
 
 string topDir = "../../";
 
@@ -60,7 +61,7 @@ for (int dsi : datasets.keys)
 
 	limits((0, 400), (0.01, 1000), Crop);
 
-	yaxis(XEquals(1.2e-3, false), dashed);
+	yaxis(XEquals(t_min, false), dashed);
 
 	AttachLegend(datasets[dsi]);
 }

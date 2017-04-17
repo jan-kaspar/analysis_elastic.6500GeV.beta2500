@@ -1,5 +1,6 @@
 import root;
 import pad_layout;
+include "../common.asy";
 
 string topDir = "../../";
 
@@ -20,7 +21,7 @@ xSizeDef = 10cm;
 ySizeDef = 8cm;
 
 TGraph_x_min = 6e-4;
-TH1_x_min = 1.2e-3;
+TH1_x_min = t_min;
 
 //----------------------------------------------------------------------------------------------------
 
@@ -68,7 +69,7 @@ for (int dgni : diagonals.keys)
 
 	limits((0.0005, 0.995), (0.003, 1.001), Crop);
 
-	yaxis(XEquals(1.2e-3, false), dashed);
+	yaxis(XEquals(t_min, false), dashed);
 
 	AttachLegend(SE, SE);
 }

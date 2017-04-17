@@ -1,5 +1,6 @@
 import root;
 import pad_layout;
+include "../common.asy";
 
 string topDir = "../../";
 
@@ -53,6 +54,6 @@ currentpad.xTicks = LeftTicks(0.002, 0.001);
 currentpad.yTicks = RightTicks(100., 50.);
 limits((0, 400), (0.01, 1000), Crop);
 
-yaxis(XEquals(1.2e-3, false), dashed);
+yaxis(XEquals(t_min, false), dashed);
 
 AttachLegend();
