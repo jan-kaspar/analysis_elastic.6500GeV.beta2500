@@ -82,6 +82,7 @@ int main()
 
 			// save mean = global fit
 			TF1 *ff = new TF1("ff", "[0] + [1]*x");
+			ff->SetRange(4E-6, 100E-6);
 			ff->SetParameter(0, m_b); ff->SetParError(0, m_b_unc);
 			ff->SetParameter(1, m_a); ff->SetParError(1, m_a_unc);
 
