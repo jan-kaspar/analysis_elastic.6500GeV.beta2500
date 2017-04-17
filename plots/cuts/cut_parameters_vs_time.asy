@@ -20,8 +20,8 @@ real c_rms_min[], c_rms_max[];
 real c_sigmas_45b[], c_sigmas_45t[];
 cuts.push("1"); c_units.push("\mu rad"); c_scales.push(1e6); c_sigmas_45b.push(2.0); c_sigmas_45t.push(1.9); c_rms_min.push(1.7); c_rms_max.push(2.3);
 cuts.push("2"); c_units.push("\mu rad"); c_scales.push(1e6); c_sigmas_45b.push(0.39); c_sigmas_45t.push(0.39); c_rms_min.push(0.35); c_rms_max.push(0.40);
-cuts.push("5"); c_units.push("mm"); c_scales.push(1); c_sigmas_45b.push(0.019); c_sigmas_45t.push(0.019); c_rms_min.push(0.016); c_rms_max.push(0.020);
-cuts.push("6"); c_units.push("mm"); c_scales.push(1); c_sigmas_45b.push(0.023); c_sigmas_45t.push(0.021); c_rms_min.push(0.016); c_rms_max.push(0.025);
+cuts.push("5"); c_units.push("mm"); c_scales.push(1); c_sigmas_45b.push(0.0185); c_sigmas_45t.push(0.019); c_rms_min.push(0.016); c_rms_max.push(0.020);
+cuts.push("6"); c_units.push("mm"); c_scales.push(1); c_sigmas_45b.push(0.023); c_sigmas_45t.push(0.020); c_rms_min.push(0.016); c_rms_max.push(0.025);
 cuts.push("7"); c_units.push("mm"); c_scales.push(1); c_sigmas_45b.push(0.20); c_sigmas_45t.push(0.19); c_rms_min.push(0.17); c_rms_max.push(0.22);
 
 string quantities[], q_options[], q_labels[];

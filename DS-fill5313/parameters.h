@@ -34,11 +34,10 @@ void Init_45b_56t()
 
 	// analysis settings
 	anal.cut1_a = 1.; anal.cut1_c = 0.33E-6; anal.cut1_si = 2.0E-6;
-	anal.cut2_a = 1.; anal.cut2_c = -0.02E-6; anal.cut2_si = 0.39E-6;
+	anal.cut2_a = 1.; anal.cut2_c = -0.027E-6; anal.cut2_si = 0.39E-6;
 	
-	anal.cut5_a = 0.157361; anal.cut5_c = -0.014; anal.cut5_si = 0.019;
-	// TODO: readjust sigma when/if the reco problem solved
-	anal.cut6_a = 0.156780; anal.cut6_c = -0.002; anal.cut6_si = 0.030;
+	anal.cut5_a = 0.157361; anal.cut5_c = -0.014; anal.cut5_si = 0.0185;
+	anal.cut6_a = 0.156780; anal.cut6_c = -0.002; anal.cut6_si = 0.023;
 
 	anal.cut7_a = -1252; anal.cut7_c = -0.003; anal.cut7_si = 0.20;
 
@@ -54,10 +53,10 @@ void Init_45t_56b()
 
 	// analysis settings
 	anal.cut1_a = 1.; anal.cut1_c = -0.29E-6; anal.cut1_si = 1.9E-6;
-	anal.cut2_a = 1.; anal.cut2_c = +0.01E-6; anal.cut2_si = 0.39E-6;
+	anal.cut2_a = 1.; anal.cut2_c = +0.008E-6; anal.cut2_si = 0.39E-6;
 	
 	anal.cut5_a = 0.157846; anal.cut5_c = +0.000; anal.cut5_si = 0.019;
-	anal.cut6_a = 0.155975; anal.cut6_c = 0.; anal.cut6_si = 0.021;
+	anal.cut6_a = 0.155975; anal.cut6_c = 0.; anal.cut6_si = 0.020;
 
 	anal.cut7_a = -1318; anal.cut7_c = 0.022; anal.cut7_si = 0.19;
 
