@@ -17,7 +17,7 @@ source "/afs/cern.ch/project/eos/installation/totem/etc/setup.sh"
 shopt -s expand_aliases
 
 # define directories
-job_dir="/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/acceptance"
+job_dir="/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp-version1/acceptance"
 
 # run the process
 cd "$job_dir"

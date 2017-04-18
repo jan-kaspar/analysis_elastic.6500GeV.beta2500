@@ -293,16 +293,6 @@ struct HitData
 
 		return r;
 	}
-
-	// TODO: remove hard-coded z positions
-	/*
-	HitData ApplyInterpolatedAlignment(const AlignmentData &a, double sN, double sF) const
-	{
-		AlignmentData a_int = a.Interpolate(214.628, 220.000, sN, sF);
-
-		return ApplyAlignment(a_int);
-	}
-	*/
 };
 
 //----------------------------------------------------------------------------------------------------

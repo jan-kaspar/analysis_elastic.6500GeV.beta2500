@@ -35,6 +35,9 @@ void Init_global()
 	anal.si_th_y_1arm = 0.37E-6 / sqrt(2.);
 	anal.si_th_y_1arm_unc = 0.02E-6 / sqrt(2.);
 
+	anal.si_th_y_LRdiff = anal.si_th_y_1arm * sqrt(2.);
+	anal.si_th_y_LRdiff_unc = 0.007E-6;
+
 	anal.si_th_y_2arm = anal.si_th_y_1arm / sqrt(2.);
 	anal.si_th_y_2arm_unc = 0.01E-6;
 
@@ -44,9 +47,6 @@ void Init_global()
 
 	anal.si_th_x_LRdiff = 12.5E-6;
 	anal.si_th_x_LRdiff_unc = 0.3E-6;
-
-	anal.si_th_y_LRdiff = anal.si_th_y_1arm * sqrt(2.);
-	anal.si_th_y_LRdiff_unc = 0.007E-6;
 
 	anal.si_th_x_2arm = 0.29E-6;
 	anal.si_th_x_2arm_unc = 0.04E-6;

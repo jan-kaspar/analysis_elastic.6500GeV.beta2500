@@ -62,14 +62,12 @@ void Environment::InitNominal()
 	*/
 
 	// alignment uncertainties
-	// TODO
 	si_de_x = 0E-3;
 	si_de_y_R = 0E-3;
 	si_de_y_D = 0E-3;
 	si_tilt = 0E-3;
 
 	// other uncertainties
-	// TODO
 	si_th_y_RL_assym_unc = 0.;
 }
 
