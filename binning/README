@@ -1,4 +1,7 @@
-The steps are as follows.
+Copied "generators.root" from the "version1" analysis, i.e. directory:
+	/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp-version1/binning
+
+If need to regenerate, the steps are as follows.
 
 1. Run make
 
