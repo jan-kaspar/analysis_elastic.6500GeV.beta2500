@@ -6,7 +6,7 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TGraphErrors.h"
-#include "TTree.h"
+#include "TChain.h"
 
 #include <cmath>
 
@@ -56,14 +56,22 @@ int main(int argc, char **argv)
 		return rcIncompatibleDiagonal;
 
 	// get input data
-	TFile *f_in = new TFile((string("distill_") + argv[1] + ".root").c_str());
-	TTree *tree_in = (TTree *) f_in->Get("distilled");
+	TChain *ch_in = new TChain("distilled");
+	printf(">> input chain\n");
+	for (const auto &ntupleDir : distilledNtuples)
+	{
+		string f = "/" + ntupleDir + "/distill_" + argv[1] + ".root";
+		printf("    %s\n", f.c_str());
+		ch_in->Add(f.c_str());
+	}
+	printf("    %llu entries\n", ch_in->GetEntries());
+
 	EventRed ev;
 	
-	tree_in->SetBranchAddress("timestamp", &ev.timestamp);
-	tree_in->SetBranchAddress("run_num", &ev.run_num);
-	tree_in->SetBranchAddress("event_num", &ev.event_num);
-	tree_in->SetBranchAddress("trigger_num", &ev.trigger_num);
+	ch_in->SetBranchAddress("timestamp", &ev.timestamp);
+	ch_in->SetBranchAddress("run_num", &ev.run_num);
+	ch_in->SetBranchAddress("event_num", &ev.event_num);
+	ch_in->SetBranchAddress("trigger_num", &ev.trigger_num);
 	
 	// prepare output
 	TFile *f_out = new TFile((string("daq_efficiency_") + argv[1] + ".root").c_str(), "recreate");
@@ -74,9 +82,9 @@ int main(int argc, char **argv)
 	// extract period data
 	map<PeriodIndex, PeriodData> periods;
 
-	for (int ev_idx = 0; ev_idx < tree_in->GetEntries(); ev_idx += 1)
+	for (int ev_idx = 0; ev_idx < ch_in->GetEntries(); ev_idx += 1)
 	{
-		tree_in->GetEntry(ev_idx);
+		ch_in->GetEntry(ev_idx);
 
 		// get period index
 		PeriodIndex idx;

@@ -5,6 +5,8 @@
 
 double timestamp0 = 1474322400;
 
+vector<string> distilledNtuples;
+
 vector<AlignmentSource> alignmentSources;
 Analysis anal;
 Environment env;
