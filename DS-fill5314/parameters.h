@@ -36,7 +36,7 @@ void Init_45b_56t()
 	anal.cut1_a = 1.; anal.cut1_c = +0.1E-6; anal.cut1_si = 14E-6;
 	anal.cut2_a = 1.; anal.cut2_c = +0.02E-6; anal.cut2_si = 0.4E-6;
 
-	anal.L_int = 4.0144E+04;
+	anal.L_int = 3.9833E+04;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -49,5 +49,5 @@ void Init_45t_56b()
 	anal.cut1_a = 1.; anal.cut1_c = -0.2E-6; anal.cut1_si = 14E-6;
 	anal.cut2_a = 1.; anal.cut2_c = -0.02E-6; anal.cut2_si = 0.4E-6;
 
-	anal.L_int = 4.0084E+04;
+	anal.L_int = 3.9838E+04;
 }
