@@ -5,13 +5,13 @@ include "../../common.asy";
 string topDir = "../../../acceptance/";
 
 string rows[] = {
-//	"simulations/0.08,1E7,uncorr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/0.08,1E7,uncorr,new,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E7,uncorr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,uncorr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,uncorr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E9,uncorr,new,curved/seed1/validation_with_mc.root",
 
-//	"simulations/0.08,1E7,corr,old,flat/seed1/validation_with_mc.root",
-//	"simulations/0.08,1E7,corr,new,flat/seed1/validation_with_mc.root",
-	"simulations/0.08,1E7,corr,new,curved/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,corr,old,flat/seed1/validation_with_mc.root",
+//	"simulations/0.08,1E9,corr,new,flat/seed1/validation_with_mc.root",
+	"simulations/0.08,1E9,corr,new,curved/seed1/validation_with_mc.root",
 };
 
 string th_x_ranges[] = {
