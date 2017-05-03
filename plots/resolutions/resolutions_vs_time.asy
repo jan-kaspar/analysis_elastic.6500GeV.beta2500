@@ -25,6 +25,8 @@ TGraph_errorBar = None;
 
 bool plotUncertainties = false;
 
+bool plotValidation = true;
+
 //----------------------------------------------------------------------------------------------------
 
 void SetPadWidth()
@@ -65,11 +67,11 @@ for (int dsi : datasets.keys)
 			draw(shift(0, -unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 		}
 
-		// validation
-		/*
-		draw(swToHours*scale(1, 1e6),
-			RootGetObject(f, "time dependences/p_input_d_x_rms_vs_time"), "p,eb,d0", magenta+1pt);
-		*/
+		if (plotValidation)
+		{
+			draw(swToHours*scale(1, 1e6),
+				RootGetObject(f, "time dependences/p_input_d_x_rms_vs_time"), "p,eb,d0", magenta+1pt);
+		}
 	}
 
 	ylimits(y_min, y_max, Crop);
@@ -107,11 +109,11 @@ for (int dsi : datasets.keys)
 			draw(shift(0, -unc) * swToHours*scale(1, 1e6), fit, "l", dgn_pens[dgni] + dashed);
 		}
 
-		// validation
-		/*
-		draw(swToHours*scale(1, 1e6),
-			RootGetObject(f, "time dependences/p_input_d_y_rms_vs_time"), "p,eb,d0", magenta+1pt);
-		*/
+		if (plotValidation)
+		{
+			draw(swToHours*scale(1, 1e6),
+				RootGetObject(f, "time dependences/p_input_d_y_rms_vs_time"), "p,eb,d0", magenta+1pt);
+		}
 	}
 	
 	ylimits(y_min, y_max, Crop);
