@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	printf(">> input chain\n");
 	for (const auto &ntupleDir : distilledNtuples)
 	{
-		string f = "/" + ntupleDir + "/distill_" + argv[1] + ".root";
+		string f = ntupleDir + "/distill_" + argv[1] + ".root";
 		printf("    %s\n", f.c_str());
 		ch_in->Add(f.c_str());
 	}
