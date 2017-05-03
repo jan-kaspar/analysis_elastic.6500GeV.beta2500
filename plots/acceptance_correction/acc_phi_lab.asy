@@ -3,17 +3,17 @@ import pad_layout;
 
 string top_dir = "../../";
 
-string dataSets[] = { "DS-fill5313" };
+string dataSets[] = { "DS-fill5317" };
 
 TH2_palette = Gradient(blue, heavygreen, yellow, red);
 
 //----------------------------------------------------------------------------------------------------
 
 real cut_th_x_low_top = -250, cut_th_x_high_top = 250;
-real cut_th_y_low_top = 34.5, cut_th_y_high_top = +100;
+real cut_th_y_low_top = 4, cut_th_y_high_top = +100;
 
 real cut_th_x_low_bot = -250, cut_th_x_high_bot = 250;
-real cut_th_y_low_bot = -28.5, cut_th_y_high_bot = -100;
+real cut_th_y_low_bot = -4, cut_th_y_high_bot = -100;
 
 void DrawAcceptedArcs(real th)
 {
@@ -60,7 +60,7 @@ for (int dsi : dataSets.keys)
 {
 	real ySize = 6cm;
 
-	NewPad("$\th_x^{*}\ung{\mu rad}$", "$\th_y^{*}\ung{\mu rad}$", ySize/200*300, ySize);
+	NewPad("$\th_x^{*}\ung{\mu rad}$", "$\th_y^{*}\ung{\mu rad}$", ySize/200*200, ySize);
 	scale(Linear, Linear, Log);
 	//TH2_zLabel = "(corrected) events per bin";
 	TH2_paletteBarWidth = 0.05;
@@ -102,9 +102,9 @@ for (int dsi : dataSets.keys)
 	draw((-120, -135)--(-130, cut_th_y_low_bot), magenta, EndArrow());
 	draw((-120, -135)--(-110, cut_th_y_low_top), magenta, EndArrow());
 
-	label("\vbox{\hbox{LHC}\hbox{appertures}}", (-190, 190), S, red, Fill(white));
-	draw((-180, 130)--(-160, cut_th_y_high_top), red, EndArrow);
-	draw((-180, 130)--(-190, cut_th_y_high_bot), red, EndArrow);
+	label("\vbox{\hbox{LHC}\hbox{apertures}}", (-140, 190), S, red, Fill(white));
+	draw((-160, 130)--(-140, cut_th_y_high_top), red, EndArrow);
+	draw((-160, 130)--(-190, cut_th_y_high_bot), red, EndArrow);
 
 	/*
 	label("\vbox{\hbox{horiz.}\hbox{RPs}}", (200, -150), W, magenta, Fill(white));
@@ -112,7 +112,7 @@ for (int dsi : dataSets.keys)
 	draw((130, -150)--(cut_th_x_low_bot, -160), magenta, EndArrow);
 	*/
 	
-	limits((-300, -200), (300, 200), Crop);
+	limits((-200, -200), (200, 200), Crop);
 	AttachLegend(dataSets[dsi]);
 }
 
