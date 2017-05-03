@@ -2009,8 +2009,11 @@ int main(int argc, char **argv)
 
 	for (TProfile *p :
 		{
+			p_th_x_vs_time, p_th_x_L_vs_time, p_th_x_R_vs_time,
+			p_th_y_vs_time, p_th_y_L_vs_time, p_th_y_R_vs_time,
+			p_vtx_x_vs_time,
 			p_diffLR_th_x_vs_time, p_diffLR_th_y_vs_time,
-			p_diff12_th_y_L_vs_time, p_diff12_th_y_R_vs_time, p_vtx_x_vs_time
+			p_diff12_th_y_L_vs_time, p_diff12_th_y_R_vs_time
 		} )
 	{
 		p->Write();
