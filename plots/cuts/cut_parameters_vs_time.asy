@@ -16,11 +16,13 @@ pen dgn_pens[] = { blue, red };
 
 string cuts[], c_units[];
 real c_scales[];
-cuts.push("1"); c_units.push("\mu rad"); c_scales.push(1e6);
-cuts.push("2"); c_units.push("\mu rad"); c_scales.push(1e6);
+real c_rms_min[], c_rms_max[];
+real c_sigmas_45b[], c_sigmas_45t[];
+cuts.push("1"); c_units.push("\mu rad"); c_scales.push(1e6); c_sigmas_45b.push(14); c_sigmas_45t.push(14); c_rms_min.push(10); c_rms_max.push(16);
+cuts.push("2"); c_units.push("\mu rad"); c_scales.push(1e6); c_sigmas_45b.push(0.38); c_sigmas_45t.push(0.38); c_rms_min.push(0.30); c_rms_max.push(0.40);
 
 string quantities[], q_options[], q_labels[];
-quantities.push("p_cq_time"); q_options.push("eb,d0"); q_labels.push("mean vs.~time");
+//quantities.push("p_cq_time"); q_options.push("eb,d0"); q_labels.push("mean vs.~time");
 quantities.push("g_cq_RMS"); q_options.push("p,d0"); q_labels.push("RMS vs.~time");
 
 xSizeDef = 10cm;
@@ -60,7 +62,8 @@ for (int ci : cuts.keys)
 			//currentpad.yTicks = RightTicks(1., 0.2);
 			//real y_min = -3, y_max = +2;
 			
-			//DrawRunBands(fills[dsi], y_min, y_max);
+			if (quantities[qi] == "g_cq_RMS")
+				DrawRunBands(fills[dsi], c_rms_min[ci], c_rms_max[ci]);
 		
 			for (int dgni : diagonals.keys)
 			{
@@ -72,9 +75,18 @@ for (int ci : cuts.keys)
 				else
 					draw(swToHours*scale(1, c_scales[ci]), obj, q_options[qi], dgn_pens[dgni], dgn_labels[dgni]);
 		
+				if (quantities[qi] == "g_cq_RMS")
+				{
+					real sigma = (diagonals[dgni] == "45b_56t") ? c_sigmas_45b[ci] : c_sigmas_45t[ci];
+					xaxis(YEquals(sigma, false), dgn_pens[dgni]+1pt+dashed);
+				}
+			}
+
+			if (quantities[qi] == "g_cq_RMS")
+			{
+				ylimits(c_rms_min[ci], c_rms_max[ci], Crop);
 			}
 		
-			//ylimits(y_min, y_max, Crop);
 			SetPadWidth();
 		}
 	}

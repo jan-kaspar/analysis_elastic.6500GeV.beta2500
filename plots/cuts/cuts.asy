@@ -29,10 +29,14 @@ real lim_x_high[] = { +200, 150, +1000, +1000, +15, +15, +200, +600 };
 real lim_y_low[] = { -200, -150, -0.8, -0.8, -0.5, -0.5, -2, -4 };
 real lim_y_high[] = { +200, 150, +0.8, +0.8, +0.5, +0.5, +2, +4 };
 
+real lim_q[] = { 70., 5, 10., 10., 0.15, 0.15, 2.5 };
+
 for (int ci : cuts.keys)
 {
 	int cut = cuts[ci];
 	int idx = cut - 1;
+
+	write(format("* cut %i", cut));
 
 	NewPad(false);
 	
@@ -41,6 +45,9 @@ for (int ci : cuts.keys)
 	
 	NewPad(false);
 	label("\SetFontSizesXX after cuts");
+	
+	NewPad(false);
+	label("\SetFontSizesXX discriminator distribution");
 
 	for (int dsi : datasets.keys)
 	{
@@ -56,6 +63,8 @@ for (int ci : cuts.keys)
 			NewPad(false);
 			label("\vbox{\SetFontSizesXX\hbox{"+format("cut %i", cut)+"}\hbox{"+dataset+"}\hbox{"+replace(dgn, "_", "--")+"}}");
 	
+			// ---------- before cuts ----------
+
 			NewPad(label_x[idx], label_y[idx]);
 			scale(Linear, Linear, Log);
 			string objC = format("elastic cuts/cut %i", cut) + format("/plot_before_cq%i", cut);
@@ -63,6 +72,8 @@ for (int ci : cuts.keys)
 			draw(scale(scale_x[idx], scale_y[idx]), RootGetObject(f, objC+"#1"));
 			draw(scale(scale_x[idx], scale_y[idx]), RootGetObject(f, objC+"#2"));
 			limits((-lim_x_high[idx], -lim_y_high[idx]), (-lim_x_low[idx], -lim_y_low[idx]), Crop);
+
+			// ---------- after cuts ----------
 			
 			NewPad(label_x[idx], label_y[idx]);
 			scale(Linear, Linear, Log);
@@ -71,11 +82,35 @@ for (int ci : cuts.keys)
 			draw(scale(scale_x[idx], scale_y[idx]), RootGetObject(f, objC+"#1"));
 			draw(scale(scale_x[idx], scale_y[idx]), RootGetObject(f, objC+"#2"));
 			limits((-lim_x_high[idx], -lim_y_high[idx]), (-lim_x_low[idx], -lim_y_low[idx]), Crop);
-			
+
+			// ---------- discriminator distribution ----------
+
+			string obj_name_par = format("elastic cuts/cut %i", cut) + format("/g_cut_parameters", cut);
+			RootObject obj_par = RootGetObject(f, obj_name_par);
+			real ax[] = {0}, ay[] = {0};
+			obj_par.vExec("GetPoint", 0, ax, ay); real cca = ay[0];
+			obj_par.vExec("GetPoint", 1, ax, ay); real ccb = ay[0];
+			obj_par.vExec("GetPoint", 2, ax, ay); real ccc = ay[0];
+			obj_par.vExec("GetPoint", 3, ax, ay); real csi = ay[0];
+			obj_par.vExec("GetPoint", 4, ax, ay); real n_si = ay[0];
+
 			NewPad(label_cut[idx]);
-			string objH = format("elastic cuts/cut %i", cut) + format("/h_cq%i", cut);
-			draw(scale(scale_y[idx], 1.), RootGetObject(f, objH+""), "vl,eb,lR");
-			//draw(scale(scale_x[idx], scale_y[idx]), RootGetObject(f, objH+"|gaus"));
+
+			string obj_name_h = format("elastic cuts/cut %i", cut) + format("/h_cq%i", cut);
+			RootObject obj_h = RootGetObject(f, obj_name_h);
+
+			real scale = scale_y[idx];
+
+			draw(scale(scale, 1.), obj_h, "vl,eb", red+1pt);
+
+			xlimits(-lim_q[idx], +lim_q[idx], Crop);
+
+			yaxis(XEquals(+n_si * csi * scale, false), blue+dashed);
+			yaxis(XEquals(-n_si * csi * scale, false), blue+dashed);
+
+			AddToLegend(format("<mean = $%#.3f$", obj_h.rExec("GetMean") * scale));
+			AddToLegend(format("<RMS = $%#.3f$", obj_h.rExec("GetRMS") * scale));
+			AddToLegend(format("<cut = $\pm%#.3f$", n_si * csi * scale));
 			AttachLegend();
 		}
 	}
