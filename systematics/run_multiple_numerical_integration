@@ -16,10 +16,10 @@ function RunOneDiagonal()
 	echo "* $ds, $dgn"
 
 	tag="$ds/numerical_integration_$dgn"
-	#./numerical_integration "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+	{ time ./numerical_integration "$ds" "$dgn" "${tag}.root" ; } &> "${tag}.log"
 
 	tag="$ds/numerical_integration_full_$dgn"
-	#./numerical_integration_full "$ds" "$dgn" "${tag}.root" &> "${tag}.log"
+	{ time ./numerical_integration_full "$ds" "$dgn" "${tag}.root" ; } &> "${tag}.log"
 }
 #----------------------------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ function RunOneDataset()
 	wait
 
 	tag="$ds/matrix_numerical_integration"
-	./matrix_numerical_integration "${ds}" "${tag}.root" &> "${tag}.log"
+	{ time ./matrix_numerical_integration "${ds}" "${tag}.root" ; } &> "${tag}.log"
 }
 
 #----------------------------------------------------------------------------------------------------
