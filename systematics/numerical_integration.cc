@@ -376,7 +376,7 @@ int main(int argc, const char **argv)
 			TGraph *g_dsdt_reco = new TGraph(); g_dsdt_reco->SetName("g_dsdt_reco"); g_dsdt_reco->SetLineColor(4);
 			TGraph *g_eff = new TGraph(); g_eff->SetName("g_eff"); g_eff->SetLineColor(8);
 
-			for (double t = 8E-4; t <= 0.3;)
+			for (double t = 8E-4; t <= 1.0;)
 			{
 				double v_true = dist_true_t(t);
 
@@ -398,7 +398,8 @@ int main(int argc, const char **argv)
 				g_eff->SetPoint(idx, t, v_eff);
 
 				// advance t
-				double dt = 0.001;
+				double dt = 1.;
+				if (t < 1.0) dt = 0.01;
 				if (t < 0.01) dt = 0.001;
 				if (t < 4E-3) dt = 0.0001;
 				if (t < 1E-3) dt = 0.00005;

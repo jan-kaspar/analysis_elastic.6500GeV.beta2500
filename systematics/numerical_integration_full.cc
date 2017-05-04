@@ -605,7 +605,7 @@ int main(int argc, const char **argv)
 			TGraph *g_dsdt_reco = new TGraph(); g_dsdt_reco->SetName("g_dsdt_reco"); g_dsdt_reco->SetLineColor(4);
 			TGraph *g_eff = new TGraph(); g_eff->SetName("g_eff"); g_eff->SetLineColor(8);
 
-			for (double t = 8E-4; t <= 0.3;)
+			for (double t = 8E-4; t <= 1.0;)
 			{
 				//printf("            t = %.2E\n", t);
 
@@ -628,9 +628,13 @@ int main(int argc, const char **argv)
 
 				// advance t
 				double dt = 0.005;
-				if (t < 0.02) dt = 0.001;
+				if (t < 1.0) dt = 0.01;
+				if (t < 0.6) dt = 0.005;
+				if (t < 0.3) dt = 0.01;
+				if (t < 0.2) dt = 0.005;
+				if (t < 0.01) dt = 0.001;
 				if (t < 4E-3) dt = 0.0001;
-				if (t < 1E-3) dt = 0.00005;
+				if (t < 1.5E-3) dt = 0.00005;
 				t += dt;
 			}
 

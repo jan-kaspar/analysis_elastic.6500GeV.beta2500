@@ -105,15 +105,15 @@ int LoadTDistributions()
 {
 	// define input t-distributions
 	inputTDistributions.push_back({
-		"first fit",
-		(TGraph *) GetObject("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fit/do_fit.root", "g_dsdt_CH"),
+		"fit2-2",
+		(TGraph *) GetObject("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 2/g_dsdt_CH"),
 		NULL
 	});
 
 	// preprocess t-distributions
 	for (auto &itd : inputTDistributions)
 	{
-		itd.g_dsdt = CropTDistribution(itd.g_dsdt);
+		itd.g_dsdt = CropTDistribution(itd.g_dsdt, 1.0);
 		itd.s_dsdt = BuildSpline(itd.g_dsdt);
 	}
 
