@@ -3,6 +3,7 @@
 #include "TH1D.h"
 #include "TH2D.h"
 #include "TMatrixDSym.h"
+#include "TSpline.h"
 
 #include <string>
 
@@ -51,6 +52,15 @@ void AddMode(string _t, string _fn, string _on, double _ref, CorrelationType _c)
 
 //----------------------------------------------------------------------------------------------------
 
+TSpline* BuildSpline(TGraph *g)
+{
+	TSpline3 *s = new TSpline3("", g->GetX(), g->GetY(), g->GetN());
+	s->SetName(g->GetName());
+	return s;
+}
+
+//----------------------------------------------------------------------------------------------------
+
 void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const string &label)
 {
 	printf(">> MakeMatrix(%s)\n", label.c_str());
@@ -58,8 +68,8 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 	// select binnings and diagonals
 	vector<string> binnings;
 	binnings.push_back("ob-1-20-0.05");
-	//binnings.push_back("ob-2-10-0.05");
-	//binnings.push_back("ob-3-5-0.05");
+	binnings.push_back("ob-2-10-0.05");
+	binnings.push_back("ob-3-5-0.05");
 
 	vector<string> diagonals;
 	diagonals.push_back("45b_56t");
@@ -90,8 +100,10 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 	}
 	printf("\tselected modes: %lu\n", sel_modes.size());
 
+	// make subdirectory
 	TDirectory *groupDir = topDir->mkdir(label.c_str());
 
+	// process all diagonals
 	for (unsigned int dgni = 0; dgni < diagonals.size(); dgni++)
 	{
 		printf("\t%s\n", diagonals[dgni].c_str());
@@ -117,13 +129,19 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 			}
 		}
 		printf("\t\tgraphs: %lu\n", graphs.size());
+
+		if (graphs.size() < 1)
+			continue;
+
+		// build splines
+		vector<TSpline *> splines;
+		for (TGraph *g : graphs)
+			splines.push_back(BuildSpline(g));
 			
+		// make matrix for each binning
 		for (unsigned int bni = 0; bni < binnings.size(); bni++)
 		{
 			printf("\t\t%s\n", binnings[bni].c_str());
-
-			TDirectory *binDir = dgnDir->mkdir(binnings[bni].c_str());
-			gDirectory = binDir;
 
 			// build binning
 			Analysis anal;
@@ -134,26 +152,46 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 			double *bin_edges;
 			BuildBinning(anal, binnings[bni], bin_edges, bins);
 
+			// make binning subdirectory
+			TDirectory *binDir = dgnDir->mkdir(binnings[bni].c_str());
+			gDirectory = binDir;
+
 			// build matrix
 			TH1D *h_stddev = new TH1D("h_stddev", ";|t|", bins, bin_edges);
+
+			vector<vector<double>> conPerBin;
+			for (unsigned int gi = 0; gi < graphs.size(); gi++)
+			{
+				vector<double> temp;
+				for (unsigned int i = 0; i < bins; i++)
+				{
+					const int bi = i + 1;
+					const double l = h_stddev->GetBinLowEdge(bi);
+					const double r = l + h_stddev->GetBinWidth(bi);
+
+					const unsigned int n_div = 100.;	// number of bin divisions
+					double S = 0.;
+					for (unsigned int i_div = 0; i_div < n_div; i_div++)
+					{
+						const double t = l + (0.5 + i_div) * (r - l) / n_div;
+						S += splines[gi]->Eval(t);
+					}
+					const double avg = S / n_div;
+
+					temp.push_back(avg);
+				}
+
+				conPerBin.push_back(temp);
+			}
 
 			TMatrixDSym cov_mat(bins);
 			for (unsigned int i = 0; i < bins; i++)
 			{
 				for (unsigned int j = 0; j < bins; j++)
 				{
-					int bi = i + 1;
-					int bj = j + 1;
-
-					double ti = h_stddev->GetBinCenter(bi);
-					double tj = h_stddev->GetBinCenter(bj);
-
 					double S = 0.;
 					for (unsigned int gi = 0; gi < graphs.size(); gi++)
-					{
-						S += graphs[gi]->Eval(ti) * graphs[gi]->Eval(tj);
-					}
-
+						S += conPerBin[gi][i] * conPerBin[gi][j];
 					cov_mat(i, j) = S;
 				}
 			}
@@ -191,25 +229,29 @@ void MakeMatrix(const vector<string> &contributions, TDirectory *topDir, const s
 		TGraph *g_envelope = new TGraph();
 		g_envelope->SetName("g_envelope");
 
-		for (double t = 0; t <= 0.25;)
+		TGraph *g_ref = graphs[0];
+
+		for (int idx = 0; idx < g_ref->GetN(); ++idx)
 		{
+			double t, dummy;
+			g_ref->GetPoint(idx, t, dummy);
+
 			double S2 = 0.;
 
-			for (unsigned int gi = 0; gi < graphs.size(); gi++)
+			for (auto s : splines)
 			{
-				double v = graphs[gi]->Eval(t);
+				double v = s->Eval(t);
 				S2 += v*v;
 			}
 
 			g_envelope->SetPoint(g_envelope->GetN(), t, sqrt(S2));
-
-			if (t < 0.005)
-				t += 0.0001;
-			else
-				t += 0.002;
 		}
 
 		g_envelope->Write();
+
+		// release splines
+		for (auto s : splines)
+			delete s;
 	}
 }
 
@@ -239,12 +281,11 @@ int main(int argc, const char **argv)
 	string fn_ni_45b = inputDir + "/numerical_integration_full_45b_56t.root";
 	string fn_ni_45t = inputDir + "/numerical_integration_full_45t_56b.root";
 
-	// TODO: back to C+ppp3
-	string t_dist_type = "first fit";
+	string t_dist_type = "fit2-2";
 
 	// analyses cuts
-	double t_min_45b = 0.8E-3;
-	double t_min_45t = 0.6E-3;
+	double t_min_45b = 8E-4;
+	double t_min_45t = 8E-4;
 
 	// get input
 	TFile *f_ni_45b = TFile::Open(fn_ni_45b.c_str());
@@ -347,11 +388,14 @@ int main(int argc, const char **argv)
 			{ m.g_eff_comb2 = new TGraph(); m.g_eff_comb2->SetName("g_eff_comb2"); }
 
 		double t_min = min(t_min_45b, t_min_45t);
-		double dt = 0.0001;
-		for (double t = t_min; t <= 0.25; t += dt)
+
+		for (int iidx = 0; iidx < m.g_input_45b->GetN(); iidx++)
 		{
-			if (t > 0.01)
-				dt = 0.001;
+			double t, dummy;
+			m.g_input_45b->GetPoint(iidx, t, dummy);
+
+			if (t < t_min)
+				continue;
 
 			// TODO
 			/*
@@ -534,7 +578,8 @@ int main(int argc, const char **argv)
 	//contributions.push_back("unsm-sigma-y");
 	//contributions.push_back("unsm-model");
 	//contributions.push_back("norm");
-	MakeMatrix(contributions, matricesDir, "all");
+
+	MakeMatrix(contributions, matricesDir, "all-but-norm");
 
 	delete f_out;
 	return 0;
