@@ -79,18 +79,18 @@ int Setup(const string &s_dataset, const string &s_diagonal)
 	//--------------------------------------------------
 
 	anal.si_th_x_LRdiff = 1.250000E-05; 
-	anal.si_th_y_1arm = 2.616295E-07;
+	anal.si_th_y_LRdiff = 0.370E-6;
 
 	anal.si_th_x_2arm = 3.000000E-07;
-	anal.si_th_y_2arm = 1.850000E-07;
+	anal.si_th_y_2arm = 0.185E-06;
 
 	si_d_x = anal.si_th_x_LRdiff;
-	si_d_y = anal.si_th_y_1arm * sqrt(2.);
+	si_d_y = anal.si_th_y_LRdiff;
 	si_m_x = anal.si_th_x_2arm;
     si_m_y = anal.si_th_y_2arm;
 
-	range_d_x = 5. * si_d_x;
-	range_d_y = 5. * si_d_y;
+	range_d_x = 6. * si_d_x;
+	range_d_y = 6. * si_d_y;
 	range_m_x = 5. * si_m_x;
 	range_m_y = 5. * si_m_y;
 
@@ -402,7 +402,6 @@ double IntegOverDX(double d_x, double *param, const void *)
 	double th_y_R_cut_l = anal.fc_R_l.GetThYLimit(th_x_p_R);
 	double th_y_R_cut_h = anal.fc_R_h.GetThYLimit(th_x_p_R);
 
-	// TODO: is this correct?
 	double th_y_abs = th_y_sign * th_y_p;
 	double d_y_min = 2. * max( th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h );
 	double d_y_max = 2. * min( th_y_R_cut_h - th_y_abs, th_y_abs - th_y_L_cut_l );
@@ -410,9 +409,16 @@ double IntegOverDX(double d_x, double *param, const void *)
 	if (d_y_min >= d_y_max)
 		return 0;
 	
-	const double rel_precision = 1E-3;
+	const bool gaussianOptimisation = false;
+	const double rel_precision = 1E-4;
 
-	const double I = RealIntegrate(IntegOverDY, NULL, NULL, d_y_min, d_y_max, 0., rel_precision, int_ws_d_y_size, int_ws_m_y, "IntegOverDX");
+	double I;
+	if (gaussianOptimisation)
+	{
+		I = ( TMath::Erf(d_y_max / sqrt(2.) / si_d_y) - TMath::Erf(d_y_min / sqrt(2.) / si_d_y) ) / 2.;
+	} else {
+		I = RealIntegrate(IntegOverDY, NULL, NULL, d_y_min, d_y_max, 0., rel_precision, int_ws_d_y_size, int_ws_d_y, "IntegOverDX");
+	}
 
 	return I * dist_d_x(d_x);
 }
@@ -423,9 +429,9 @@ double acceptance_smea(double th_x_p, double th_y_p)
 {
 	double param[] = { th_x_p, th_y_p };
 	
-	const double rel_precision = 1E-3;
+	const double abs_precision = 1E-3;
 
-	return RealIntegrate(IntegOverDX, param, NULL, -range_d_x, +range_d_x, 0., rel_precision, int_ws_d_x_size, int_ws_d_x, "acceptance_smea");
+	return RealIntegrate(IntegOverDX, param, NULL, -range_d_x, +range_d_x, abs_precision, 0., int_ws_d_x_size, int_ws_d_x, "acceptance_smea");
 }
 
 //----------------------------------------------------------------------------------------------------
