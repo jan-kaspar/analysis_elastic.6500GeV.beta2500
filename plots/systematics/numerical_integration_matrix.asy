@@ -24,7 +24,12 @@ string object_labels[] = {
 	"2nd dgn. combination",
 };
 
-string binning = "ob-1-20-0.05";
+real z_t_maxs[], z_t_Steps[], z_t_steps[], z_e_maxs[], z_e_Steps[], z_e_steps[];
+z_t_maxs.push(0.004); z_t_Steps.push(0.002); z_t_steps.push(0.001); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
+z_t_maxs.push(0.2); z_t_Steps.push(0.05); z_t_steps.push(0.01); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
+z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04); z_e_Steps.push(0.01); z_e_steps.push(0.005);
+
+string binning = "ob-3-5-0.05";
 
 //----------------------------------------------------------------------------------------------------
 
@@ -46,9 +51,8 @@ void PlotAllModes(string f)
 		}
 	}
 
-	// TODO
-	//draw(scale(1, +100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt, "$\pm 1\un{\si}$ {\it envelope of analysis uncertainties}");
-	//draw(scale(1, -100), RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev"), "hl", black+1pt);
+	draw(scale(1, +100), RootGetObject(f, "matrices/all-but-norm/"+diagonal+"/g_envelope"), "l", black+1pt, "$\pm 1\un{\si}$ {\it envelope of uncertainties (without normalisation)}");
+	draw(scale(1, -100), RootGetObject(f, "matrices/all-but-norm/"+diagonal+"/g_envelope"), "l", black+1pt);
 }
 
 
@@ -67,43 +71,60 @@ for (int dsi : datasets.keys)
 	NewPad(false, -1, gy);
 	label("{\SetFontSizesXX "+replace(datasets[dsi], "_", "\_")+"}");
 
-	NewPad("$|t|\ung{GeV^2}$", "systematic effect$\ung{\%}$", 0, gy);
-	PlotAllModes(f);
-	limits((0, -2), (0.20, +2), Crop);
-	f_legend = BuildLegend();
-	currentpicture.legend.delete();
-	AttachLegend("full range");
+	int gx = 0;
 
-	NewPad("$|t|\ung{GeV^2}$", "systematic effect$\ung{\%}$", 1, gy);
-	PlotAllModes(f);
-	limits((0, -5), (0.005, +2), Crop);
-	yaxis(XEquals(8e-4, false), dashed, above=true);
-	currentpad.xTicks = LeftTicks(0.001, 0.0005);
-	currentpad.yTicks = RightTicks(1., 0.5);
-	f_legend = BuildLegend();
-	currentpicture.legend.delete();
-	AttachLegend("low $|t|$ zoom");
+	for (int zi : z_t_maxs.keys)
+	{
+		NewPad("$|t|\ung{GeV^2}$", "systematic effect$\ung{\%}$", gx, gy);
+
+		PlotAllModes(f);
+
+		real t_Step = z_t_Steps[zi];
+		real t_step = z_t_steps[zi];
+		real e_Step = z_e_Steps[zi] * 100;
+		real e_step = z_e_steps[zi] * 100;
+
+		real t_min = 0;
+		real t_max = z_t_maxs[zi];
+		real e_min = -z_e_maxs[zi] * 100;
+		real e_max = z_e_maxs[zi] * 100;
+
+		currentpad.xTicks = LeftTicks(t_Step, t_step);
+		currentpad.yTicks = RightTicks(e_Step, e_step);
+		
+		limits((0, -e_max), (t_max, e_max), Crop);
+		
+		xaxis(YEquals(0, false), dashed);
+		yaxis(XEquals(8e-4, false), dashed);
+
+		f_legend = BuildLegend();
+		currentpicture.legend.delete();
+
+		++gx;
+	}
 
 
 	//--------------------
 
-	// TODO
-	/*
-	++gy;
+	//gx = 0;
+	//++gy;
 	
-	NewPad("$|t|\ung{GeV^2}$", "$|t|\ung{GeV^2}$", axesAbove=true, 0, gy);
-	currentpad.xTicks = LeftTicks(0.05, 0.01);
-	currentpad.yTicks = RightTicks(0.05, 0.01);
-	TH2_z_min = -1;
-	TH2_z_max = +1;
-	draw(RootGetObject(f, "matrices/all-anal/"+diagonal+"/"+binning+"/h_corr_mat"), "p,bar");
-	limits((0, 0), (0.20, 0.20), Crop);
-	AttachLegend("analysis uncertainties -- correlation matrix", SE, NE);
-	*/
+	if (false)
+	{
+		NewPad("$|t|\ung{GeV^2}$", "$|t|\ung{GeV^2}$", axesAbove=true, gx, gy);
+		currentpad.xTicks = LeftTicks(0.05, 0.01);
+		currentpad.yTicks = RightTicks(0.05, 0.01);
+		TH2_z_min = -1;
+		TH2_z_max = +1;
+		draw(RootGetObject(f, "matrices/all-but-norm/"+diagonal+"/"+binning+"/h_corr_mat"), "p,bar");
+		limits((0, 0), (0.20, 0.20), Crop);
+		//AttachLegend("analysis uncertainties -- correlation matrix", SE, NE);
+	}
 
 	//--------------------
 
-	NewPad(false, 2, gy);
+	++gx;
+	NewPad(false, gx, gy);
 	//add(shift(0, 345) * f_legend);
 	add(shift(0, +100) * f_legend);
 }
