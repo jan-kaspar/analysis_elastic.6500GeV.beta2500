@@ -344,8 +344,7 @@ int main(int argc, const char **argv)
 	AddMode("unsm-model", "", "unsmearing correction/unsm_corr_unc_model", 0., coFull);
 	*/
 	
-	// TODO
-	//AddMode("norm", "s", "norm/<TDIST>/g_eff", 1., coFull);
+	AddMode("norm", "s", "<TDIST>/norm/g_eff", 1., coFull);
 
 	// ---------- process modes ----------
 	for (unsigned int mi = 0; mi < modes.size(); mi++)
@@ -577,9 +576,11 @@ int main(int argc, const char **argv)
 	//contributions.push_back("unsm-sigma-x");
 	//contributions.push_back("unsm-sigma-y");
 	//contributions.push_back("unsm-model");
-	//contributions.push_back("norm");
 
 	MakeMatrix(contributions, matricesDir, "all-but-norm");
+
+	contributions.push_back("norm");
+	MakeMatrix(contributions, matricesDir, "all");
 
 	delete f_out;
 	return 0;

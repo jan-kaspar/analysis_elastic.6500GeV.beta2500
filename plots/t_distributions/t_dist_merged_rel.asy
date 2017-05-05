@@ -39,14 +39,12 @@ void DrawSet(string binning)
 			string dataset = datasets[dsi];
 	
 			pen p = StdPen(dsi+1);
-			if (dataset == "DS4")
-				p += 2pt;
 
 			DrawRelDiff(
 				RootGetObject(topDir+"DS-merged/merged.root", binning+"/"+datasets[dsi]+"/"+diagonals[di]+"/h_dsdt"),
 				p, datasets[dsi]);
 			
-			limits((0, -0.03), (0.3, 0.03), Crop);
+			limits((0, -0.03), (0.25, 0.03), Crop);
 			xaxis(YEquals(0, false), dashed);
 		}
 	
