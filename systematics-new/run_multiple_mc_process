@@ -1,0 +1,18 @@
+#!/bin/bash
+
+diagonals=(
+	"45b_56t"
+	"45t_56b"
+)
+
+stat="1E7"
+
+#----------------------------------------------------------------------------------------------------
+
+make "mc_process" || exit 1
+
+for diagonal in ${diagonals[*]}
+do
+	dir="data-mc/$stat/$diagonal"
+	./mc_process -input "$dir" -output "$dir/mc_process.root" &
+done
