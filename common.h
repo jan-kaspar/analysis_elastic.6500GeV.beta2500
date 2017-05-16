@@ -62,6 +62,7 @@ void Init(const std::string &dgnStr)
 
 	// ---------- print important information ----------
 
+/*
 	printf(">> bunchMap\n");
 	for (BunchMap::iterator rit = bunchMap.begin(); rit != bunchMap.end(); ++rit)
 	{
@@ -74,6 +75,7 @@ void Init(const std::string &dgnStr)
 		}
 		printf("\n");
 	}
+*/
 }
 
 #endif
