@@ -61,7 +61,7 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario == "sh-thx")
 	{
-		biases.L.sh_th_x = biases.R.sh_th_x = 1E-6;
+		biases.L.sh_th_x = biases.R.sh_th_x = 0.5E-6;
 		return 0;
 	}
 
