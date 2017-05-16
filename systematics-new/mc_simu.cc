@@ -1,11 +1,6 @@
 #include "TFile.h"
 #include "TH1D.h"
-#include "TH2D.h"
-#include "TProfile.h"
 #include "TRandom2.h"
-#include "TGraphErrors.h"
-#include "TMath.h"
-#include "TF1.h"
 
 #include "../common_definitions.h"
 #include "../common_algorithms.h"
@@ -84,7 +79,15 @@ int main(int argc, const char **argv)
 	}
 
 	// print input
-	// TODO
+	printf(">> input parameters:\n");
+	printf("    diagonalStr = %s\n", diagonalStr.c_str());
+	printf("    scenario = %s\n", scenario.c_str());
+	printf("    model = %s\n", model.c_str());
+	printf("    n_events = %u (%.1E)\n", n_events, double(n_events));
+	printf("    seed = %u\n", seed);
+	printf("    ineff_intercept = %.3E\n", ineff_intercept);
+	printf("    ineff_slope = %.3E\n", ineff_slope);
+	printf("    outFileName = %s\n", outFileName.c_str());
 
 	// init diagonal settings
 	Init(diagonalStr);

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+diagonals=(
+	"45b_56t"
+#	"45t_56b"
+)
+
+scenarios=(
+	"none"
+	"sh-thx"
+	"sh-thy"
+	"tilt-thx-thy"
+	"opt-m1"
+	"opt-m2"
+	"dx-sigma"
+	"dy-sigma"
+	"mx-sigma"
+	"my-sigma"
+	"eff-intercept"
+	"eff-slope"
+	"beam-mom"
+	"norm"
+)
+
+model="fit2-2"
+
+secondary_scenarios=(
+	"none"
+)
+
+secondary_model="fit2-4"
+
+use_lxbatch="n"
+bsub_options="pool>1"
+bsub_queue="1nh"
+
+#----------------------------------------------------------------------------------------------------
+
+function ExecuteOne()
+{
+	echo "* $dir/$scenario"
+
+	local cwd=`pwd -P`
+
+	local tag="$scenario"
+
+	local job_dir="$cwd"
+	local job_file="$dir/.${tag}.job"
+	local job_log_file="$dir/.${tag}.log_job"
+
+	local command="{ time ./ni_simu -model \"$model\" -diagonal \"$diagonal\" -scenario \"$scenario\" -events \"$stat\" -output \"$dir/$scenario.root\" ; } \&> \"$dir/$scenario.log\""
+
+	cat "job_template" | sed "\
+			s|\$JOB_DIR|$job_dir|; \
+			s|\$JOB_LOG_FILE|$job_log_file|; \
+			s|\$COMMAND|$command|; \
+		" > "$job_file"
+	chmod u+x "$job_file"
+
+	if [ "$use_lxbatch" == "n" ]
+	then
+		"./$job_file" &
+	else
+		result=`bsub -R "$bsub_options" -q "$bsub_queue" -o /dev/null -e /dev/null "$cwd/$job_file"`
+		echo "    $result"
+	fi
+}
+
+#----------------------------------------------------------------------------------------------------
+
+make "ni_simu" || exit 1
+
+for diagonal in ${diagonals[*]}
+do
+	dir="data-ni/$stat/$diagonal/$model"
+	mkdir -p "$dir"
+
+	for scenario in ${scenarios[*]}
+	do
+		ExecuteOne
+	done
+
+	#-----
+
+	dir="data-ni/$stat/$diagonal/$secondary_model"
+	mkdir -p "$dir"
+
+	for scenario in ${secondary_scenarios[*]}
+	do
+		ExecuteOne
+	done
+done

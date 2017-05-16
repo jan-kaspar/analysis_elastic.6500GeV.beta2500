@@ -180,6 +180,10 @@ int main(int argc, const char **argv)
 			// get histogram with effect
 			TH1D *h_t_re = GetHistogram(inputDirectory, model_base, scenario.label, binning, "h_t_re");
 
+			// validate input
+			if (!h_t_tr_ref || !h_t_re_ref || !h_t_re)
+				continue;
+
 			// make corrected histograms for scaling
 			TH1D *h_t_1 = NULL;
 			TH1D *h_t_0 = NULL;
