@@ -215,7 +215,7 @@ double IntegOverDX(double d_x, double *param, const void *)
 	double I;
 	if (gaussianOptimisation)
 	{
-		const double si_d_y = 5. * anal_sim.si_th_y_LRdiff;
+		const double si_d_y = anal_sim.si_th_y_LRdiff;
 		I = ( TMath::Erf(d_y_max / sqrt(2.) / si_d_y) - TMath::Erf(d_y_min / sqrt(2.) / si_d_y) ) / 2.;
 	} else {
 		I = RealIntegrate(IntegOverDY, NULL, NULL, d_y_min, d_y_max, 0., rel_precision, int_ws_d_y_size, int_ws_d_y, "IntegOverDX");
