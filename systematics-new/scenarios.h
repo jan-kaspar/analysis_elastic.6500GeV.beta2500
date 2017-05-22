@@ -24,15 +24,6 @@ struct Biases
 	// normalisation error (relative factor)
 	double norm = 0.;
 
-	/*
-	// relative error of beam momentum
-	double de_rel_p = 0.;	
-
-	// errors of unsmearing parameters
-	double si_d_x_err = 0.;
-	double si_d_y_err = 0.;
-	*/
-
 	void Print() const
 	{
 		printf("left arm:\n");
@@ -46,7 +37,6 @@ struct Biases
 		printf("global:\n");
 		printf("    eff_intercept = %.3E, eff_slope = %.3E\n", eff_intercept, eff_slope);
 		printf("    norm = %.3E\n", norm);
-		// TODO
 	}
 };
 
@@ -61,36 +51,89 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario == "sh-thx")
 	{
-		biases.L.sh_th_x = biases.R.sh_th_x = 0.5E-6;
+		const double v = 0.5E-6;
+		biases.L.sh_th_x = v;
+		biases.R.sh_th_x = v;
+		return 0;
+	}
+
+	if (scenario == "sh-thx-LRasym")
+	{
+		const double v = 0.5E-6;
+		biases.L.sh_th_x = +v;
+		biases.R.sh_th_x = -v;
 		return 0;
 	}
 
 	if (scenario == "sh-thy")
 	{
-		biases.L.sh_th_y = biases.R.sh_th_y = 0.24E-6;
+		const double v = 0.24E-6;
+		biases.L.sh_th_y = v;
+		biases.R.sh_th_y = v;
+		return 0;
+	}
+
+	if (scenario == "sh-thy-LRasym")
+	{
+		// "typical" De^{R-L} th_y ~ 0.03 urad
+		const double v = 0.03E-6 / 2.;
+		biases.L.sh_th_y = +v;
+		biases.R.sh_th_y = -v;
 		return 0;
 	}
 
 	if (scenario.compare("tilt-thx-thy") == 0)
 	{
-		biases.L.thx_thy_tilt = biases.R.thx_thy_tilt = 0.005;
+		const double v = 0.005;
+		biases.L.thx_thy_tilt = v;
+		biases.R.thx_thy_tilt = v;
 		return 0;
 	}
 
-	if (scenario.compare("opt-m1") == 0)
+	if (scenario.compare("tilt-thx-thy-LRasym") == 0)
+	{
+		const double v = 0.005;
+		biases.L.thx_thy_tilt = +v;
+		biases.R.thx_thy_tilt = -v;
+		return 0;
+	}
+
+	if (scenario.compare("sc-thx") == 0)
 	{
 		// TODO: preliminary
-		biases.L.sc_th_x = biases.R.sc_th_x = 1. - 1E-03;
-		biases.L.sc_th_y = biases.R.sc_th_y = 1.;
+		const double v = 1E-03;
+		biases.L.sc_th_x = 1. - v;
+		biases.R.sc_th_x = 1. - v;
 
 		return 0;
 	}
 
-	if (scenario.compare("opt-m2") == 0)
+	if (scenario.compare("sc-thx-LRasym") == 0)
 	{
 		// TODO: preliminary
-		biases.L.sc_th_x = biases.R.sc_th_x = 1.;
-		biases.L.sc_th_y = biases.R.sc_th_y = 1. - 1E-03;
+		const double v = 1E-03;
+		biases.L.sc_th_x = 1. - v;
+		biases.R.sc_th_x = 1. + v;
+
+		return 0;
+	}
+
+	if (scenario.compare("sc-thy") == 0)
+	{
+		// TODO: preliminary
+		const double v = 1E-03;
+		biases.L.sc_th_y = 1. - v;
+		biases.R.sc_th_y = 1. - v;
+
+		return 0;
+	}
+
+	if (scenario.compare("sc-thy-LRasym") == 0)
+	{
+		// TODO: preliminary
+		const double v = 1E-03;
+		biases.L.sc_th_y = 1. - v;
+		biases.R.sc_th_y = 1. + v;
 
 		return 0;
 	}
