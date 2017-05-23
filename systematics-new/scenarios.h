@@ -1,12 +1,17 @@
 struct BiasesPerArm
 {
-	// reconstruction shifts (rad)
+	// shifts (rad)
+	//    th_y_reco = th_y_true + sh_th_y
 	double sh_th_x = 0., sh_th_y = 0.;
 
-	// reconstruction tilt (rad)
-	double thx_thy_tilt = 0.;
+	// tilts (rad)
+	//    th_x_reco = th_x_true + tilt_th_x_eff_prop_to_th_y * th_y
+	//    th_y_reco = th_y_true + tilt_th_y_eff_prop_to_th_x * th_x
+	double tilt_th_x_eff_prop_to_th_y = 0.;
+	double tilt_th_y_eff_prop_to_th_x = 0.;
 
-	// reconstruction scales, th_y_reco = sc_th_y * th_y_true
+	// scales
+	//    th_y_reco = sc_th_y * th_y_true
 	double sc_th_x = 1., sc_th_y = 1.;
 };
 
@@ -27,11 +32,13 @@ struct Biases
 	void Print() const
 	{
 		printf("left arm:\n");
-		printf("    sh_th_x = %.3E, sh_th_y = %.3E, thx_thy_tilt = %.3E\n", L.sh_th_x, L.sh_th_y, L.thx_thy_tilt);
+		printf("    sh_th_x = %.3E, sh_th_y = %.3E\n", L.sh_th_x, L.sh_th_y);
+		printf("    tilt_th_x_eff_prop_to_th_y = %.3E, tilt_th_y_eff_prop_to_th_x = %.3E\n", L.tilt_th_x_eff_prop_to_th_y, L.tilt_th_y_eff_prop_to_th_x);
 		printf("    sc_th_x = %.3E, sc_th_y = %.3E\n", L.sc_th_x, L.sc_th_y);
 
 		printf("right arm:\n");
-		printf("    sh_th_x = %.3E, sh_th_y = %.3E, thx_thy_tilt = %.3E\n", R.sh_th_x, R.sh_th_y, R.thx_thy_tilt);
+		printf("    sh_th_x = %.3E, sh_th_y = %.3E\n", R.sh_th_x, R.sh_th_y);
+		printf("    tilt_th_x_eff_prop_to_th_y = %.3E, tilt_th_y_eff_prop_to_th_x = %.3E\n", R.tilt_th_x_eff_prop_to_th_y, R.tilt_th_y_eff_prop_to_th_x);
 		printf("    sc_th_x = %.3E, sc_th_y = %.3E\n", R.sc_th_x, R.sc_th_y);
 
 		printf("global:\n");
@@ -67,7 +74,7 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario == "sh-thy")
 	{
-		const double v = 0.24E-6;
+		const double v = 0.29E-6;
 		biases.L.sh_th_y = v;
 		biases.R.sh_th_y = v;
 		return 0;
@@ -84,17 +91,27 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario.compare("tilt-thx-thy") == 0)
 	{
-		const double v = 0.005;
-		biases.L.thx_thy_tilt = v;
-		biases.R.thx_thy_tilt = v;
+		const double v_xy = 0.0055;
+		biases.L.tilt_th_x_eff_prop_to_th_y = v_xy;
+		biases.R.tilt_th_x_eff_prop_to_th_y = v_xy;
+
+		const double v_yx = 0.00046;
+		biases.L.tilt_th_y_eff_prop_to_th_x = v_yx;
+		biases.R.tilt_th_y_eff_prop_to_th_x = v_yx;
+
 		return 0;
 	}
 
 	if (scenario.compare("tilt-thx-thy-LRasym") == 0)
 	{
-		const double v = 0.005;
-		biases.L.thx_thy_tilt = +v;
-		biases.R.thx_thy_tilt = -v;
+		const double v_xy = 0.0055;
+		biases.L.tilt_th_x_eff_prop_to_th_y = +v_xy;
+		biases.R.tilt_th_x_eff_prop_to_th_y = -v_xy;
+
+		const double v_yx = 0.00046;
+		biases.L.tilt_th_y_eff_prop_to_th_x = +v_yx;
+		biases.R.tilt_th_y_eff_prop_to_th_x = -v_yx;
+
 		return 0;
 	}
 

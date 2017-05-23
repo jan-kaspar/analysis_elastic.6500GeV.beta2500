@@ -124,10 +124,12 @@
 \>> vertical shift: $100\un{\mu m}$
 \>> rotation about $z$: $2\un{mrad}$
 
-\> induced uncertainties -- two-arm reconstruction
-\>> shift in $\th_x^*$: $0.35\un{\mu rad}$
-\>> shift in $\th_y^*$: $0.24\un{\mu rad}$
-\>> rotation about z: $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.012$
+\> induced uncertainties
+\>> shift in $\th_x^*$: $0.35\un{\mu rad}$ (single arm), $0.25\un{\mu rad}$ (double arm)
+\>> shift in $\th_y^*$: $0.41\un{\mu rad}$ (single arm), $0.29\un{\mu rad}$ (double arm)
+\>> rotation about z: total uncertainty $2.24\un{mrad}$, two possible effects:
+\>>> $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.0078$ (single arm), $0.0055$ (double arm)
+\>>> $\th_y^* \rightarrow \th_y^* + D \th_x^*$, $\si(D) = 0.00065$ (single arm), $0.00046$ (double arm)
 
 \subsection{Validation}
 
@@ -138,8 +140,8 @@
 \> \plot{alignment/mean_th_x_vs_time.pdf}:  mean of $\th_x^*$ as a function of time -- test for stability of $x$ alignment
 
 \> observations (2 arm)
-\>> shift in $\th_x^*$: $\De^{R-L} \th_x^*$ up to $1\un{\mu rad}$, the above estimate gives RMS of $0.7\un{\mu rad}$ thus quite compatible; maximum of $\De^{R-L} \th_x^*$ only occurs seldom; for safety take $0.5\un{\mu rad}$ for the two-arm uncertainty
-\>> shift in $\th_y^*$: compatible with above estimate $0.24\un{\mu rad}$
+\>> shift in $\th_x^*$: $\De^{R-L} \th_x^*$ up to $1\un{\mu rad}$, the above estimate gives RMS of $0.5\un{\mu rad}$ thus at the edge of compatibility; maximum of $\De^{R-L} \th_x^*$ only occurs seldom; for safety take $0.5\un{\mu rad}$ for the two-arm uncertainty
+\>> shift in $\th_y^*$: compatible with above estimate $0.29\un{\mu rad}$
 \>> rotation about z: $\si(C) \approx 0.005$ significantly better than the above estimate, use this value
 \>> 2D Gaussian fit of $\th^*_y$ vs $\th^*_x$ distributions combined from the two diagonals (program alignment\_final) gives centre positions
 \>>> $|\th^*_x| < 0.03\un{\mu rad}$
