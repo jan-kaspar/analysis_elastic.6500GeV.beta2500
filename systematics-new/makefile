@@ -14,8 +14,8 @@ all: \
 
 mc_simu : scenarios.h input_distributions.h command_line_tools.h \
 		../common_definitions.h ../common_algorithms.h ../AcceptanceCalculator.h \
-		../DS-fill5313/parameters.h ../common.h ../parameters_global.h
+		parameters.h ../common.h ../parameters_global.h
 
 ni_simu : scenarios.h input_distributions.h command_line_tools.h \
 		../common_definitions.h ../common_algorithms.h ../AcceptanceCalculator.h \
-		../DS-fill5313/parameters.h ../common.h ../parameters_global.h
+		parameters.h ../common.h ../parameters_global.h
