@@ -119,7 +119,9 @@ double dist_th_x_th_y_syst(double th_x_p, double th_y_p)
 
 	const double mbias_sc_th_x = (biases.L.sc_th_x + biases.R.sc_th_x) / 2.;
 	const double mbias_sc_th_y = (biases.L.sc_th_y + biases.R.sc_th_y) / 2.;
-	const double mbias_thx_thy_tilt = (biases.L.thx_thy_tilt + biases.R.thx_thy_tilt) / 2.;
+
+	const double mbias_tilt_xy = (biases.L.tilt_th_x_eff_prop_to_th_y + biases.R.tilt_th_x_eff_prop_to_th_y) / 2.;
+	const double mbias_tilt_yx = (biases.L.tilt_th_y_eff_prop_to_th_x + biases.R.tilt_th_y_eff_prop_to_th_x) / 2.;
 
 	// transformation from reconstructed (primed) to original/true (non-primed) angles
 	// Th' = M Th + De Th  ==>  Th = M^-1 (Th' - De The)
@@ -128,8 +130,8 @@ double dist_th_x_th_y_syst(double th_x_p, double th_y_p)
 	const double th_x_ps = th_x_p - mbias_sh_th_x;
 	const double th_y_ps = th_y_p - mbias_sh_th_y;
 
-	const double Mi_xx = 1. / mbias_sc_th_x, Mi_xy = -mbias_thx_thy_tilt;
-	const double Mi_yx = 0., Mi_yy = 1. / mbias_sc_th_y;
+	const double Mi_xx = 1. / mbias_sc_th_x, Mi_xy = -mbias_tilt_xy;
+	const double Mi_yx = -mbias_tilt_yx, Mi_yy = 1. / mbias_sc_th_y;
 
 	const double D = Mi_xx * Mi_yy - Mi_xy * Mi_yx;
 

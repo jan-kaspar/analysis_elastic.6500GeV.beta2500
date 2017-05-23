@@ -211,11 +211,11 @@ int main(int argc, const char **argv)
 
 		Kinematics k_re;
 
-		k_re.th_x_L = biases.L.sc_th_x * (k_sm.th_x_L + biases.L.sh_th_x) + biases.L.thx_thy_tilt * k_sm.th_y_L;
-		k_re.th_x_R = biases.R.sc_th_x * (k_sm.th_x_R + biases.R.sh_th_x) + biases.R.thx_thy_tilt * k_sm.th_y_R;
+		k_re.th_x_L = biases.L.sc_th_x * (k_sm.th_x_L + biases.L.sh_th_x) + biases.L.tilt_th_x_eff_prop_to_th_y * k_sm.th_y_L;
+		k_re.th_x_R = biases.R.sc_th_x * (k_sm.th_x_R + biases.R.sh_th_x) + biases.R.tilt_th_x_eff_prop_to_th_y * k_sm.th_y_R;
 
-		k_re.th_y_L = biases.L.sc_th_y * (k_sm.th_y_L + biases.L.sh_th_y);
-		k_re.th_y_R = biases.R.sc_th_y * (k_sm.th_y_R + biases.R.sh_th_y);
+		k_re.th_y_L = biases.L.sc_th_y * (k_sm.th_y_L + biases.L.sh_th_y) + biases.L.tilt_th_y_eff_prop_to_th_x * k_sm.th_x_L;
+		k_re.th_y_R = biases.R.sc_th_y * (k_sm.th_y_R + biases.R.sh_th_y) + biases.R.tilt_th_y_eff_prop_to_th_x * k_sm.th_x_R;
 
 		k_re.th_x = (k_re.th_x_L + k_re.th_x_R) / 2.;
 		k_re.th_y = (k_re.th_y_L + k_re.th_y_R) / 2.;
