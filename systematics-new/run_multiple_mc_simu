@@ -1,40 +1,109 @@
 #!/bin/bash
 
+#----------------------------------------------------------------------------------------------------
+# defaults
+
 diagonals=(
 	"45b_56t"
-	"45t_56b"
+#	"45t_56b"
 )
 
-scenarios=(
-	"none"
-	"sh-thx"
-	"sh-thy"
-	"tilt-thx-thy"
-	"opt-m1"
-	"opt-m2"
-	"dx-sigma"
-	"dy-sigma"
-	"mx-sigma"
-	"my-sigma"
-	"eff-intercept"
-	"eff-slope"
-	"beam-mom"
-	"norm"
+configurations=(
+	"fit2-2/none"
+
+	"fit2-2/sh-thx"
+	"fit2-2/sh-thy"
+	"fit2-2/tilt-thx-thy"
+	"fit2-2/sc-thx"
+	"fit2-2/sc-thy"
+
+	"fit2-2/sh-thx-LRasym"
+	"fit2-2/sh-thy-LRasym"
+	"fit2-2/tilt-thx-thy-LRasym"
+	"fit2-2/sc-thx-LRasym"
+	"fit2-2/sc-thy-LRasym"
+
+	"fit2-2/dx-sigma"
+	"fit2-2/dy-sigma"
+	"fit2-2/mx-sigma"
+	"fit2-2/my-sigma"
+	"fit2-2/eff-intercept"
+	"fit2-2/eff-slope"
+	"fit2-2/beam-mom"
+	"fit2-2/norm"
+
+	"fit2-4/none"
 )
 
-model="fit2-2"
+stat=""
 
-secondary_scenarios=(
-	"none"
-)
-
-secondary_model="fit2-4"
-
-stat="1E7"
-
-use_lxbatch="y"
+use_lxbatch="n"
 bsub_options="pool>1"
-bsub_queue="1nh"
+#bsub_queue="8nh"
+bsub_queue="1nd"
+submit="n"
+
+#----------------------------------------------------------------------------------------------------
+# parse command line
+
+function PrintUsage()
+{
+	echo "USAGE: run_multiple_mc_simu [option] [option] ..."
+	echo "OPTIONS:"
+	echo "    -events <int>    number of events to simulate"
+	echo "    -lxbatch         prepare jobs on LXBATCH instead of local machine"
+	echo "    -submit          submit jobs to LXBATCH"
+	echo "    -queue <string>  set LXBATCH queue"
+}
+
+while [ "$1" != "" ]
+do
+	key="$1"
+
+	case $key in
+		-h|--help)
+			PrintUsage
+			exit 0
+		;;
+
+		-events)
+			stat="$2"
+			shift
+		;;
+
+		-lxbatch)
+			use_lxbatch="y"
+		;;
+
+		-submit)
+			submit="y"
+		;;
+
+		-queue)
+			bsub_queue="$2"
+			shift
+		;;
+
+		*)
+			echo "ERROR: unknown option '$key'."
+			PrintUsage
+			exit 1
+		;;
+	esac
+
+	shift
+done
+
+
+#----------------------------------------------------------------------------------------------------
+# consistency check
+
+if [ "$stat" == "" ]
+then
+	echo "ERROR: statistics not defined. Use '-events' option."
+	PrintUsage
+	exit 2
+fi
 
 #----------------------------------------------------------------------------------------------------
 
@@ -59,12 +128,17 @@ function ExecuteOne()
 		" > "$job_file"
 	chmod u+x "$job_file"
 
-	if [ "$use_lxbatch" == "n" ]
+	if [ "$use_lxbatch" == "y" ]
 	then
-		"./$job_file" &
+		if [ "$submit" == "y" ]
+		then
+			result=`bsub -R "$bsub_options" -q "$bsub_queue" -o /dev/null -e /dev/null "$cwd/$job_file"`
+			echo "    $result"
+		else
+			echo "    would be submitted to $bsub_queue"
+		fi
 	else
-		result=`bsub -R "$bsub_options" -q "$bsub_queue" -o /dev/null -e /dev/null "$cwd/$job_file"`
-		echo "    $result"
+		"./$job_file" &
 	fi
 }
 
@@ -74,21 +148,14 @@ make "mc_simu" || exit 1
 
 for diagonal in ${diagonals[*]}
 do
-	dir="data-mc/$stat/$diagonal/$model"
-	mkdir -p "$dir"
-
-	for scenario in ${scenarios[*]}
+	for configuration in ${configurations[*]}
 	do
-		ExecuteOne
-	done
+		model=${configuration%%/*}
+		scenario=${configuration##*/}
 
-	#-----
+		dir="data-mc/$stat/$diagonal/$model"
+		mkdir -p "$dir"
 
-	dir="data-mc/$stat/$diagonal/$secondary_model"
-	mkdir -p "$dir"
-
-	for scenario in ${secondary_scenarios[*]}
-	do
 		ExecuteOne
 	done
 done
