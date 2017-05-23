@@ -59,24 +59,49 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	if (scenario == "sh-thx")
 	{
 		const double v = 0.5E-6;
+
 		biases.L.sh_th_x = v;
 		biases.R.sh_th_x = v;
+
+		anal_rec.fc_L_l.th_x_m += v; anal_rec.fc_L_h.th_x_m += v;
+		anal_rec.fc_L_l.th_x_p += v; anal_rec.fc_L_h.th_x_p += v;
+
+		anal_rec.fc_R_l.th_x_m += v; anal_rec.fc_R_h.th_x_m += v;
+		anal_rec.fc_R_l.th_x_p += v; anal_rec.fc_R_h.th_x_p += v;
+
+		anal_rec.fc_G_l.th_x_m += v; anal_rec.fc_G_h.th_x_m += v;
+		anal_rec.fc_G_l.th_x_p += v; anal_rec.fc_G_h.th_x_p += v;
+
 		return 0;
 	}
 
 	if (scenario == "sh-thx-LRasym")
 	{
 		const double v = 0.5E-6;
+
 		biases.L.sh_th_x = +v;
 		biases.R.sh_th_x = -v;
+
+		anal_rec.fc_L_l.th_x_m += +v; anal_rec.fc_L_h.th_x_m += +v;
+		anal_rec.fc_L_l.th_x_p += +v; anal_rec.fc_L_h.th_x_p += +v;
+
+		anal_rec.fc_R_l.th_x_m += -v; anal_rec.fc_R_h.th_x_m += -v;
+		anal_rec.fc_R_l.th_x_p += -v; anal_rec.fc_R_h.th_x_p += -v;
+
 		return 0;
 	}
 
 	if (scenario == "sh-thy")
 	{
-		const double v = 0.29E-6;
+		const double v = 0.25E-6;
+
 		biases.L.sh_th_y = v;
 		biases.R.sh_th_y = v;
+
+		anal_rec.fc_L_l.th_y_0 += v * th_y_sign; anal_rec.fc_L_h.th_y_0 += v * th_y_sign;
+		anal_rec.fc_R_l.th_y_0 += v * th_y_sign; anal_rec.fc_R_h.th_y_0 += v * th_y_sign;
+		anal_rec.fc_G_l.th_y_0 += v * th_y_sign; anal_rec.fc_G_h.th_y_0 += v * th_y_sign;
+
 		return 0;
 	}
 
@@ -84,31 +109,56 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	{
 		// "typical" De^{R-L} th_y ~ 0.03 urad
 		const double v = 0.03E-6 / 2.;
+
 		biases.L.sh_th_y = +v;
 		biases.R.sh_th_y = -v;
+
+		anal_rec.fc_L_l.th_y_0 += +v * th_y_sign; anal_rec.fc_L_h.th_y_0 += +v * th_y_sign;
+		anal_rec.fc_R_l.th_y_0 += -v * th_y_sign; anal_rec.fc_R_h.th_y_0 += -v * th_y_sign;
+
+		return 0;
+	}
+
+	if (scenario == "sh-thy-TBuncor")
+	{
+		const double v = 0.012E-6;
+
+		biases.L.sh_th_y = v;
+		biases.R.sh_th_y = v;
+
+		anal_rec.fc_L_l.th_y_0 += v * th_y_sign; anal_rec.fc_L_h.th_y_0 += v * th_y_sign;
+		anal_rec.fc_R_l.th_y_0 += v * th_y_sign; anal_rec.fc_R_h.th_y_0 += v * th_y_sign;
+		anal_rec.fc_G_l.th_y_0 += v * th_y_sign; anal_rec.fc_G_h.th_y_0 += v * th_y_sign;
+
 		return 0;
 	}
 
 	if (scenario.compare("tilt-thx-thy") == 0)
 	{
-		const double v_xy = 0.0055;
+		const double v_xy = 0.009;
 		biases.L.tilt_th_x_eff_prop_to_th_y = v_xy;
 		biases.R.tilt_th_x_eff_prop_to_th_y = v_xy;
 
-		const double v_yx = 0.00046;
+		const double v_yx = 0.00028;
 		biases.L.tilt_th_y_eff_prop_to_th_x = v_yx;
 		biases.R.tilt_th_y_eff_prop_to_th_x = v_yx;
+
+		// with the current values of v_xy, v_yx, the effect on the fiducial cuts in negligible
+		// low bound: th_x ~ 20 urad, th_y ~ 4 urad
+		//     th_x --> 20.04 urad, th_y --> 4.006 urad
+		// high bound: th_x ~ 100 urad, th_y ~ 100 urad
+		//     th_x --> 100.9 urad, th_y --> 100.03 urad
 
 		return 0;
 	}
 
 	if (scenario.compare("tilt-thx-thy-LRasym") == 0)
 	{
-		const double v_xy = 0.0055;
+		const double v_xy = 0.009;
 		biases.L.tilt_th_x_eff_prop_to_th_y = +v_xy;
 		biases.R.tilt_th_x_eff_prop_to_th_y = -v_xy;
 
-		const double v_yx = 0.00046;
+		const double v_yx = 0.00028;
 		biases.L.tilt_th_y_eff_prop_to_th_x = +v_yx;
 		biases.R.tilt_th_y_eff_prop_to_th_x = -v_yx;
 
@@ -119,8 +169,18 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	{
 		// TODO: preliminary
 		const double v = 1E-03;
+
 		biases.L.sc_th_x = 1. - v;
 		biases.R.sc_th_x = 1. - v;
+
+		anal_rec.fc_L_l.th_x_m *= (1. - v); anal_rec.fc_L_h.th_x_m *= (1. - v);
+		anal_rec.fc_L_l.th_x_p *= (1. - v); anal_rec.fc_L_h.th_x_p *= (1. - v);
+
+		anal_rec.fc_R_l.th_x_m *= (1. - v); anal_rec.fc_R_h.th_x_m *= (1. - v);
+		anal_rec.fc_R_l.th_x_p *= (1. - v); anal_rec.fc_R_h.th_x_p *= (1. - v);
+
+		anal_rec.fc_G_l.th_x_m *= (1. - v); anal_rec.fc_G_h.th_x_m *= (1. - v);
+		anal_rec.fc_G_l.th_x_p *= (1. - v); anal_rec.fc_G_h.th_x_p *= (1. - v);
 
 		return 0;
 	}
@@ -129,8 +189,15 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	{
 		// TODO: preliminary
 		const double v = 1E-03;
+
 		biases.L.sc_th_x = 1. - v;
 		biases.R.sc_th_x = 1. + v;
+
+		anal_rec.fc_L_l.th_x_m *= (1. - v); anal_rec.fc_L_h.th_x_m *= (1. - v);
+		anal_rec.fc_L_l.th_x_p *= (1. - v); anal_rec.fc_L_h.th_x_p *= (1. - v);
+
+		anal_rec.fc_R_l.th_x_m *= (1. + v); anal_rec.fc_R_h.th_x_m *= (1. + v);
+		anal_rec.fc_R_l.th_x_p *= (1. + v); anal_rec.fc_R_h.th_x_p *= (1. + v);
 
 		return 0;
 	}
@@ -139,8 +206,13 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	{
 		// TODO: preliminary
 		const double v = 1E-03;
+
 		biases.L.sc_th_y = 1. - v;
 		biases.R.sc_th_y = 1. - v;
+
+		anal_rec.fc_L_l.th_y_0 *= (1. - v); anal_rec.fc_L_h.th_y_0 *= (1. - v);
+		anal_rec.fc_R_l.th_y_0 *= (1. - v); anal_rec.fc_R_h.th_y_0 *= (1. - v);
+		anal_rec.fc_G_l.th_y_0 *= (1. - v); anal_rec.fc_G_h.th_y_0 *= (1. - v);
 
 		return 0;
 	}
@@ -149,8 +221,12 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	{
 		// TODO: preliminary
 		const double v = 1E-03;
+
 		biases.L.sc_th_y = 1. - v;
 		biases.R.sc_th_y = 1. + v;
+
+		anal_rec.fc_L_l.th_y_0 *= (1. - v); anal_rec.fc_L_h.th_y_0 *= (1. - v);
+		anal_rec.fc_R_l.th_y_0 *= (1. + v); anal_rec.fc_R_h.th_y_0 *= (1. + v);
 
 		return 0;
 	}
