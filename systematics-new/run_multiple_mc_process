@@ -5,7 +5,7 @@
 
 diagonals=(
 	"45b_56t"
-#	"45t_56b"
+	"45t_56b"
 )
 
 stat=""
@@ -63,5 +63,8 @@ make "mc_process" || exit 1
 for diagonal in ${diagonals[*]}
 do
 	dir="data-mc/$stat/$diagonal"
+
+	echo "* $dir"
+
 	./mc_process -input "$dir" -output "$dir/mc_process.root"
 done

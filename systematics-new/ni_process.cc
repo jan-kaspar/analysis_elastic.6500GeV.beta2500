@@ -168,6 +168,7 @@ int main(int argc, const char **argv)
 		{ "sh-thx", Scenario::mDsdt },
 		{ "sh-thx-LRasym", Scenario::mDsdt },
 		{ "sh-thy", Scenario::mDsdt },
+		{ "sh-thy-TBuncor", Scenario::mDsdt },
 		{ "sh-thy-LRasym", Scenario::mDsdt },
 		{ "tilt-thx-thy", Scenario::mDsdt },
 		{ "sc-thx", Scenario::mDsdt },
@@ -224,7 +225,7 @@ int main(int argc, const char **argv)
 
 		// validate input
 		if (!g_tr_ref || !g_re_ref || !g_re)
-			break;
+			continue;
 
 		// make corrected histograms for scaling
 		TGraph *g_1 = NULL;
@@ -279,29 +280,32 @@ int main(int argc, const char **argv)
 		TGraph *g_tr_secondary = GetGraph(inputDirectory, model_secondary, ref_scenario, "g_dsdt_true");
 		TGraph *g_re_secondary = GetGraph(inputDirectory, model_secondary, ref_scenario, "g_dsdt_reco");
 
-		// calculate unsmearing correction (secondary model)
-		TGraph *g_unsm_corr = Divide(g_tr_secondary, g_re_secondary);
+		if (g_tr_base && g_re_base && g_tr_secondary && g_re_secondary)
+		{
+			// calculate unsmearing correction (secondary model)
+			TGraph *g_unsm_corr = Divide(g_tr_secondary, g_re_secondary);
 
-		// apply unsmearing correction to base reco histogram
-		TGraph *g_bias = Multiply(g_re_base, g_unsm_corr);
+			// apply unsmearing correction to base reco histogram
+			TGraph *g_bias = Multiply(g_re_base, g_unsm_corr);
 
-		// normalise histograms
-		double n_base = GetNormalisation(g_tr_base);
-		Scale(g_tr_base, n_base);
+			// normalise histograms
+			double n_base = GetNormalisation(g_tr_base);
+			Scale(g_tr_base, n_base);
 
-		double n_bias = GetNormalisation(g_bias);
-		Scale(g_bias, n_bias);
+			double n_bias = GetNormalisation(g_bias);
+			Scale(g_bias, n_bias);
 
-		// evaluate effect
-		TGraph *g_eff = Divide(g_bias, g_tr_base);
+			// evaluate effect
+			TGraph *g_eff = Divide(g_bias, g_tr_base);
 
-		gDirectory = d_scenario;
-		g_eff->Write("g_eff");
+			gDirectory = d_scenario;
+			g_eff->Write("g_eff");
 
-		// clean up
-		delete g_unsm_corr;
-		delete g_bias;
-		delete g_eff;
+			// clean up
+			delete g_unsm_corr;
+			delete g_bias;
+			delete g_eff;
+		}
 	}
 
 	return 0;

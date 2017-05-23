@@ -120,6 +120,7 @@ int main(int argc, const char **argv)
 		{ "sh-thx", Scenario::mDsdt },
 		{ "sh-thx-LRasym", Scenario::mDsdt },
 		{ "sh-thy", Scenario::mDsdt },
+		{ "sh-thy-TBuncor", Scenario::mDsdt },
 		{ "sh-thy-LRasym", Scenario::mDsdt },
 		{ "tilt-thx-thy", Scenario::mDsdt },
 		{ "tilt-thx-thy-LRasym", Scenario::mDsdt },
@@ -255,6 +256,10 @@ int main(int argc, const char **argv)
 
 		TH1D *h_t_tr_secondary = GetHistogram(inputDirectory, model_secondary, ref_scenario, binning, "h_t_tr");
 		TH1D *h_t_re_secondary = GetHistogram(inputDirectory, model_secondary, ref_scenario, binning, "h_t_re");
+
+		// validate input
+		if (!h_t_tr_base || !h_t_re_base || !h_t_tr_secondary || !h_t_re_secondary)
+			continue;
 
 		// calculate unsmearing correction (secondary model)
 		TH1D *h_unsm_corr = new TH1D(*h_t_tr_secondary);

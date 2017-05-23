@@ -6,7 +6,7 @@
 #include "../common_algorithms.h"
 #include "../AcceptanceCalculator.h"
 
-#include "../DS-fill5313/parameters.h"
+#include "parameters.h"
 #include "../common.h"
 
 #include "scenarios.h"
@@ -208,11 +208,11 @@ double IntegOverDX(double d_x, double *param, const void *)
 	const double th_x_p_L = th_x_p - d_x/2. - abias_sh_th_x;
 	const double th_x_p_R = th_x_p + d_x/2. + abias_sh_th_x;
 
-	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(th_x_p_L);
-	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(th_x_p_L);
+	double th_y_L_cut_l = anal_sim.fc_L_l.GetThYLimit(th_x_p_L);
+	double th_y_L_cut_h = anal_sim.fc_L_h.GetThYLimit(th_x_p_L);
 
-	double th_y_R_cut_l = anal.fc_R_l.GetThYLimit(th_x_p_R);
-	double th_y_R_cut_h = anal.fc_R_h.GetThYLimit(th_x_p_R);
+	double th_y_R_cut_l = anal_sim.fc_R_l.GetThYLimit(th_x_p_R);
+	double th_y_R_cut_h = anal_sim.fc_R_h.GetThYLimit(th_x_p_R);
 
 	double th_y_abs = th_y_sign * th_y_p;
 	double d_y_min = 2. * max( th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h );
@@ -258,7 +258,7 @@ double dist_reco_th_x_th_y(double th_x_p, double th_y_p)
 {
 	// evaluate smearing acceptance correction as in the analysis
 	double F = accCalc.SmearingFactor(th_x_p, th_y_p);
-	double corr_acc_sm = 1. / F;
+	double corr_acc_sm = (F == 0.) ? 0. : 1. / F;
 
 	return dist_th_x_th_y_smea(th_x_p, th_y_p) * acceptance_smea(th_x_p, th_y_p) * corr_acc_sm;
 }
@@ -289,10 +289,10 @@ double dist_t_reco(double t_p)
 	// get all intersections of const-th circle with acceptance boundaries
 	set<double> phis;
 
-	for (const auto &phi : anal.fc_G_l.GetIntersectionPhis(th_p))
+	for (const auto &phi : anal_rec.fc_G_l.GetIntersectionPhis(th_p))
 		phis.insert(phi);
 
-	for (const auto &phi : anal.fc_G_h.GetIntersectionPhis(th_p))
+	for (const auto &phi : anal_rec.fc_G_h.GetIntersectionPhis(th_p))
 		phis.insert(phi);
 
 	// the number of intersections must be even
@@ -390,6 +390,13 @@ int main(int argc, const char **argv)
 
 	// init diagonal settings
 	Init(diagonalStr);
+
+	if (diagonal == dUnknown)
+	{
+		printf("ERROR: diagonal '%s' not recognised.\n", diagonalStr.c_str());
+		return 3;
+	}
+
 	if (diagonal == dCombined || diagonal == ad45b_56b || diagonal == ad45t_56t)
 		return rcIncompatibleDiagonal;
 
@@ -405,8 +412,18 @@ int main(int argc, const char **argv)
 		return 2;
 	}
 
+	// print configuration
 	printf(">> biases:\n");
 	biases.Print();
+
+	printf("\n\n>> env_sim:\n");
+	env_sim.Print();
+
+	printf("\n\n>> anal_sim:\n");
+	anal_sim.Print();
+
+	printf("\n\n>> anal_rec:\n");
+	anal_rec.Print();
 
 	// load input dsigma/dt distribution
 	if (LoadTDistributions() != 0)

@@ -6,7 +6,7 @@
 #include "../common_algorithms.h"
 #include "../AcceptanceCalculator.h"
 
-#include "../DS-fill5313/parameters.h"
+#include "parameters.h"
 #include "../common.h"
 
 #include "scenarios.h"
@@ -91,6 +91,13 @@ int main(int argc, const char **argv)
 
 	// init diagonal settings
 	Init(diagonalStr);
+
+	if (diagonal == dUnknown)
+	{
+		printf("ERROR: diagonal '%s' not recognised.\n", diagonalStr.c_str());
+		return 3;
+	}
+
 	if (diagonal == dCombined || diagonal == ad45b_56b || diagonal == ad45t_56t)
 		return rcIncompatibleDiagonal;
 
@@ -108,8 +115,18 @@ int main(int argc, const char **argv)
 		return 2;
 	}
 
+	// print configuration
 	printf(">> biases:\n");
 	biases.Print();
+
+	printf("\n\n>> env_sim:\n");
+	env_sim.Print();
+
+	printf("\n\n>> anal_sim:\n");
+	anal_sim.Print();
+
+	printf("\n\n>> anal_rec:\n");
+	anal_rec.Print();
 
 	// random seed
 	gRandom->SetSeed(seed);

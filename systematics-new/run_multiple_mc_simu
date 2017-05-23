@@ -5,7 +5,7 @@
 
 diagonals=(
 	"45b_56t"
-#	"45t_56b"
+	"45t_56b"
 )
 
 configurations=(
@@ -13,6 +13,7 @@ configurations=(
 
 	"fit2-2/sh-thx"
 	"fit2-2/sh-thy"
+	"fit2-2/sh-thy-TBuncor"
 	"fit2-2/tilt-thx-thy"
 	"fit2-2/sc-thx"
 	"fit2-2/sc-thy"

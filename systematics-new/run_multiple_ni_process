@@ -2,7 +2,7 @@
 
 diagonals=(
 	"45b_56t"
-#	"45t_56b"
+	"45t_56b"
 )
 
 #----------------------------------------------------------------------------------------------------
@@ -12,5 +12,8 @@ make "ni_process" || exit 1
 for diagonal in ${diagonals[*]}
 do
 	dir="data-ni/$diagonal"
+
+	echo "* $dir"
+
 	./ni_process -input "$dir" -output "$dir/ni_process.root"
 done
