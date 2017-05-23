@@ -113,22 +113,28 @@ double dist_th_x_th_y_syst(double th_x_p, double th_y_p)
 
 	const double eff_corr_effect = (1. - ineff_simu) / (1. - ineff_reco);
 
+	// L-R average of biases
+	const double mbias_sh_th_x = (biases.L.sh_th_x + biases.R.sh_th_x) / 2.;
+	const double mbias_sh_th_y = (biases.L.sh_th_y + biases.R.sh_th_y) / 2.;
+
+	const double mbias_sc_th_x = (biases.L.sc_th_x + biases.R.sc_th_x) / 2.;
+	const double mbias_sc_th_y = (biases.L.sc_th_y + biases.R.sc_th_y) / 2.;
+	const double mbias_thx_thy_tilt = (biases.L.thx_thy_tilt + biases.R.thx_thy_tilt) / 2.;
+
 	// transformation from reconstructed (primed) to original/true (non-primed) angles
 	// Th' = M Th + De Th  ==>  Th = M^-1 (Th' - De The)
 	// Mi = M^-1
 
-	// TODO: implement correctly the L and R biases
+	const double th_x_ps = th_x_p - mbias_sh_th_x;
+	const double th_y_ps = th_y_p - mbias_sh_th_y;
 
-	double th_x_ps = th_x_p - biases.L.sh_th_x;
-	double th_y_ps = th_y_p - biases.L.sh_th_y;
+	const double Mi_xx = 1. / mbias_sc_th_x, Mi_xy = -mbias_thx_thy_tilt;
+	const double Mi_yx = 0., Mi_yy = 1. / mbias_sc_th_y;
 
-	double Mi_xx = 1. / biases.L.sc_th_x, Mi_xy = -biases.L.thx_thy_tilt;
-	double Mi_yx = 0., Mi_yy = 1. / biases.L.sc_th_y;
+	const double D = Mi_xx * Mi_yy - Mi_xy * Mi_yx;
 
-	double D = Mi_xx * Mi_yy - Mi_xy * Mi_yx;
-
-	double th_x = Mi_xx * th_x_ps + Mi_xy * th_y_ps;
-	double th_y = Mi_yx * th_x_ps + Mi_yy * th_y_ps;
+	const double th_x = Mi_xx * th_x_ps + Mi_xy * th_y_ps;
+	const double th_y = Mi_yx * th_x_ps + Mi_yy * th_y_ps;
 
 	return dist_th_x_th_y_true(th_x, th_y)
 		* D
@@ -193,8 +199,12 @@ double IntegOverDX(double d_x, double *param, const void *)
 	const double &th_x_p = param[0];
 	const double &th_y_p = param[1];
 
-	const double th_x_p_L = th_x_p - d_x/2.;
-	const double th_x_p_R = th_x_p + d_x/2.;
+	// extract anti-symmetric component of the shift bias
+	const double abias_sh_th_x = (biases.R.sh_th_x - biases.L.sh_th_x) / 2.;
+	const double abias_sh_th_y = (biases.R.sh_th_y - biases.L.sh_th_y) / 2.;
+
+	const double th_x_p_L = th_x_p - d_x/2. - abias_sh_th_x;
+	const double th_x_p_R = th_x_p + d_x/2. + abias_sh_th_x;
 
 	double th_y_L_cut_l = anal.fc_L_l.GetThYLimit(th_x_p_L);
 	double th_y_L_cut_h = anal.fc_L_h.GetThYLimit(th_x_p_L);
@@ -208,6 +218,10 @@ double IntegOverDX(double d_x, double *param, const void *)
 
 	if (d_y_min >= d_y_max)
 		return 0;
+
+	// apply asymmetric bias in th_y
+	d_y_min -= 2. * abias_sh_th_y;
+	d_y_max -= 2. * abias_sh_th_y;
 	
 	const bool gaussianOptimisation = false;
 	const double rel_precision = 1E-4;

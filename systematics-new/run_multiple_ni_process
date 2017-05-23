@@ -12,5 +12,5 @@ make "ni_process" || exit 1
 for diagonal in ${diagonals[*]}
 do
 	dir="data-ni/$diagonal"
-	./ni_process -input "$dir" -output "$dir/ni_process.root" &
+	./ni_process -input "$dir" -output "$dir/ni_process.root"
 done

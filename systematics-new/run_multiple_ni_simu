@@ -5,30 +5,26 @@ diagonals=(
 #	"45t_56b"
 )
 
-scenarios=(
-	"none"
-	"sh-thx"
-	"sh-thy"
-	"tilt-thx-thy"
-	"opt-m1"
-	"opt-m2"
-	"dx-sigma"
-	"dy-sigma"
-	"mx-sigma"
-	"my-sigma"
-	"eff-intercept"
-	"eff-slope"
-	"beam-mom"
-	"norm"
+configurations=(
+	"fit2-2/none"
+	"fit2-2/sh-thx"
+	"fit2-2/sh-thx-LRasym"
+	"fit2-2/sh-thy"
+	"fit2-2/sh-thy-LRasym"
+	"fit2-2/tilt-thx-thy"
+	"fit2-2/sc-thx"
+	"fit2-2/sc-thy"
+	"fit2-2/dx-sigma"
+	"fit2-2/dy-sigma"
+	"fit2-2/mx-sigma"
+	"fit2-2/my-sigma"
+	"fit2-2/eff-intercept"
+	"fit2-2/eff-slope"
+	"fit2-2/beam-mom"
+	"fit2-2/norm"
+
+	"fit2-4/none"
 )
-
-model="fit2-2"
-
-secondary_scenarios=(
-	"none"
-)
-
-secondary_model="fit2-4"
 
 use_lxbatch="n"
 bsub_options="pool>1"
@@ -48,7 +44,7 @@ function ExecuteOne()
 	local job_file="$dir/.${tag}.job"
 	local job_log_file="$dir/.${tag}.log_job"
 
-	local command="{ time ./ni_simu -model \"$model\" -diagonal \"$diagonal\" -scenario \"$scenario\" -events \"$stat\" -output \"$dir/$scenario.root\" ; } \&> \"$dir/$scenario.log\""
+	local command="{ time ./ni_simu -model \"$model\" -diagonal \"$diagonal\" -scenario \"$scenario\" -output \"$dir/$scenario.root\" ; } \&> \"$dir/$scenario.log\""
 
 	cat "job_template" | sed "\
 			s|\$JOB_DIR|$job_dir|; \
@@ -72,21 +68,14 @@ make "ni_simu" || exit 1
 
 for diagonal in ${diagonals[*]}
 do
-	dir="data-ni/$stat/$diagonal/$model"
-	mkdir -p "$dir"
-
-	for scenario in ${scenarios[*]}
+	for configuration in ${configurations[*]}
 	do
-		ExecuteOne
-	done
+		model=${configuration%%/*}
+		scenario=${configuration##*/}
 
-	#-----
+		dir="data-ni/$diagonal/$model"
+		mkdir -p "$dir"
 
-	dir="data-ni/$stat/$diagonal/$secondary_model"
-	mkdir -p "$dir"
-
-	for scenario in ${secondary_scenarios[*]}
-	do
 		ExecuteOne
 	done
 done
