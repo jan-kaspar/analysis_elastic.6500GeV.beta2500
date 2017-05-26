@@ -3,13 +3,13 @@ struct Mode
 	string label;
 	pen p;
 
-	string mc_dir_file;
-	string mc_dir_tag;
-	real mc_dir_ref;
+	string mc_file;
+	string mc_tag;
+	real mc_ref;
 
-	string num_int_file;
-	string num_int_tag;
-	real num_int_ref;
+	string ni_file;
+	string ni_tag;
+	real ni_ref;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ Mode[] modes;
 //----------------------------------------------------------------------------------------------------
 
 void AddMode(string _l, pen _p = black,
-	string _mdf, string _mdt, real _mdr,
+	string _mcf, string _mct, real _mcr,
 	string _nif, string _nit, real _nir
 	)
 {
@@ -28,13 +28,13 @@ void AddMode(string _l, pen _p = black,
 	m.label = _l;
 	m.p = _p;
 
-	m.mc_dir_file = _mdf;
-	m.mc_dir_tag = _mdt;
-	m.mc_dir_ref = _mdr;
+	m.mc_file = _mcf;
+	m.mc_tag = _mct;
+	m.mc_ref = _mcr;
 	
-	m.num_int_file = _nif;
-	m.num_int_tag = _nit;
-	m.num_int_ref = _nir;
+	m.ni_file = _nif;
+	m.ni_tag = _nit;
+	m.ni_ref = _nir;
 
 	modes.push(m);
 }
@@ -43,48 +43,78 @@ void AddMode(string _l, pen _p = black,
 
 void AddAllModes()
 {
-	AddMode("\vbox{\hbox{alignment:}\hbox{shift in $\th_x^*$}}", black,
-		"sd", "alig-sh-thx", 1,
-		"s", "alig-sh-thx", 1
+	AddMode("\vbox{\hbox{shift in $\th_x^*$}\hbox{L-R symmetric}}", black,
+		"", "sh-thx", 1,
+		"", "sh-thx", 1
 	);
 
-	AddMode("\vbox{\hbox{alignment:}\hbox{shift in $\th_y^*$}}", red,
-		"sd", "alig-sh-thy:D+0,R+1", 1,
-		"s", "alig-sh-thy", 1
+	AddMode("\vbox{\hbox{shift in $\th_x^*$}\hbox{L-R anti-symmetric}}", black+dashed,
+		"", "sh-thx-LRasym", 1,
+		"", "sh-thx-LRasym", 1
+	);
+
+	AddMode("\vbox{\hbox{shift in $\th_y^*$}\hbox{L-R symmetric}\hbox{T-B correlated}}", red,
+		"", "sh-thy", 1,
+		"", "sh-thy", 1
+	);
+
+	AddMode("\vbox{\hbox{shift in $\th_y^*$}\hbox{L-R anti-symmetric}\hbox{T-B correlated}}", red+dashed,
+		"", "sh-thy-LRasym", 1,
+		"", "sh-thy-LRasym", 1
+	);
+
+	AddMode("\vbox{\hbox{shift in $\th_y^*$}\hbox{L-R symmetric}\hbox{T-B uncorrelated}}", red,
+		"", "sh-thy-TBuncor", 1,
+		"", "sh-thy-TBuncor", 1
 	);
 
 	//--------------------
 
-	AddMode("\vbox{\hbox{alignment + optics:}\hbox{$x$-$y$ tilt}}", darkred,
-		"sd", "alig-tilt", 1,
-		"s", "thx-thy-tilt", 1
+	AddMode("\vbox{\hbox{$x$-$y$ tilt}\hbox{L-R symmetric}}", darkred,
+		"", "tilt-thx-thy", 1,
+		"", "tilt-thx-thy", 1
+	);
+
+	AddMode("\vbox{\hbox{$x$-$y$ tilt}\hbox{L-R anti-symmetric}}", darkred+dashed,
+		"", "tilt-thx-thy-LRasym", 1,
+		"", "", 1
 	);
 
 	//--------------------
 
-	AddMode("\vbox{\hbox{optics:}\hbox{$\th_{x, y}^*$ scaling -- mode 1}}", heavygreen,
-		"sd", "opt-m1", 1,
-		"s", "opt-m1", 1
+	AddMode("\vbox{\hbox{$\th_{x}^*$ scaling}\hbox{L-R symmetric}}", heavygreen,
+		"", "sc-thx", 1,
+		"", "sc-thx", 1
 	);
 
-	AddMode("\vbox{\hbox{optics:}\hbox{$\th_{x, y}^*$ scaling -- mode 2}}", cyan,
-		"sd", "opt-m2", 1,
-		"s", "opt-m2", 1
+	AddMode("\vbox{\hbox{$\th_{x}^*$ scaling}\hbox{L-R anti-symmetric}}", heavygreen+dashed,
+		"", "sc-thx-LRasym", 1,
+		"", "", 1
+	);
+
+	AddMode("\vbox{\hbox{$\th_{y}^*$ scaling}\hbox{L-R symmetric}}", cyan,
+		"", "sc-thy", 1,
+		"", "sc-thy", 1
+	);
+
+	AddMode("\vbox{\hbox{$\th_{y}^*$ scaling}\hbox{L-R anti-symmetric}}", cyan+dashed,
+		"", "sc-thy-LRasym", 1,
+		"", "", 1
 	);
 	
 	//--------------------
 	
-	AddMode("\vbox{\hbox{acceptance correction:}\hbox{uncert.~of $\si(d_x)$}}", blue+dashed,
-		"sd", "acc-corr-sigma-unc-thx", 1,
-		"d", "acc-corr-sigma-unc-thx", 1
+	AddMode("\vbox{\hbox{uncert.~of $\si(d_x)$}}", blue+dashed,
+		"", "dx-sigma", 1,
+		"", "dx-sigma", 1
 	);
 
-	AddMode("\vbox{\hbox{acceptance correction:}\hbox{uncert.~of $\si(d_y)$}}", red+dashed,
-		"sd", "acc-corr-sigma-unc-thy", 1,
-		"d", "acc-corr-sigma-unc-thy", 1
+	AddMode("\vbox{\hbox{uncert.~of $\si(d_y)$}}", red+dashed,
+		"", "dy-sigma", 1,
+		"", "dy-sigma", 1
 	);
 
-	// TODO
+	// TODO: uncomment non-gaussianity in dx and dy
 	/*
 	AddMode("\vbox{\hbox{acceptance correction:}\hbox{beam divergence L-R asymmetry}}", blue+dashed,
 		"sd", "acc-corr-sigma-asym", 1,
@@ -98,46 +128,60 @@ void AddAllModes()
 	*/
 
 	//--------------------
+
+	AddMode("\vbox{\hbox{inefficiency correction:}\hbox{intercept uncertainty}}", black+dashed,
+		"", "eff-intercept", 1,
+		"", "eff-intercept", 1
+	);
 	
-	AddMode("\vbox{\hbox{3-out-of-4 efficiency:}\hbox{slope uncertainty}}", black+dashed,
-		"sd", "eff-slp", 1,
-		"s", "eff-slp", 1
+	AddMode("\vbox{\hbox{inefficiency correction:}\hbox{slope uncertainty}}", black+dashed,
+		"", "eff-slope", 1,
+		"", "eff-slope", 1
 	);
 
 	//--------------------
 	
-	AddMode("\vbox{\hbox{beam momentum:}\hbox{offset}}", magenta,
-		"sd", "beam-mom", 1,
-		"s", "beam-mom", 1
+	AddMode("\vbox{\hbox{beam momentum}}", magenta,
+		"", "beam-mom", 1,
+		"", "beam-mom", 1
 	);
 
 	//--------------------
 
-	// TODO
-	/*
-	AddMode("\vbox{\hbox{unfolding:}\hbox{x smearing dependence}}", blue+dashed,
-		"sdu", "unsmearing correction/<TDIST>/unsm_corr_unc_th_x", 0,
-		"d", "unsmearing correction/<TDIST>/unsm_corr_unc_th_x", 0,
-		"unsm-sigma-x"
+	AddMode("\vbox{\hbox{unsmearing:}\hbox{uncert.~of $\si(m_x)$}}", blue+dashed,
+		"", "mx-sigma", 1,
+		"", "mx-sigma", 1
 	);
 
-	AddMode("\vbox{\hbox{unfolding:}\hbox{y smearing dependence}}", blue+dashed,
-		"sdu", "unsmearing correction/<TDIST>/unsm_corr_unc_th_y", 0,
-		"d", "unsmearing correction/<TDIST>/unsm_corr_unc_th_y", 0,
-		"unsm-sigma-y"
+	AddMode("\vbox{\hbox{unsmearing:}\hbox{uncert.~of $\si(m_y)$}}", blue+dashed,
+		"", "my-sigma", 1,
+		"", "my-sigma", 1
 	);
 
-	AddMode("\vbox{\hbox{unfolding:}\hbox{model dependence}}", blue+dashed,
-		"sdu", "unsmearing correction/unsm_corr_unc_model", 0,
-		"d", "unsmearing correction/unsm_corr_unc_model", 0,
-		"unsm-model"
+	AddMode("\vbox{\hbox{unsmearing:}\hbox{model dependence}}", blue+dashed,
+		"", "unsmearing-model", 1,
+		"", "unsmearing-model", 1
 	);
-	*/
 
 	//--------------------
 
-	AddMode("\vbox{\hbox{normalisation:}\hbox{luminosity and efficiencies}}", magenta+dashed,
-		"sd", "norm", 1,
-		"s", "norm", 1
+	AddMode("\vbox{\hbox{normalisation}}", magenta+dashed,
+		"", "norm", 1,
+		"", "norm", 1
 	);
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void FilterModes(string filter)
+{
+	Mode sel[];
+
+	for (int mi : modes.keys)
+	{
+		if (find(modes[mi].mc_tag, filter) >= 0 || find(modes[mi].ni_tag, filter) >= 0)
+			sel.push(modes[mi]);
+	}
+
+	modes = sel;
 }

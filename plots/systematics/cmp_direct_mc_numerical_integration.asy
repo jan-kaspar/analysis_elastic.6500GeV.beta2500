@@ -20,71 +20,103 @@ z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04
 string t_dist_type = "fit2-2";
 
 AddAllModes();
+FilterModes("-thy");
+
+TH1_x_min = 8e-4;
 
 //----------------------------------------------------------------------------------------------------
 
 bool legend_drawn = false;
-int idx = 0;
 
 for (int dsi : datasets.keys)
 {
 	for (int dgni : diagonals.keys)
 	{
-		for (int zi : z_t_maxs.keys)
-		{	
-			++idx;
-	
-			NewPad(false, idx, -1);
-			label("{\SetFontSizesXX "+replace("\vbox{\hbox{"+datasets[dsi]+"}"
-				"\hbox{dgn: "+diagonals[dgni]+"}}", "_", "\_")+"}");
-	
-			for (int mi : modes.keys)
-			{
-				//write(modes[mi].tag);
-	
-				if (idx == 1)
-				{
-					NewPad(false, 0, mi);
-					label("{\SetFontSizesXX " + modes[mi].label + "}");
-				}
-				
-				NewPad("$|t|\ung{GeV^2}$", "systematic effect", idx, mi);
-	
-				// ----- MC direct -----
-	
-				string mc_f = topDir + "systematics-mc/"+datasets[dsi]+"/"+diagonals[dgni]+"/simu_direct_" + modes[mi].num_int_tag + "/1E8.root";
+		NewRow();
+
+		NewPad(false);
+		label("{\SetFontSizesXX\bf "+replace("\vbox{\hbox{"+datasets[dsi]+"}\hbox{dgn: "+diagonals[dgni]+"}}", "_", "\_")+"}");
+
+		for (int mi : modes.keys)
+		{
+			write("* " + modes[mi].mc_tag);
+
+			NewRow();
 			
-				string objPath = "re/h_eff_syst";
+			NewPad(false);
+			label("{\SetFontSizesXX " + modes[mi].label + "}");
+
+			for (int zi : z_t_maxs.keys)
+			{	
+				TH1_x_max = TGraph_x_max = z_t_maxs[zi];
+				
+				NewPad("$|t|\ung{GeV^2}$", "systematic effect");
+	
+				// ----- MC -----
+	
+				//string mc_f = topDir + "systematics-mc/"+datasets[dsi]+"/"+diagonals[dgni]+"/simu_direct_" + modes[mi].mc_tag + "/1E8.root";
+				//string objPath = "re/h_eff_syst";
+				string mc_f = topDir + "systematics/data-mc/1E9/" + diagonals[dgni] + "/mc_process.root";
+				string objPath = modes[mi].mc_tag + "/ob-3-5-0.05/h_eff";
 
 				RootObject os = RootGetObject(mc_f, objPath, error=false);
 				if (os.valid)
-					draw(shift(0, -modes[mi].mc_dir_ref), os, "eb", heavygreen, "Monte-Carlo (direct)");
+					draw(shift(0, -modes[mi].mc_ref), os, "eb", heavygreen, "Monte-Carlo, new");
 	
 
 				// ----- numerical integration, full -----
 		
+				//string ni_f = topDir + "systematics/"+datasets[dsi]+"/numerical_integration_full_"+diagonals[dgni]+".root";
+				string ni_f = topDir + "systematics/data-ni/" + diagonals[dgni] + "/ni_process.root";
+	
+				string objPath = modes[mi].ni_tag + "/g_eff";
+	
+				RootObject os = RootGetObject(ni_f, objPath, error=false);
+				if (os.valid)
+					draw(shift(0, -modes[mi].ni_ref), os, "l,d0", red+1pt, "numerical intergration, full, new");
+
+				// ----- numerical integration, full, old -----
+		
+				/*
+				//string ni_f = topDir + "systematics/"+datasets[dsi]+"/numerical_integration_full_"+diagonals[dgni]+".root";
+				string ni_f = topDir + "systematics/data-ni-old/" + diagonals[dgni] + "/ni_process.root";
+	
+				string objPath = modes[mi].ni_tag + "/g_eff";
+	
+				RootObject os = RootGetObject(ni_f, objPath, error=false);
+				if (os.valid)
+					draw(shift(0, -modes[mi].ni_ref), os, "l,d0", blue+dashed+1pt, "numerical intergration, full, old");
+				*/
+
+				
+				// ----- numerical integration, full, old, old -----
+		
+				/*
 				string ni_f = topDir + "systematics/"+datasets[dsi]+"/numerical_integration_full_"+diagonals[dgni]+".root";
 	
-				string objPath = "<TDIST>/" + modes[mi].num_int_tag + "/g_eff";
+				string objPath = "<TDIST>/" + modes[mi].ni_tag + "/g_eff";
 				objPath = replace(objPath, "<TDIST>", t_dist_type);
 	
 				RootObject os = RootGetObject(ni_f, objPath, error=false);
 				if (os.valid)
-					draw(shift(0, -modes[mi].num_int_ref), os, "l,d0", red+1pt, "numerical intergration, full");
+					draw(shift(0, -modes[mi].ni_ref), os, "l,d0", blue+dashed+1pt, "numerical intergration, full, old");
+				*/
+
 				
 				// ----- numerical integration, simple -----
-		
+/*	
 				string ni_f = topDir + "systematics/"+datasets[dsi]+"/numerical_integration_"+diagonals[dgni]+".root";
 	
-				string objPath = (modes[mi].num_int_file == "s")
-					?  "<TDIST>/" + modes[mi].num_int_tag + "/g_eff"
-					: modes[mi].num_int_tag;
+				string objPath = (modes[mi].ni_file == "s")
+					?  "<TDIST>/" + modes[mi].ni_tag + "/g_eff"
+					: modes[mi].ni_tag;
 	
 				objPath = replace(objPath, "<TDIST>", t_dist_type);
 	
 				RootObject os = RootGetObject(ni_f, objPath, error=false);
 				if (os.valid)
-					draw(shift(0, -modes[mi].num_int_ref), os, "l,d0", blue+dashed+1pt, "numerical intergration");
+					draw(shift(0, -modes[mi].ni_ref), os, "l,d0", blue+dashed+1pt, "numerical intergration");
+*/
 	
 
 				// ----- finalisation -----
@@ -99,7 +131,7 @@ for (int dsi : datasets.keys)
 				real e_min = -z_e_maxs[zi];
 				real e_max = z_e_maxs[zi];
 
-				if (modes[mi].mc_dir_tag == "norm")
+				if (modes[mi].mc_tag == "norm")
 					{ e_min = 0; e_max = +0.15; e_Step = 0.05; e_step = 0.01; }
 
 				currentpad.xTicks = LeftTicks(t_Step, t_step);
