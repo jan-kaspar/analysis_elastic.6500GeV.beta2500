@@ -175,6 +175,7 @@ int main(int argc, const char **argv)
 		{ "sc-thy", Scenario::mDsdt },
 		{ "dx-sigma", Scenario::mDsdt },
 		{ "dy-sigma", Scenario::mDsdt },
+		{ "dx-non-gauss", Scenario::mDsdt },
 		{ "mx-sigma", Scenario::mUnsmearing },
 		{ "my-sigma", Scenario::mUnsmearing },
 		{ "eff-intercept", Scenario::mDsdt },

@@ -128,6 +128,9 @@ int main(int argc, const char **argv)
 	printf("\n\n>> anal_rec:\n");
 	anal_rec.Print();
 
+	// load non-gaussian distributions
+	LoadNonGaussianDistributions(anal_sim.si_th_x_LRdiff, anal_sim.si_th_y_LRdiff);
+
 	// random seed
 	gRandom->SetSeed(seed);
 
@@ -180,6 +183,9 @@ int main(int argc, const char **argv)
 		bh_t_re.push_back(new TH1D("", ";|t|;events per bin", N_bins, bin_edges)); bh_t_re[bi]->Sumw2();
 	}
 
+	TH1D *h_d_x = new TH1D("h_d_x", ";d_x", 200, -70E-6, +70E-6);
+	TH1D *h_d_y = new TH1D("h_d_y", ";d_y", 200, -5E-6, +5E-6);
+
 	// simulation settings
 	const double be = 6.;
 	const double ga = 1. - exp(-be * anal.t_max_full);
@@ -196,11 +202,11 @@ int main(int argc, const char **argv)
 		double w = s_dsdt->Eval(k_tr.t) / exp(-be * k_tr.t);
 
 		k_tr.phi = th_y_sign * gRandom->Rndm() * M_PI; // just one hemisphere
-	
+
 		k_tr.th = sqrt(k_tr.t) / env_sim.p;
 		k_tr.th_x = k_tr.th_x_L = k_tr.th_x_R = k_tr.th * cos(k_tr.phi);
 		k_tr.th_y = k_tr.th_y_L = k_tr.th_y_R = k_tr.th * sin(k_tr.phi);
-		
+
 		for (unsigned int bi = 0; bi < binnings.size(); ++bi)
 			bh_t_tr[bi]->Fill(k_tr.t, w);
 
@@ -209,8 +215,22 @@ int main(int argc, const char **argv)
 		double d_x = gRandom->Gaus() * anal_sim.si_th_x_LRdiff;
 		double d_y = gRandom->Gaus() * anal_sim.si_th_y_LRdiff;
 
+		double d_x_reweight = 1.;
+		if (biases.use_non_gaussian_d_x)
+		{
+			const double w_des = NonGauassianDistribution_d_x(d_x);
+			const double &si = anal_sim.si_th_x_LRdiff;
+			const double w_gen = 1./sqrt(2.*M_PI) / si * exp(-d_x*d_x / 2. / si / si);
+
+			d_x_reweight = w_des / w_gen;
+			w *= d_x_reweight;
+		}
+
 		double m_x = gRandom->Gaus() * anal_sim.si_th_x_2arm;
 		double m_y = gRandom->Gaus() * anal_sim.si_th_y_2arm;
+
+		h_d_x->Fill(d_x, d_x_reweight);
+		h_d_y->Fill(d_y);
 
 		Kinematics k_sm;
 
@@ -245,7 +265,7 @@ int main(int argc, const char **argv)
 		bool skip = accCalc.Calculate(k_re, phi_corr, div_corr);
 
 		// ----- inefficiency and its correction -----
-		
+
 		double eff = 1. - (ineff_intercept + ineff_slope * fabs(k_sm.th_y));
 		double eff_corr = 1. / (1. - ( (ineff_intercept + biases.eff_intercept) + (ineff_slope + biases.eff_slope) * fabs(k_sm.th_y)));
 
@@ -258,8 +278,13 @@ int main(int argc, const char **argv)
 				bh_t_re[bi]->Fill(k_re.t, w * norm_adjustment * phi_corr * div_corr / 2.);
 		}
 	}
-	
+
 	// save
+	gDirectory = f_out;
+
+	h_d_x->Write();
+	h_d_y->Write();
+
 	for (unsigned int bi = 0; bi < binnings.size(); ++bi)
 	{
 		gDirectory = f_out->mkdir(binnings[bi].c_str());

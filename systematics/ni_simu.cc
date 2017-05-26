@@ -71,9 +71,14 @@ double dist_m_y(double m_y)
 
 double dist_d_x(double d_x)
 {
-	const double &si_d_x = anal_sim.si_th_x_LRdiff;
-	const double r = d_x / si_d_x;
-	return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_x;
+	if (biases.use_non_gaussian_d_x)
+	{
+		return NonGauassianDistribution_d_x(d_x);
+	} else {
+		const double &si_d_x = anal_sim.si_th_x_LRdiff;
+		const double r = d_x / si_d_x;
+		return exp(-r*r/2.) / sqrt(2. * M_PI) / si_d_x;
+	}
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -166,7 +171,7 @@ double IntegOverMX(double m_x, double *param, const void *)
 	const double &th_y_p = param[1];
 
 	double param_out[] = { th_x_p, th_y_p, m_x };
-	
+
 	const double rel_precision = 1E-3;
 	const double range_m_y = 5. * anal_sim.si_th_y_2arm; 
 
@@ -224,7 +229,7 @@ double IntegOverDX(double d_x, double *param, const void *)
 	// apply asymmetric bias in th_y
 	d_y_min -= 2. * abias_sh_th_y;
 	d_y_max -= 2. * abias_sh_th_y;
-	
+
 	const bool gaussianOptimisation = false;
 	const double rel_precision = 1E-4;
 
@@ -245,7 +250,7 @@ double IntegOverDX(double d_x, double *param, const void *)
 double acceptance_smea(double th_x_p, double th_y_p)
 {
 	double param[] = { th_x_p, th_y_p };
-	
+
 	const double abs_precision = 1E-3;
 	const double range_d_x = 5. * anal_sim.si_th_x_LRdiff;
 
@@ -283,7 +288,7 @@ double dist_t_reco(double t_p)
 {
 	const double &p_p = env_rec.p;
 	const double th_p = sqrt(t_p) / p_p;
-	
+
 	double param[1] = { th_p };
 
 	// get all intersections of const-th circle with acceptance boundaries
@@ -424,6 +429,9 @@ int main(int argc, const char **argv)
 
 	printf("\n\n>> anal_rec:\n");
 	anal_rec.Print();
+
+	// load non-gaussian distributions
+	LoadNonGaussianDistributions(anal_sim.si_th_x_LRdiff, anal_sim.si_th_y_LRdiff);
 
 	// load input dsigma/dt distribution
 	if (LoadTDistributions() != 0)

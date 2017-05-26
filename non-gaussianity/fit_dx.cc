@@ -19,6 +19,12 @@ void fit_dx()
 	ff->SetParameters(3.8E9, -0.6E-6, 16.8E-6, -5.9E17, -0.7E-6);
 	h_in->Fit(ff, "", "", -50E-6, +50E-6);
 
+	/*
+	TF1 *ff = new TF1("ff", "[0] * exp(- (x-[1])^2 / 2 / [2]^2)");
+	double si = 12.5E-6;
+	ff->SetParameters(1./sqrt(2.*M_PI)/si, 0E-6, si);
+	*/
+
 	TFile *f_out = TFile::Open("fit_dx.root", "recreate");
 	h_in->Write("h_in");
 	ff->Write("ff");

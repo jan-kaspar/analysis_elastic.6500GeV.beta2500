@@ -20,7 +20,8 @@ z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04
 string t_dist_type = "fit2-2";
 
 AddAllModes();
-FilterModes("-thy");
+//FilterModes("-thy");
+FilterModes("dx-non-gauss");
 
 TH1_x_min = 8e-4;
 
@@ -56,7 +57,7 @@ for (int dsi : datasets.keys)
 	
 				//string mc_f = topDir + "systematics-mc/"+datasets[dsi]+"/"+diagonals[dgni]+"/simu_direct_" + modes[mi].mc_tag + "/1E8.root";
 				//string objPath = "re/h_eff_syst";
-				string mc_f = topDir + "systematics/data-mc/1E9/" + diagonals[dgni] + "/mc_process.root";
+				string mc_f = topDir + "systematics/data-mc/1E7/" + diagonals[dgni] + "/mc_process.root";
 				string objPath = modes[mi].mc_tag + "/ob-3-5-0.05/h_eff";
 
 				RootObject os = RootGetObject(mc_f, objPath, error=false);

@@ -114,18 +114,11 @@ void AddAllModes()
 		"", "dy-sigma", 1
 	);
 
-	// TODO: uncomment non-gaussianity in dx and dy
-	/*
-	AddMode("\vbox{\hbox{acceptance correction:}\hbox{beam divergence L-R asymmetry}}", blue+dashed,
-		"sd", "acc-corr-sigma-asym", 1,
-		"d", "x+0,y+0/<TDIST>/sigma asymmetry/systematic effect", 1
-	);
 	
-	AddMode("\vbox{\hbox{acceptance correction:}\hbox{beam divergence non-gaussianity}}", blue+dashed,
-		"sd", "acc-corr-non-gauss", 1,
-		"d", "x+0,y+0/<TDIST>/non-gauss/systematic effect", 1
+	AddMode("\vbox{\hbox{non-gaussianity of $d_x$}}", blue+dashed,
+		"", "dx-non-gauss", 1,
+		"", "dx-non-gauss", 1
 	);
-	*/
 
 	//--------------------
 

@@ -1,3 +1,7 @@
+#include "TF1.h"
+
+//----------------------------------------------------------------------------------------------------
+
 struct BiasesPerArm
 {
 	// shifts (rad)
@@ -29,6 +33,10 @@ struct Biases
 	// normalisation error (relative factor)
 	double norm = 0.;
 
+	// non-gaussian distributions
+	bool use_non_gaussian_d_x = false;
+	bool use_non_gaussian_d_y = false;
+
 	void Print() const
 	{
 		printf("left arm:\n");
@@ -44,6 +52,8 @@ struct Biases
 		printf("global:\n");
 		printf("    eff_intercept = %.3E, eff_slope = %.3E\n", eff_intercept, eff_slope);
 		printf("    norm = %.3E\n", norm);
+		printf("    use_non_gaussian_d_x = %u\n", use_non_gaussian_d_x);
+		printf("    use_non_gaussian_d_y = %u\n", use_non_gaussian_d_y);
 	}
 };
 
@@ -243,6 +253,12 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
+	if (scenario == "dx-non-gauss")
+	{
+		biases.use_non_gaussian_d_x = true;
+		return 0;
+	}
+
 	if (scenario == "mx-sigma")
 	{
 		anal_sim.si_th_x_2arm += 0.04E-6;
@@ -282,4 +298,51 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 	}
 
 	return 1;
+}
+
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+
+void CalculateNonGaussianDistributionTransformation(TF1 *dist, double min, double max, double sigma0,
+	double &et, double &al, double &be)
+{
+	const unsigned int n_points = 1000;
+	const double step = (max - min) / (n_points - 1);
+
+	double I0=0., I1=0., I2=0.;
+	for (unsigned int i = 0; i < n_points; i++)
+	{
+		double x = min + i * step;
+		double f = dist->Eval(x);
+
+		I0 += f * step;
+		I1 += f*x * step;
+		I2 += f*x*x * step;
+	}
+
+	et = sqrt((I2 - I1*I1/I0) / sigma0/sigma0 / I0/I0/I0);
+	al = et * I0;
+	be = I1 / I0;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+TF1 *f_non_gaussian_dist_d_x = NULL;
+double ngx_et, ngx_al, ngx_be;
+
+void LoadNonGaussianDistributions(double si_d_x, double /* si_d_y */)
+{
+	TFile *f_in = TFile::Open("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/non-gaussianity/fit_dx.root");
+	f_non_gaussian_dist_d_x = new TF1(* (TF1 *) f_in->Get("ff"));
+	delete f_in;
+
+	const double range = 6. * 15E-6;
+	CalculateNonGaussianDistributionTransformation(f_non_gaussian_dist_d_x, -range, +range, si_d_x, ngx_et, ngx_al, ngx_be);
+}
+
+//----------------------------------------------------------------------------------------------------
+
+double NonGauassianDistribution_d_x(double x)
+{
+	return f_non_gaussian_dist_d_x->Eval(ngx_al*(x + ngx_be)) * ngx_et;
 }
