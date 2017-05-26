@@ -546,6 +546,8 @@ int main(int argc, char **argv)
 	TH1D *th_x_diffLR = new TH1D("th_x_diffLR", ";#theta_{x}^{R} - #theta_{x}^{L}", 1000, -500E-6, +500E-6); th_x_diffLR->Sumw2();
 	TH1D *th_y_diffLR = new TH1D("th_y_diffLR", ";#theta_{y}^{R} - #theta_{y}^{L}", 500, -50E-6, +50E-6); th_y_diffLR->Sumw2();
 
+	map<signed int, TH1D*> m_h_th_x_LRdiff, m_h_th_y_LRdiff;
+
 	TH1D *th_x_diffLF = new TH1D("th_x_diffLF", ";#theta_{x}^{L} - #theta_{x}", 400, -200E-6, +200E-6); th_x_diffLF->Sumw2();
 	TH1D *th_x_diffRF = new TH1D("th_x_diffRF", ";#theta_{x}^{R} - #theta_{x}", 400, -200E-6, +200E-6); th_x_diffRF->Sumw2();
 
@@ -1138,6 +1140,18 @@ int main(int argc, char **argv)
 			p_th_y_R_diff12_vs_th_y_R->Fill(k.th_y_R, k.th_y_R_2_F - k.th_y_R_1_F);
 
 			p_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
+
+			const double dpd = 3. * 3600.;	// s
+			const signed int dp = ev.timestamp / dpd;
+
+			if (m_h_th_x_LRdiff.find(dp) == m_h_th_x_LRdiff.end())
+			{
+				m_h_th_x_LRdiff.insert({dp, new TH1D("", ";#theta_{x}^{R} - #theta_{x}^{L}", 200, -60E-6, +60E-6)});
+				m_h_th_y_LRdiff.insert({dp, new TH1D("", ";#theta_{y}^{R} - #theta_{y}^{L}", 200, -2E-6, +2E-6)});
+			}
+
+			m_h_th_x_LRdiff[dp]->Fill(k.th_x_R - k.th_x_L);
+			m_h_th_y_LRdiff[dp]->Fill(k.th_y_R - k.th_y_L);
 		}
 
 		if (safe)
@@ -1595,6 +1609,16 @@ int main(int argc, char **argv)
 	th_y_diffLR_safe->Fit("gaus");
 	th_x_diffLR_safe->Fit("gaus");
 
+	for (const auto &m : {m_h_th_x_LRdiff, m_h_th_y_LRdiff})
+	{
+		for (const auto &it : m)
+		{
+			it.second->Sumw2();
+			it.second->Scale(1., "width");
+			it.second->Fit("gaus");
+		}
+	}
+
 	// apply unfolding correction
 	map<unsigned int, TH1D *>  bh_t_normalized_unsmeared;
 	for (unsigned int bi = 0; bi < binnings.size(); bi++)
@@ -1821,7 +1845,8 @@ int main(int argc, char **argv)
 	h_y_R_ratioFN_vs_y_R_N->Write();
 	*/
 
-	gDirectory = outF->mkdir("selected - angles");
+	TDirectory *d_selected_angles = outF->mkdir("selected - angles");
+	gDirectory = d_selected_angles;
 	th_x_diffLR->Write();
 	th_y_diffLR->Write();
 
@@ -1902,6 +1927,16 @@ int main(int argc, char **argv)
 	h_ta_y_L_vs_th_y_L->Write();
 	h_ta_y_R_vs_th_y_R->Write();
 	*/
+
+	for (const auto &it : m_h_th_x_LRdiff)
+	{
+		char buf[100];
+		sprintf(buf, "period%u", it.first);
+		gDirectory = d_selected_angles->mkdir(buf);
+
+		m_h_th_x_LRdiff[it.first]->Write("h_th_x_LRdiff");
+		m_h_th_y_LRdiff[it.first]->Write("h_th_y_LRdiff");
+	}
 
 	gDirectory = outF->mkdir("selected - vertex");
 	h_vtx_x->Write();
