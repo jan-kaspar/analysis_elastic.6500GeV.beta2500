@@ -3,6 +3,9 @@
 *.root
 *.pdf
 *.out
+*.d
+*.so
+*.pcm
 
 !.gitignore
 
