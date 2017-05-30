@@ -218,7 +218,7 @@ int main(int argc, char **argv)
 	accCalc.Init(th_y_sign, anal_nom);
 
 	// load simuluation model
-	TFile *f_dsdt = TFile::Open("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root");
+	TFile *f_dsdt = TFile::Open("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root");
 	TGraph *g_dsdt = (TGraph *) f_dsdt->Get("variant 2/g_dsdt_CH");
 	TSpline *s_dsdt = BuildSpline(g_dsdt);
 
