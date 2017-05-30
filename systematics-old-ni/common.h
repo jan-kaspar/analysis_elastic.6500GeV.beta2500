@@ -106,7 +106,7 @@ int LoadTDistributions()
 	// define input t-distributions
 	inputTDistributions.push_back({
 		"fit2-2",
-		(TGraph *) GetObject("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 2/g_dsdt_CH"),
+		(TGraph *) GetObject("/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 2/g_dsdt_CH"),
 		NULL
 	});
 

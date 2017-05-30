@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 {
 	// defaults
 	unsigned long n_events = (unsigned long) 4E7;
-	string dsdt_model_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root";
+	string dsdt_model_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root";
 	string dsdt_model_object = "variant 2/g_dsdt_CH";
 	unsigned int seed = 1;
 	double de_si_vtx = 50E-3;

@@ -299,9 +299,9 @@ int main(int argc, const char **argv)
 
 	// models
 	vector<Model> models = {
-		{ "fit2-1", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 1/g_dsdt_CH" },
-		{ "fit2-2", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 2/g_dsdt_CH" },
-		{ "fit2-4", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root", "variant 4/g_dsdt_CH" }
+		{ "fit2-1", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 1/g_dsdt_CH" },
+		{ "fit2-2", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 2/g_dsdt_CH" },
+		{ "fit2-4", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 4/g_dsdt_CH" }
 	};
 
 	// print info

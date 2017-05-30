@@ -10,7 +10,7 @@ string diagonal = "combined";
 string binning = "ob-3-5-0.05";
 
 
-string fit_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/second_fit/do_fit.root";
+string fit_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root";
 string fit_obj = "variant 2/g_dsdt_CH";
 
 string unc_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/systematics/DS-fill5313/matrix_numerical_integration.root";
