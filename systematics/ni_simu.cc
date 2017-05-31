@@ -213,11 +213,12 @@ double IntegOverDX(double d_x, double *param, const void *)
 	const double th_x_p_L = th_x_p - d_x/2. - abias_sh_th_x;
 	const double th_x_p_R = th_x_p + d_x/2. + abias_sh_th_x;
 
-	double th_y_L_cut_l = anal_sim.fc_L_l.GetThYLimit(th_x_p_L);
-	double th_y_L_cut_h = anal_sim.fc_L_h.GetThYLimit(th_x_p_L);
+	// since the cuts are made in the primed coordinates, it is correct to use the anal_rec (not anal_sim)
+	double th_y_L_cut_l = anal_rec.fc_L_l.GetThYLimit(th_x_p_L);
+	double th_y_L_cut_h = anal_rec.fc_L_h.GetThYLimit(th_x_p_L);
 
-	double th_y_R_cut_l = anal_sim.fc_R_l.GetThYLimit(th_x_p_R);
-	double th_y_R_cut_h = anal_sim.fc_R_h.GetThYLimit(th_x_p_R);
+	double th_y_R_cut_l = anal_rec.fc_R_l.GetThYLimit(th_x_p_R);
+	double th_y_R_cut_h = anal_rec.fc_R_h.GetThYLimit(th_x_p_R);
 
 	double th_y_abs = th_y_sign * th_y_p;
 	double d_y_min = 2. * max( th_y_R_cut_l - th_y_abs, th_y_abs - th_y_L_cut_h );
@@ -227,8 +228,8 @@ double IntegOverDX(double d_x, double *param, const void *)
 		return 0;
 
 	// apply asymmetric bias in th_y
-	d_y_min -= 2. * abias_sh_th_y;
-	d_y_max -= 2. * abias_sh_th_y;
+	d_y_min -= 2. * abias_sh_th_y * th_y_sign;
+	d_y_max -= 2. * abias_sh_th_y * th_y_sign;
 
 	const bool gaussianOptimisation = false;
 	const double rel_precision = 1E-4;
