@@ -8,8 +8,8 @@ xSizeDef = 6cm;
 
 string datasets[] = { "DS-fill5313" };
 
-//string diagonals[] = { "45b_56t", "45t_56b" };
-string diagonals[] = { "45b_56t" };
+string diagonals[] = { "45b_56t", "45t_56b" };
+//string diagonals[] = { "45b_56t" };
 //string diagonals[] = { "45t_56b" };
 
 real z_t_maxs[], z_t_Steps[], z_t_steps[], z_e_maxs[], z_e_Steps[], z_e_steps[];
@@ -19,9 +19,13 @@ z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04
 
 string t_dist_type = "fit2-2";
 
+string mc_source = "systematics/data-mc/1E9_save";
+
 AddAllModes();
-//FilterModes("-thy");
-FilterModes("dx-non-gauss");
+FilterModes("sh-thy-LRasym");
+//FilterModes("sh-thy", "sc-thy");
+//FilterModes("sh-thy-LRasym");
+//FilterModes("dx-non-gauss");
 
 TH1_x_min = 8e-4;
 
@@ -33,6 +37,9 @@ for (int dsi : datasets.keys)
 {
 	for (int dgni : diagonals.keys)
 	{
+		write();
+		write(datasets[dsi] + ", " + diagonals[dgni]);
+
 		NewRow();
 
 		NewPad(false);
@@ -57,7 +64,7 @@ for (int dsi : datasets.keys)
 	
 				//string mc_f = topDir + "systematics-mc/"+datasets[dsi]+"/"+diagonals[dgni]+"/simu_direct_" + modes[mi].mc_tag + "/1E8.root";
 				//string objPath = "re/h_eff_syst";
-				string mc_f = topDir + "systematics/data-mc/1E7/" + diagonals[dgni] + "/mc_process.root";
+				string mc_f = topDir + mc_source + "/" + diagonals[dgni] + "/mc_process.root";
 				string objPath = modes[mi].mc_tag + "/ob-3-5-0.05/h_eff";
 
 				RootObject os = RootGetObject(mc_f, objPath, error=false);

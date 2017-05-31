@@ -166,13 +166,23 @@ void AddAllModes()
 
 //----------------------------------------------------------------------------------------------------
 
-void FilterModes(string filter)
+void FilterModes(... string filters[])
 {
 	Mode sel[];
 
 	for (int mi : modes.keys)
 	{
-		if (find(modes[mi].mc_tag, filter) >= 0 || find(modes[mi].ni_tag, filter) >= 0)
+		bool keep = false;
+		for (string f : filters)
+		{
+			if (find(modes[mi].mc_tag, f) >= 0 || find(modes[mi].ni_tag, f) >= 0)
+			{
+				keep = true;
+				break;
+			}
+		}
+	
+		if (keep)
 			sel.push(modes[mi]);
 	}
 
