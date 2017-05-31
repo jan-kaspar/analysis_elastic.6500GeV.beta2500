@@ -244,7 +244,7 @@ int main(int argc, const char **argv)
 		}
 	}
 
-	// TODO
+	// estimate uncertainty due to smearing model uncertainty
 	TDirectory *d_scenario = f_out->mkdir("unsmearing-model");
 
 	for (const string &binning : binnings)
