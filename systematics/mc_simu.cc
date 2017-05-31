@@ -177,7 +177,7 @@ int main(int argc, const char **argv)
 	{
 		unsigned int N_bins;
 		double *bin_edges;
-		BuildBinning(anal, binnings[bi], bin_edges, N_bins);
+		BuildBinning(anal_sim, binnings[bi], bin_edges, N_bins);
 
 		bh_t_tr.push_back(new TH1D("", ";|t|;events per bin", N_bins, bin_edges)); bh_t_tr[bi]->Sumw2();
 		bh_t_re.push_back(new TH1D("", ";|t|;events per bin", N_bins, bin_edges)); bh_t_re[bi]->Sumw2();
@@ -188,7 +188,7 @@ int main(int argc, const char **argv)
 
 	// simulation settings
 	const double be = 6.;
-	const double ga = 1. - exp(-be * anal.t_max_full);
+	const double ga = 1. - exp(-be * anal_sim.t_max_full);
 
 	// event loop
 	for (unsigned int ev = 0; ev < n_events; ev++)
