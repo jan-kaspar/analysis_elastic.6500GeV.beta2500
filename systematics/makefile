@@ -4,7 +4,8 @@ all: \
 	mc_simu \
 	mc_process \
 	ni_simu \
-	ni_process
+	ni_process \
+	matrix
 
 % : %.cc
 	g++ --std=c++11 `root-config --libs` -lMinuit `root-config --cflags` -O3 -Wall -g \
@@ -19,3 +20,5 @@ mc_simu : scenarios.h input_distributions.h command_line_tools.h \
 ni_simu : scenarios.h input_distributions.h command_line_tools.h \
 		../common_definitions.h ../common_algorithms.h ../AcceptanceCalculator.h \
 		parameters.h ../common.h ../parameters_global.h
+
+matrix : command_line_tools.h
