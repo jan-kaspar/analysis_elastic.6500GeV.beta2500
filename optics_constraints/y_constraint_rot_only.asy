@@ -31,7 +31,7 @@ for (int dsi : datasets.keys)
 
 	for (int dgni : diagonals.keys)
 	{
-		NewPad("$(y^{L-220-F} - y^{R-220-F}) / \sqrt 2\ung{mm}$", "$(\th_x^{\rm loc,L} + \th_x^{\rm loc,R}) / \sqrt 2\ung{mm}$");
+		NewPad("$(y^{\rm L-220-F} - y^{\rm R-220-F}) / \sqrt 2\ung{mm}$", "$(y^{\rm L-220-F} + y^{\rm R-220-F}) / \sqrt 2\ung{mm}$");
 
 		AddToLegend("<{\it"+dgn_labels[dgni]+":}");
 
