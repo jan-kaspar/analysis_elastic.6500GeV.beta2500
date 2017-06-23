@@ -122,18 +122,12 @@ TGraph* PlotFiductialCut(const FiducialCut &fc, double th_y_sign)
 
 struct OpticsMatchingInput
 {
-	TGraph *g_thl_y_L_vs_y_L_220_F;
-	TGraph *g_thl_y_R_vs_y_R_220_F;
-
-	TGraph *g_x_L_220_F_vs_thl_x_L;
-	TGraph *g_x_R_220_F_vs_thl_x_R;
-
 	TGraph *g_thl_x_R_vs_thl_x_L;
-	TGraph *g_thl_y_R_vs_thl_y_L;
-
-	TGraph *g_y_R_210_F_vs_y_L_210_F;
 	TGraph *g_y_R_220_F_vs_y_L_220_F;
-
+	TGraph *g_thl_y_R_vs_y_R_220_F;
+	TGraph *g_thl_y_L_vs_y_L_220_F;
+	TGraph *g_thl_x_R_vs_x_R_220_F;
+	TGraph *g_thl_x_L_vs_x_L_220_F;
 	TGraph *g_x_L_220_F_vs_y_L_220_F;
 	TGraph *g_x_L_210_F_vs_y_L_210_F;
 	TGraph *g_x_R_210_F_vs_y_R_210_F;
@@ -141,52 +135,42 @@ struct OpticsMatchingInput
 
 	TGraph *g_vtx_x_L_vs_vtx_x_R;
 
-	TH2D *h2_thl_x_R_vs_thl_x_L, *h2_thl_x_L_vs_thl_x_R, *h2_thl_x_rot;
-	TProfile *p_thl_x_R_vs_thl_x_L, *p_thl_x_L_vs_thl_x_R, *p_thl_x_rot;
-
-	TH2D *h2_y_R_220_F_vs_y_L_220_F, *h2_y_L_220_F_vs_y_R_220_F, *h2_y_220_F_rot;
-	TProfile *p_y_R_220_F_vs_y_L_220_F, *p_y_L_220_F_vs_y_R_220_F, *p_y_220_F_rot;
-
 	OpticsMatchingInput()
 	{
-		g_thl_y_L_vs_y_L_220_F = new TGraph(); g_thl_y_L_vs_y_L_220_F->SetName("g_thl_y_L_vs_y_L_220_F"); g_thl_y_L_vs_y_L_220_F->SetTitle(";y^{L-220-F}   (mm);#theta_{y,loc}^{L}   (rad)");
-		g_thl_y_R_vs_y_R_220_F = new TGraph(); g_thl_y_R_vs_y_R_220_F->SetName("g_thl_y_R_vs_y_R_220_F"); g_thl_y_R_vs_y_R_220_F->SetTitle(";y^{R-220-F}   (mm);#theta_{y,loc}^{R}   (rad)");
+		// constraints from New Journal of Physics 16 (2014) 103041
 
-		g_x_L_220_F_vs_thl_x_L = new TGraph(); g_x_L_220_F_vs_thl_x_L->SetName("g_x_L_220_F_vs_thl_x_L"); g_x_L_220_F_vs_thl_x_L->SetTitle(";#theta_{x,loc}^{L}   (rad);x^{L-220-F}   (mm)");
-		g_x_R_220_F_vs_thl_x_R = new TGraph(); g_x_R_220_F_vs_thl_x_R->SetName("g_x_R_220_F_vs_thl_x_R"); g_x_R_220_F_vs_thl_x_R->SetTitle(";#theta_{x,loc}^{R}   (rad);x^{R-220-F}   (mm)");
-
+		// R1 = theta_x_loc_R / theta_x_loc_L
 		g_thl_x_R_vs_thl_x_L = new TGraph(); g_thl_x_R_vs_thl_x_L->SetName("g_thl_x_R_vs_thl_x_L"); g_thl_x_R_vs_thl_x_L->SetTitle(";#theta_{x,loc}^{L}   (rad);#theta_{x,loc}^{R}   (rad)");
-		g_thl_y_R_vs_thl_y_L = new TGraph(); g_thl_y_R_vs_thl_y_L->SetName("g_thl_y_R_vs_thl_y_L"); g_thl_y_R_vs_thl_y_L->SetTitle(";#theta_{y,loc}^{L}   (rad);#theta_{y,loc}^{R}   (rad)");
 
-		g_y_R_210_F_vs_y_L_210_F = new TGraph(); g_y_R_210_F_vs_y_L_210_F->SetName("g_y_R_210_F_vs_y_L_210_F"); g_y_R_210_F_vs_y_L_210_F->SetTitle(";y^{L-210-F}   (mm);y^{R-210-F}   (mm)");
+		// R2 = y_R_220_F / y_L_220_F
 		g_y_R_220_F_vs_y_L_220_F = new TGraph(); g_y_R_220_F_vs_y_L_220_F->SetName("g_y_R_220_F_vs_y_L_220_F"); g_y_R_220_F_vs_y_L_220_F->SetTitle(";y^{L-220-F}   (mm);y^{R-220-F}   (mm)");
 
+		// R3 = theta_y_loc_R / y_R_220_F
+		g_thl_y_R_vs_y_R_220_F = new TGraph(); g_thl_y_R_vs_y_R_220_F->SetName("g_thl_y_R_vs_y_R_220_F"); g_thl_y_R_vs_y_R_220_F->SetTitle(";y^{R-220-F}   (mm);#theta_{y,loc}^{R}   (rad)");
+
+		// R4 = theta_y_loc_L / y_L_220_F
+		g_thl_y_L_vs_y_L_220_F = new TGraph(); g_thl_y_L_vs_y_L_220_F->SetName("g_thl_y_L_vs_y_L_220_F"); g_thl_y_L_vs_y_L_220_F->SetTitle(";y^{L-220-F}   (mm);#theta_{y,loc}^{L}   (rad)");
+
+		// R5 = theta_x_loc_R / x_R_220_F
+		g_thl_x_R_vs_x_R_220_F = new TGraph(); g_thl_x_R_vs_x_R_220_F->SetName("g_thl_x_R_vs_x_R_220_F"); g_thl_x_R_vs_x_R_220_F->SetTitle(";x^{R-220-F}   (mm);#theta_{x,loc}^{R}   (rad)");
+
+		// R6 = theta_x_loc_L / x_L_220_F
+		g_thl_x_L_vs_x_L_220_F = new TGraph(); g_thl_x_L_vs_x_L_220_F->SetName("g_thl_x_L_vs_x_L_220_F"); g_thl_x_L_vs_x_L_220_F->SetTitle(";x^{L-220-F}   (mm);#theta_{x,loc}^{L}   (rad)");
+
+		// R7 = x_L_220_F / y_L_220_F
 		g_x_L_220_F_vs_y_L_220_F = new TGraph(); g_x_L_220_F_vs_y_L_220_F->SetName("g_x_L_220_F_vs_y_L_220_F"); g_x_L_220_F_vs_y_L_220_F->SetTitle(";y^{L-220-F}   (mm);x^{L-220-F}   (mm)");
+
+		// R8 = x_L_210_F / y_L_210_F
 		g_x_L_210_F_vs_y_L_210_F = new TGraph(); g_x_L_210_F_vs_y_L_210_F->SetName("g_x_L_210_F_vs_y_L_210_F"); g_x_L_210_F_vs_y_L_210_F->SetTitle(";y^{L-210-F}   (mm);x^{L-210-F}   (mm)");
+
+		// R9 = x_R_210_F / y_R_210_F
 		g_x_R_210_F_vs_y_R_210_F = new TGraph(); g_x_R_210_F_vs_y_R_210_F->SetName("g_x_R_210_F_vs_y_R_210_F"); g_x_R_210_F_vs_y_R_210_F->SetTitle(";y^{R-210-F}   (mm);x^{R-210-F}   (mm)");
+
+		// R10 = x_R_220_F / y_R_220_F
 		g_x_R_220_F_vs_y_R_220_F = new TGraph(); g_x_R_220_F_vs_y_R_220_F->SetName("g_x_R_220_F_vs_y_R_220_F"); g_x_R_220_F_vs_y_R_220_F->SetTitle(";y^{R-220-F}   (mm);x^{R-220-F}   (mm)");
 
+		// control plot
 		g_vtx_x_L_vs_vtx_x_R = new TGraph(); g_vtx_x_L_vs_vtx_x_R->SetName("g_vtx_x_L_vs_vtx_x_R"); g_vtx_x_L_vs_vtx_x_R->SetTitle(";vtx_x^{R}   (mm);vtx_x^{L}   (mm)");
-
-		h2_thl_x_R_vs_thl_x_L = new TH2D("", ";#theta_{x,loc}^{L}   (rad);#theta_{x,loc}^{R}   (rad)", 400, -400E-6, +400E-6, 400, -400E-6, +400E-6);
-		h2_thl_x_L_vs_thl_x_R = new TH2D("", ";#theta_{x,loc}^{R}   (rad);#theta_{x,loc}^{L}   (rad)", 400, -400E-6, +400E-6, 400, -400E-6, +400E-6);
-		h2_thl_x_rot = new TH2D("", ";(#theta_{x,loc}^{L} - #theta_{x,loc}^{R})/#sqrt{2}   (rad);(#theta_{x,loc}^{L} + #theta_{x,loc}^{R})/#sqrt{2}   (rad)",
-				400, -400E-6, +400E-6, 400, -400E-6, +400E-6);
-
-		p_thl_x_R_vs_thl_x_L = new TProfile("", ";#theta_{x,loc}^{L}   (rad);mean of #theta_{x,loc}^{R}   (rad)", 400, -400E-6, +400E-6);
-		p_thl_x_L_vs_thl_x_R = new TProfile("", ";#theta_{x,loc}^{R}   (rad);mean of #theta_{x,loc}^{L}   (rad)", 400, -400E-6, +400E-6);
-		p_thl_x_rot = new TProfile("", ";(#theta_{x,loc}^{L} - #theta_{x,loc}^{R})/#sqrt{2}   (rad);mean of (#theta_{x,loc}^{L} + #theta_{x,loc}^{R})/#sqrt{2}   (rad)",
-				100, -400E-6, +400E-6);
-
-		h2_y_R_220_F_vs_y_L_220_F = new TH2D("", ";y^{L-220-F}   (mm);y^{R-220-F}   (mm)", 300, -30., +30, 300, -30., +30.);
-		h2_y_L_220_F_vs_y_R_220_F = new TH2D("", ";y^{R-220-F}   (mm);y^{L-220-F}   (mm)", 300, -30., +30, 300, -30., +30.);
-		h2_y_220_F_rot = new TH2D("", ";(y^{L-220-F} - y^{R-220-F})/sqrt(2)   (mm);(y^{L-220-F} + y^{R-220-F})/sqrt(2)   (mm)",
-				300, -30., +30, 300, -30., +30.);
-
-		p_y_R_220_F_vs_y_L_220_F = new TProfile("", ";y^{L-220-F}   (mm);mean of y^{R-220-F}   (mm)", 300, -30., +30);
-		p_y_L_220_F_vs_y_R_220_F = new TProfile("", ";y^{R-220-F}   (mm);mean of y^{L-220-F}   (mm)", 300, -30., +30);
-		p_y_220_F_rot = new TProfile("", ";(y^{L-220-F} - y^{R-220-F})/sqrt(2)   (mm);mean of (y^{L-220-F} + y^{R-220-F})/sqrt(2)   (mm)",
-				300, -30., +30);
 	}
 
 	void Fill(const HitData &h_al, double thl_x_L, double thl_x_R, double thl_y_L, double thl_y_R, double vtx_x_L, double vtx_x_R)
@@ -195,17 +179,14 @@ struct OpticsMatchingInput
 
 		if (idx < 10000)
 		{
-			g_thl_y_L_vs_y_L_220_F->SetPoint(idx, h_al.L_2_F.y, thl_y_L);
-			g_thl_y_R_vs_y_R_220_F->SetPoint(idx, h_al.R_2_F.y, thl_y_R);
-
-			g_x_L_220_F_vs_thl_x_L->SetPoint(idx, thl_x_L, h_al.L_2_F.x);
-			g_x_R_220_F_vs_thl_x_R->SetPoint(idx, thl_x_R, h_al.R_2_F.x);
-
 			g_thl_x_R_vs_thl_x_L->SetPoint(idx, thl_x_L, thl_x_R);
-			g_thl_y_R_vs_thl_y_L->SetPoint(idx, thl_y_L, thl_y_R);
-
-			g_y_R_210_F_vs_y_L_210_F->SetPoint(idx, h_al.L_1_F.y, h_al.R_1_F.y);
 			g_y_R_220_F_vs_y_L_220_F->SetPoint(idx, h_al.L_2_F.y, h_al.R_2_F.y);
+
+			g_thl_y_R_vs_y_R_220_F->SetPoint(idx, h_al.R_2_F.y, thl_y_R);
+			g_thl_y_L_vs_y_L_220_F->SetPoint(idx, h_al.L_2_F.y, thl_y_L);
+
+			g_thl_x_R_vs_x_R_220_F->SetPoint(idx, h_al.R_2_F.x, thl_x_R);
+			g_thl_x_L_vs_x_L_220_F->SetPoint(idx, h_al.L_2_F.x, thl_x_L);
 
 			g_x_L_220_F_vs_y_L_220_F->SetPoint(idx, h_al.L_2_F.y, h_al.L_2_F.x);
 			g_x_L_210_F_vs_y_L_210_F->SetPoint(idx, h_al.L_1_F.y, h_al.L_1_F.x);
@@ -214,43 +195,18 @@ struct OpticsMatchingInput
 
 			g_vtx_x_L_vs_vtx_x_R->SetPoint(idx, vtx_x_R, vtx_x_L);
 		}
-
-		const double thl_x_hor = (thl_x_L - thl_x_R) / sqrt(2);
-		const double thl_x_ver = (thl_x_L + thl_x_R) / sqrt(2);
-
-		h2_thl_x_R_vs_thl_x_L->Fill(thl_x_L, thl_x_R);
-		h2_thl_x_L_vs_thl_x_R->Fill(thl_x_R, thl_x_L);
-		h2_thl_x_rot->Fill(thl_x_hor, thl_x_ver);
-
-		p_thl_x_R_vs_thl_x_L->Fill(thl_x_L, thl_x_R);
-		p_thl_x_L_vs_thl_x_R->Fill(thl_x_R, thl_x_L);
-		p_thl_x_rot->Fill(thl_x_hor, thl_x_ver);
-
-		const double y_2_F_hor = (h_al.L_2_F.y - h_al.R_2_F.y) / sqrt(2);
-		const double y_2_F_ver = (h_al.L_2_F.y + h_al.R_2_F.y) / sqrt(2);
-
-		h2_y_R_220_F_vs_y_L_220_F->Fill(h_al.L_2_F.y, h_al.R_2_F.y);
-		h2_y_L_220_F_vs_y_R_220_F->Fill(h_al.R_2_F.y, h_al.L_2_F.y);
-		h2_y_220_F_rot->Fill(y_2_F_hor, y_2_F_ver);
-
-		p_y_R_220_F_vs_y_L_220_F->Fill(h_al.L_2_F.y, h_al.R_2_F.y);
-		p_y_L_220_F_vs_y_R_220_F->Fill(h_al.R_2_F.y, h_al.L_2_F.y);
-		p_y_220_F_rot->Fill(y_2_F_hor, y_2_F_ver);
 	}
 
 	void Write() const
 	{
-		g_thl_y_L_vs_y_L_220_F->Write();
-		g_thl_y_R_vs_y_R_220_F->Write();
-
-		g_x_L_220_F_vs_thl_x_L->Write();
-		g_x_R_220_F_vs_thl_x_R->Write();
-
 		g_thl_x_R_vs_thl_x_L->Write();
-		g_thl_y_R_vs_thl_y_L->Write();
-
-		g_y_R_210_F_vs_y_L_210_F->Write();
 		g_y_R_220_F_vs_y_L_220_F->Write();
+
+		g_thl_y_R_vs_y_R_220_F->Write();
+		g_thl_y_L_vs_y_L_220_F->Write();
+
+		g_thl_x_R_vs_x_R_220_F->Write();
+		g_thl_x_L_vs_x_L_220_F->Write();
 
 		g_x_L_220_F_vs_y_L_220_F->Write();
 		g_x_L_210_F_vs_y_L_210_F->Write();
@@ -258,33 +214,6 @@ struct OpticsMatchingInput
 		g_x_R_220_F_vs_y_R_220_F->Write();
 
 		g_vtx_x_L_vs_vtx_x_R->Write();
-
-		h2_thl_x_R_vs_thl_x_L->Write("h2_thl_x_R_vs_thl_x_L");
-		h2_thl_x_L_vs_thl_x_R->Write("h2_thl_x_L_vs_thl_x_R");
-		h2_thl_x_rot->Write("h2_thl_x_rot");
-
-		p_thl_x_R_vs_thl_x_L->Fit("pol1", "Q", "", -250E-6, +250E-6);
-		p_thl_x_L_vs_thl_x_R->Fit("pol1", "Q", "", -250E-6, +250E-6);
-		p_thl_x_rot->Fit("pol1", "Q", "", -250E-6, +250E-6);
-
-		p_thl_x_R_vs_thl_x_L->Write("p_thl_x_R_vs_thl_x_L");
-		p_thl_x_L_vs_thl_x_R->Write("p_thl_x_L_vs_thl_x_R");
-		p_thl_x_rot->Write("p_thl_x_rot");
-
-		h2_y_R_220_F_vs_y_L_220_F->Write("h2_y_R_220_F_vs_y_L_220_F");
-		h2_y_L_220_F_vs_y_R_220_F->Write("h2_y_L_220_F_vs_y_R_220_F");
-		h2_y_220_F_rot->Write("h2_y_220_F_rot");
-
-		double y_min_fit = (diagonal == d45b_56t) ? 5.5 : -28.;
-		double y_max_fit = (diagonal == d45b_56t) ? 28. : -5.5;
-
-		p_y_R_220_F_vs_y_L_220_F->Fit("pol1", "Q", "", -y_max_fit, -y_min_fit);
-		p_y_L_220_F_vs_y_R_220_F->Fit("pol1", "Q", "", y_min_fit, y_max_fit);
-		p_y_220_F_rot->Fit("pol1", "Q", "", -y_max_fit, -y_min_fit);
-
-		p_y_R_220_F_vs_y_L_220_F->Write("p_y_R_220_F_vs_y_L_220_F");
-		p_y_L_220_F_vs_y_R_220_F->Write("p_y_L_220_F_vs_y_R_220_F");
-		p_y_220_F_rot->Write("p_y_220_F_rot");
 	}
 };
 
