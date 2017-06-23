@@ -5,6 +5,7 @@ string topDir = "../../";
 
 string datasets[] = {
 	//"DS-fill5313",
+	//"DS-fill5314",
 	"DS-fill5317",
 	"DS-fill5321",
 };
@@ -49,7 +50,8 @@ for (int dsi : datasets.keys)
 			if (fit.valid)
 			{
 				real slope = fit.rExec("GetParameter", 1);
-				draw(scale(1e6, 1e6), fit, "", blue+2pt, format("slope = %#+.4f", slope));
+				real slope_unc = fit.rExec("GetParError", 1);
+				draw(scale(1e6, 1e6), fit, "", blue+2pt, format("slope = $%#+.4f$", slope) + format("$\pm %#.4f$", slope_unc));
 			}
 
 			//if (plot[pi] == "p_th_x_diffLR_vs_th_x")

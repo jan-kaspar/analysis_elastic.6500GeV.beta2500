@@ -1209,9 +1209,9 @@ int main(int argc, char **argv)
 			h_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
 			h_th_x_diffLR_vs_vtx_x->Fill(k.vtx_x, k.th_x_R - k.th_x_L);
 
-			p_th_x_diffLR_vs_th_x->Fill(k.th_x, k.th_x_R - k.th_x_L);
-			p_th_x_L_diff12_vs_th_x_L->Fill(k.th_x_L, k.th_x_L_2_F - k.th_x_L_1_F);
-			p_th_x_R_diff12_vs_th_x_R->Fill(k.th_x_R, k.th_x_R_2_F - k.th_x_R_1_F);
+			p_th_x_diffLR_vs_th_x->Fill(k_cuts.th_x, k_cuts.th_x_R - k_cuts.th_x_L); // k_cuts has a per-arm vertex suppression
+			p_th_x_L_diff12_vs_th_x_L->Fill(k_cuts.th_x_L, k_cuts.th_x_L_2_F - k_cuts.th_x_L_1_F);
+			p_th_x_R_diff12_vs_th_x_R->Fill(k_cuts.th_x_R, k_cuts.th_x_R_2_F - k_cuts.th_x_R_1_F);
 
 			p_th_y_diffLR_vs_th_y->Fill(k.th_y, k.th_y_R - k.th_y_L);
 			p_th_y_L_diff12_vs_th_y_L->Fill(k.th_y_L, k.th_y_L_2_F - k.th_y_L_1_F);
