@@ -6,7 +6,8 @@ string topDir = "../../";
 
 string f = topDir + "systematics/matrix.root";
 
-string binning = "ob-2-10-0.05";
+string binning = "ob-1-20-0.05";
+//string binning = "ob-2-10-0.05";
 
 string objects[] = {
 	"input/45b_56t/<binning>",
@@ -60,7 +61,7 @@ for (int zi : z_t_maxs.keys)
 		}
 		
 		NewPad("$|t|\ung{GeV^2}$", "systematic effect", idx, mi);
-	
+
 		for (int oi : objects.keys)
 		{
 			string pth = "contributions/" + modes[mi].mc_tag + "/" + replace(objects[oi], "<binning>", binning);
