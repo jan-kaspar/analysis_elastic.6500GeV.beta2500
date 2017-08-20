@@ -8,3 +8,4 @@ The steps to be followed.
 
 1) `run_multiple_ni_process`
 
+1) `make && ./matrix`
