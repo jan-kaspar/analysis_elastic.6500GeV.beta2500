@@ -122,6 +122,7 @@ int main()
 
 	// nominal environment
 	env_nom.InitNominal();
+	env_nom.UseMatchedOptics();
 
 	env_nom.si_de_P_L = 11.8E-3; env_nom.si_de_P_R = 11.8E-3;	// mm	(45 bottom - 56 top)
 	//env_nom.si_de_P_L = 11.0E-3; env_nom.si_de_P_R = 11.0E-3;	// mm	(45 top - 56 bottom)
