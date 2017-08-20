@@ -12,7 +12,7 @@ datasets.push("DS-fill5321"); dataset_fills.push("5321"); dataset_periods.push(n
 
 string diagonals[], dgn_labels[];
 pen dgn_pens[];
-//diagonals.push("45b_56t"); dgn_labels.push("45b -- 56t"); dgn_pens.push(red);
+diagonals.push("45b_56t"); dgn_labels.push("45b -- 56t"); dgn_pens.push(red);
 diagonals.push("45t_56b"); dgn_labels.push("45t -- 56b"); dgn_pens.push(blue);
 
 string quantities[], q_file_tags[], q_labels[];
