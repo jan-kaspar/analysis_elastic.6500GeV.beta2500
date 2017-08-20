@@ -26,7 +26,7 @@ void Init_45b_56t()
 	anal.cut1_a = 1.; anal.cut1_c = 0.E-6; anal.cut1_si = 14E-6;
 	anal.cut2_a = 1.; anal.cut2_c = 0.E-6; anal.cut2_si = 0.4E-6;
 
-	anal.L_int = 2.6701E+06;
+	anal.L_int = 2.4628E+06;
 
 	// to start-up the analysis
 	//unsmearing_file = "";
@@ -42,7 +42,7 @@ void Init_45t_56b()
 	anal.cut1_a = 1.; anal.cut1_c = 0.E-6; anal.cut1_si = 14E-6;
 	anal.cut2_a = 1.; anal.cut2_c = 0.E-6; anal.cut2_si = 0.4E-6;
 
-	anal.L_int = 2.6701E+06;
+	anal.L_int = 2.4628E+06;
 
 	// to start-up the analysis
 	//unsmearing_file = "";

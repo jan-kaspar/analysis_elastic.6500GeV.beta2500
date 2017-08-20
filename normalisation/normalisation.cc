@@ -18,7 +18,7 @@ void ProcessOne(TH1D *h)
 	double t_fit_min = 0.01, t_fit_max = 0.05;
 	double t_sum_min = 0.01, t_sum_max = 0.5;
 
-	double si_el_ref = 29.7;	// mb
+	double si_el_ref = 32.2;	// mb
 
 	// determine limits
 	int bi_fit_min = h->GetXaxis()->FindBin(t_fit_min);
@@ -67,6 +67,11 @@ int main()
 	datasets.push_back("DS-fill5314");
 	datasets.push_back("DS-fill5317");
 	datasets.push_back("DS-fill5321");
+
+	datasets.push_back("DS-fill5313-nom-opt");
+	datasets.push_back("DS-fill5314-nom-opt");
+	datasets.push_back("DS-fill5317-nom-opt");
+	datasets.push_back("DS-fill5321-nom-opt");
 
 	datasets.push_back("DS-simulation");
 
