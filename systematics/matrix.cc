@@ -4,6 +4,7 @@
 #include "TH2D.h"
 #include "TMatrixDSym.h"
 #include "TSpline.h"
+#include "TF1.h"
 
 #include "command_line_tools.h"
 
@@ -39,6 +40,8 @@ struct Mode
 	}
 };
 
+//----------------------------------------------------------------------------------------------------
+
 TH1D* BuildHistogramWithoutOffset(const TH1D *h_in)
 {
 	TH1D *h_out = new TH1D(* h_in);
@@ -56,6 +59,35 @@ TH1D* BuildHistogramWithoutOffset(const TH1D *h_in)
 	}
 
 	return h_out;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void RegularizeFirstBin(TH1D *h)
+{
+	int b0 = h->FindBin(0.00081);
+
+	double diff = h->GetBinContent(b0) - h->GetBinContent(b0 + 1);
+
+	if (fabs(diff) > 0.05)
+	{
+		// direct histogram fit doesn't work, a workaround here
+
+		TGraph *g = new TGraph();
+		int bm = h->FindBin(0.002);
+		for (int b = b0 + 1; b < bm; ++b)
+			g->SetPoint(g->GetN(), h->GetBinCenter(b), h->GetBinContent(b));
+
+		TF1 *ff = new TF1("rf", "1 ++ x ++ x*x ++ x*x*x");
+		g->Fit(ff, "Q", "");
+
+		h->SetBinContent(b0, ff->Eval(h->GetBinCenter(b0)));
+
+		printf("        bin %u regularised to %.4f\n", b0, ff->Eval(h->GetBinCenter(b0)));
+
+		delete ff;
+		delete g;
+	}
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -333,6 +365,8 @@ int main(int argc, const char **argv)
 	printf(">> loading input\n");
 	for (auto &mode : modes)
 	{
+		printf("    %s\n", mode.tag.c_str());
+
 		if (mode.source == Mode::sMC)
 		{
 			for (const auto &diagonal : diagonals)
@@ -365,7 +399,12 @@ int main(int argc, const char **argv)
 				for (unsigned int bi = 0; bi < binnings.size(); bi++)
 				{
 					gDirectory = NULL;
-					v.push_back(BuildHistogramFromGraph(g_in, v_binning_h[bi]));
+
+					TH1D *h = BuildHistogramFromGraph(g_in, v_binning_h[bi]);
+
+					RegularizeFirstBin(h);
+
+					v.push_back(h);
 				}
 
 				delete f_in;
