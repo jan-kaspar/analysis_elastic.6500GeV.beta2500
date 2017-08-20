@@ -5,6 +5,7 @@ string topDir = "../../";
 
 string datasets[] = {
 	//"DS-fill5313",
+	"DS-fill5317-nom-opt",
 	"DS-fill5317",
 };
 
