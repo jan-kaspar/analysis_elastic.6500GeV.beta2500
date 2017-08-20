@@ -77,4 +77,6 @@ void Environment::InitNominal()
 
 void Environment::UseMatchedOptics()
 {
+	// TODO
+	throw "Environment::UseMatchedOptics > Not available yet";
 }
