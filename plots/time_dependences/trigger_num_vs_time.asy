@@ -39,7 +39,7 @@ void DrawQuick(RootObject obj, pen p, string label)
 {
 	int N = obj.iExec("GetN");
 
-	for (int i = 0; i < N; i += 500)
+	for (int i = 0; i < N; i += 200)
 	{
 		real[] x = {0};
 		real[] y = {0};
