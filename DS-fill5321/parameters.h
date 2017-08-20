@@ -44,7 +44,7 @@ void Init_45b_56t()
 	anal.cut7_a = 461; anal.cut7_c = -0.010; anal.cut7_si = 0.20;
 
 	// normalisation settings
-	anal.L_int = 7.7246E+04;
+	anal.L_int = 7.1342E+04;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -63,5 +63,5 @@ void Init_45t_56b()
 	anal.cut7_a = 575; anal.cut7_c = -0.002; anal.cut7_si = 0.19;
 
 	// normalisation settings
-	anal.L_int = 7.6947E+04;
+	anal.L_int = 7.1077E+04;
 }

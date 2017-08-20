@@ -4,7 +4,7 @@ import pad_layout;
 string topDir = "../../";
 
 string files[] = {
-	"DS-merged/merged.nom-opt.root",
+	"DS-merged/merged.old.root",
 	"DS-merged/merged.root",
 };
 
@@ -14,6 +14,8 @@ drawGridDef = true;
 
 xSizeDef = 12cm;
 ySizeDef = 8cm;
+
+TH1_x_min = 0.0013;
 
 //----------------------------------------------------------------------------------------------------
 
