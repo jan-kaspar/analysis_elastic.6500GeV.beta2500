@@ -624,17 +624,50 @@ the analysis
 %----------------------------------------------------------------------------------------------------
 \section{Systematic uncertainties}
 
-\subsection{Effects one by one}
+\> method
+\>> per diagonal
+\>>> assume a true $t$-distribution (fit of final data)
+\>>> do simulation and reconstruction, with and without bias
+\>>> apply unsmearing correction and normalisation procedure
+\>>> compare results with and without bias $\Rightarrow$ systematic effect given by the ratio of the 2 distributions
+\>>> respect the correlations in procedure: e.g.~in case of misalignment, also the fiducial cuts move
+\>> diagonal combination: TODO the same merging as for data
+\>>> respect the correlations between diagonals
 
-\> preliminary plots
-\>> \plot{systematics/cmp_direct_mc_numerical_integration.pdf}
+\> 2 methods of simulation
+\>> Monte-Carlo (MC): simple implementation, slow ($\gs 10^9$ samples needed), works for all bias types
+\>> numerical integration (NI)
+\>>> for many bias types fast -- the 4D integral ($m_x, m_y, d_x$ and $d_y$) can be factorised into two 2D integrals ($m$'s and $d$'s)
+\>>> more complicated implementation
+\>>> not implemented for the bias types where the factorisation does not work
 
+\> two steps of effect propagation
+\>> analytic propagation to the building blocks: $\th^{*L}_x$, $\th^{*R}_x$, $\th^{*L}_y$, $\th^{*R}_y$ and event weight (corrections, normalisation, ...)
+\>> numerical propagation: from building blocks to $t$-distribution (either MC or NI)
 
-\subsection{Multiple effects}
+\> two types of effects on $\th^{*L,R}_{x, y}$
+\>> left-right symmetric: vary the value of $t$, do not change the value of acceptance correction
+\>> left-right anti-symmetric: do not vary the value of $t$, change the value of acceptance correction
 
-\> preliminary plots
-\>> \plot{systematics/numerical_integration_combined.pdf}
-\>> \plot{systematics/numerical_integration_matrix.pdf}
+\> effects included
+\>> alignment: shifts in $\th^*_{x,y}$, both LR symmetric and anti-symmetric
+\>>> in the vertical plane: both correlated and uncorrelated between diagonals
+\>> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$, both LR symmetric and anti-symmetric
+\>> optics: preliminary treatment -- scaling of $\th^*_{x,y}$, both LR symmetric and anti-symmetric
+\>> (smearing) acceptance correction
+\>>> uncertainty of $\si(d_x)$, $\si(d_y)$
+\>>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
+\>> inefficiency correction (only relevant from 3/4 and 2/4): both slope and intercept
+\>> beam momentum
+\>> unsmearing: uncertainty of $\si(m_x)$, $\si(m_y)$, fit model dependence
 
+\> \plot{systematics/cmp_mc_ni.pdf} : individual effects, per diagonal, two views (low-$|t|$ and full range)
+\>> very good agreement between MC and NI calculations
+
+\> \plot{systematics/dgn_combination.pdf} : individual effects, combination from the two diagonals
+
+\> \plot{systematics/dgn_combination_summary.pdf} : combination from the two diagonals, all contributions in one plot
+
+\> \plot{systematics/dgn_combination_matrix.pdf} : correlation matrix
 
 \bye
