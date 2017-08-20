@@ -9,6 +9,8 @@ void Init_base()
 	// load global settings
 	Init_global();
 
+	env.UseMatchedOptics();
+
 	// list of (sub-)directories with distilled ntuples
 	distilledNtuples.push_back(".");
 }
