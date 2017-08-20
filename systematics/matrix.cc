@@ -22,7 +22,7 @@ double t_min, t_max;
 struct Mode
 {
 	string tag;
-	enum SourceType { sMC, sNI } source;
+	enum SourceType { sMC, sNI, sExt } source;
 	enum CorrelationType { coNo, coFull, coAntiFull } correlationType;
 
 	// pre-processed input
@@ -344,8 +344,11 @@ int main(int argc, const char **argv)
 
 		Mode("beam-mom", Mode::sNI, Mode::coFull),
 
-		//Mode("norm", Mode::sNI, Mode::coFull),
+		Mode("norm", Mode::sExt, Mode::coFull),
 	};
+
+	// normalisation uncertainty
+	const double norm_unc = 0.04;
 
 	// load binning-reference histograms
 	vector<TH1D *> v_binning_h;
@@ -412,6 +415,27 @@ int main(int argc, const char **argv)
 				mode.vh_input.push_back(v);
 			}
 		}
+
+		if (mode.source == Mode::sExt && mode.tag == "norm")
+		{
+			for (const auto &diagonal : diagonals)
+			{
+				vector<TH1D *> v;
+				for (unsigned int bi = 0; bi < binnings.size(); bi++)
+				{
+					TGraph *g = new TGraph();
+					g->SetPoint(0, 0., 1. + norm_unc);
+					g->SetPoint(1, 1., 1. + norm_unc);
+
+					v.push_back(BuildHistogramFromGraph(g, v_binning_h[bi]));
+
+					delete g;
+				}
+
+				mode.vh_input.push_back(v);
+			}
+		}
+
 	}
 
 	// process
@@ -550,6 +574,10 @@ int main(int argc, const char **argv)
 	};
 
 	BuildMatrix("all-but-norm", contributions, modes, binnings);
+
+	contributions.push_back("norm");
+
+	BuildMatrix("all", contributions, modes, binnings);
 
 	// clean up
 	delete f_out;
