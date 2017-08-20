@@ -232,7 +232,7 @@ void PrintUsage()
 int main(int argc, const char **argv)
 {
 	// defaults
-	string dir_mc = "data-mc/1E9_save";
+	string dir_mc = "data-mc/1E9";
 	string dir_ni = "data-ni";
 
 	t_min = 8E-4;
