@@ -4,7 +4,7 @@ import pad_layout;
 string topDir = "../../";
 
 string files[] = {
-	"DS-merged/merged_old.root",
+	"DS-merged/merged.nom-opt.root",
 	"DS-merged/merged.root",
 };
 

@@ -6,9 +6,9 @@ string topDir = "../../";
 string datasets[] = {
 	//"DS-fill5313",
 	//"DS-fill5314",
-	//"DS-fill5317",
-	"DS-fill5321-nom-opt",
-	"DS-fill5321",
+	"DS-fill5317-nom-opt",
+	"DS-fill5317",
+	//"DS-fill5321",
 };
 
 string dgns[] = { "45b_56t", "45t_56b" };
