@@ -298,6 +298,20 @@ bool SkipRun(unsigned int /*run*/, unsigned int /*file*/, bool /*strict = true *
 
 //----------------------------------------------------------------------------------------------------
 
+bool SkipTime(unsigned int timestamp)
+{
+	// two periods in fill 5317 where diagonal 45t_56b doesn't get data
+	if (timestamp > 112100 && timestamp < 118400)
+		return true;
+
+	if (timestamp > 132920 && timestamp < 134500)
+		return true;
+
+	return false;
+}
+
+//----------------------------------------------------------------------------------------------------
+
 // map: run number (8372) --> list of triggered bunches
 typedef std::map<unsigned int, std::vector<unsigned int> > BunchMap;
 

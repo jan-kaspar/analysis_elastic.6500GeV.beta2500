@@ -913,7 +913,7 @@ int main(int argc, char **argv)
 		}
 
 		// check time - selected?
-		if (anal.SkipTime(ev.timestamp))
+		if (SkipTime(ev.timestamp))
 			continue;
 
 		if (time_group_divisor != 0)
