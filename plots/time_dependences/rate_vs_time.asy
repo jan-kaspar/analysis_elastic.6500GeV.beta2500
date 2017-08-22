@@ -51,7 +51,7 @@ for (int dsi : datasets.keys)
 	NewPad(false);
 	label("{\SetFontSizesXX " + datasets[dsi] + "}");
 
-	NewPad("time $\ung{h}$", "rate of el.~candidates");
+	NewPad("time $\ung{h}$", "rate of el.~candidates$\ung{Hz}$");
 	//currentpad.yTicks = RightTicks(1., 0.2);
 	real y_min = 0, y_max = 40;
 	
