@@ -12,7 +12,9 @@ drawGridDef = true;
 
 string binnings[] = {
 	//"ub",
-	"ob-1-30-0.05",
+	"ob-1-20-0.05",
+	"ob-2-10-0.05",
+	"ob-3-5-0.05",
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -27,9 +29,9 @@ draw(scale(1, 2), RootGetObject(topDir+"binning/generators.root", "g_rms_t"), bl
 draw(scale(1, 3), RootGetObject(topDir+"binning/generators.root", "g_rms_t"), heavygreen+longdashed, "3 smearing sigma");
 
 AddToLegend("<{\it fixed statistical uncertainty, DS4:}");
-draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_30"), red+dashed, "$30\un{\%}$");
-draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_20"), blue+dashed, "$20\un{\%}$");
-draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_10"), heavygreen+dashed, "$10\un{\%}$");
+draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_20"), red+dashed, "$20\un{\%}$");
+draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_10"), blue+dashed, "$10\un{\%}$");
+draw(RootGetObject(topDir+"binning/generators.root", "g_bs_stat_unc_5"), heavygreen+dashed, "$5\un{\%}$");
 
 AddToLegend("<{\it binnings in analysis:}");
 for (int bi : binnings.keys)
