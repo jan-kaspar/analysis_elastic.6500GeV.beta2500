@@ -122,6 +122,7 @@ int main()
 
 	// nominal environment
 	env_nom.InitNominal();
+	env_nom.UseMatchedOptics();
 
 	// case 1
 	/*
