@@ -115,6 +115,9 @@ int main()
 	entries.push_back(Entry("DS-fill5317", 1., "DS-fill5317", true));
 	entries.push_back(Entry("DS-fill5321", 1., "DS-fill5321", true));
 
+	entries.push_back(Entry("DS-firstParts", 1., "DS-firstParts", false));
+	entries.push_back(Entry("DS-lastParts", 1., "DS-lastParts", false));
+
 	vector<string> diagonals;
 	diagonals.push_back("45b_56t");
 	diagonals.push_back("45t_56b");

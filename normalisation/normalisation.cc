@@ -73,6 +73,9 @@ int main()
 	datasets.push_back("DS-fill5317-nom-opt");
 	datasets.push_back("DS-fill5321-nom-opt");
 
+	datasets.push_back("DS-firstParts");
+	datasets.push_back("DS-lastParts");
+
 	datasets.push_back("DS-simulation");
 
 	vector<string> diagonals;
@@ -85,7 +88,7 @@ int main()
 
 	// prepare output (validation)
 	TFile *f_out = TFile::Open("normalization.root", "recreate");
-	
+
 	// process data
 	for (unsigned int dsi = 0; dsi < datasets.size(); dsi++)
 	{
