@@ -365,7 +365,10 @@ int main(int argc, char **argv)
 		string path = inputDir + "/resolution_fit_" + argv[1] + ".root";
 		TFile *resFile = TFile::Open(path.c_str());
 		if (!resFile)
+		{
 			printf("ERROR: resolution file `%s' cannot be opened.\n", path.c_str());
+			return 105;
+		}
 
 		g_d_x_RMS = (TGraph *) resFile->Get("d_x/g_fits");
 		g_d_y_RMS = (TGraph *) resFile->Get("d_y/g_fits");
