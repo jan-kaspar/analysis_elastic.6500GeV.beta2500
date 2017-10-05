@@ -845,7 +845,7 @@ int main(int argc, char **argv)
 		}
 
 		// check time - selected?
-		if (SkipTime(ev.timestamp))
+		if (SkipTime(ev.timestamp, anal))
 			continue;
 
 		if (time_group_divisor != 0)

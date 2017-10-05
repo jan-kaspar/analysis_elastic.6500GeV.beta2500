@@ -363,7 +363,7 @@ int main(int argc, char **argv)
 			continue;
 
 		// check time - selected?
-		if (SkipTime(ev.timestamp))
+		if (SkipTime(ev.timestamp, anal))
 			continue;
 
 		// apply fine alignment

@@ -745,6 +745,8 @@ struct Analysis
 	double cut7_a, cut7_c, cut7_si;
 	double cut8_a, cut8_c, cut8_si;
 
+	std::vector< std::pair<double, double> > timeIntervals;
+
 	unsigned int N_cuts;	// number of cuts - indexed from 1!
 	string cqaN[9], cqbN[9];
 	double cca[9], ccb[9], ccc[9], csi[9];
@@ -809,12 +811,36 @@ struct Analysis
 	map<std::string, AlignmentYRange> alignmentYRanges;
 
 	void BuildCuts();
+
 	bool EvaluateCuts(const HitData &, const Kinematics &, CutData &) const;
+
+	bool SkipTime(unsigned int timestamp) const
+	{
+		if (timeIntervals.size() == 0)
+			return false;
+
+		bool selected = false;
+		for (unsigned int i = 0; i < timeIntervals.size(); i++)
+		{
+			if (timestamp >= timeIntervals[i].first && timestamp <= timeIntervals[i].second)
+			{
+				selected = true;
+				break;
+			}
+		}
+
+		return !selected;
+	}
 
 	void Print() const
 	{
 		printf("t_min=%E, t_max=%E, t_min_full=%E, t_max_full=%E\n", t_min, t_max, t_min_full, t_max_full);
 		printf("t_min_fit=%E\n", t_min_fit);
+
+		printf("\n");
+		printf("%lu time intervals:\n", timeIntervals.size());
+		for (const auto &p : timeIntervals)
+			printf("\tfrom %.1f to %.1f\n", p.first, p.second);
 
 		printf("\n");
 		printf("n_si=%E\n", n_si);

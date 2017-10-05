@@ -251,7 +251,7 @@ bool SkipRun(unsigned int /*run*/, unsigned int /*file*/, bool /*strict = true *
 
 //----------------------------------------------------------------------------------------------------
 
-bool SkipTime(unsigned int timestamp)
+bool SkipTime(unsigned int timestamp, const Analysis &anal)
 {
 	// two periods in fill 5317 where diagonal 45t_56b doesn't get data
 	if (timestamp > 112100 && timestamp < 118400)
@@ -260,7 +260,7 @@ bool SkipTime(unsigned int timestamp)
 	if (timestamp > 132920 && timestamp < 134500)
 		return true;
 
-	return false;
+	return anal.SkipTime(timestamp);
 }
 
 //----------------------------------------------------------------------------------------------------
