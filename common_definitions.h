@@ -353,10 +353,10 @@ struct Environment
 	double la_y_L_F, la_y_L_N, la_y_R_N, la_y_R_F;	// mm
 	*/
 
-	// optics perturbation covariance matrices
+	// optics perturbation covariance matrices (16 x 16)
 	// order of elements:
-	//		left arm:  v_x_L_N, L_x_L_N, v_y_L_N, L_y_L_N, v_x_L_F, L_x_L_F, v_y_L_F, L_y_L_F
-	//		right arm: v_x_R_N, L_x_R_N, v_y_R_N, L_y_R_N, v_x_R_F, L_x_R_F, v_y_R_F, L_y_R_F
+	//		left arm:  v_x_L_1_F, L_x_L_1_F, v_y_L_1_F, L_y_L_1_F, v_x_L_2_F, L_x_L_2_F, v_y_L_2_F, L_y_L_2_F
+	//		right arm: v_x_R_1_F, L_x_R_1_F, v_y_R_1_F, L_y_R_1_F, v_x_R_2_F, L_x_R_2_F, v_y_R_2_F, L_y_R_2_F
 	// units: v's in 1, L's in m
 	TMatrixDSym opt_cov;
 
