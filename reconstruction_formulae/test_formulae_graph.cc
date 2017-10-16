@@ -119,7 +119,7 @@ void Test(const string &label, RecoQuantity q, Func f)
 	TestOneMode(q, f, bComplementary);
 	TestOneMode(q, f, sbPitch | sbBeamDivergence | bComplementary);
 	//TestOneMode(q, f, sbMisalignment);
-	//TestOneMode(q, f, sbOptics);
+	TestOneMode(q, f, sbOptics);
 	//TestOneMode(q, f, bComplementary | sbOptics);
 	//TestOneMode(q, f, sbPitch | sbBeamDivergence | bComplementary | sbOptics);
 	
@@ -213,7 +213,9 @@ int main()
 	printf("\n");
 	printf("==================== statistics ====================\n");
 	printf("\n* optics perturbations\n");
+	st_opt.PrintStat();
 	st_opt.PrintMeanAndStdDev();
+	printf("correlation matrix\n");
 	st_opt.PrintCorrelation();
 
 	delete f_out;

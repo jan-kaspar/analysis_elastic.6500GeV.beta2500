@@ -24,14 +24,14 @@ void DrawSet(string iq, real scale_x, string unit, string formulae[])
 		draw(scale(scale_x, 1), RootGetObject(f, formula+"/pitch,beamDiv,"+complementary+"/g_stddev"), "l,p", magenta, mCi+1pt+magenta, "pitch,beamDiv,"+complementary+"");
 		picture prev_pic = currentpicture;
 		
-		/*
 		NewPad("$"+iq+"^{*, sim}\ung{"+unit+"}$", "std.~dev.~of $"+iq+"^{*, reco} - "+iq+"^{*, sim}\ung{\mu rad}$");
 		currentpicture.legend = prev_pic.legend;
 		scale(Linear, Linear(true));
 		draw(scale(scale_x, 1), RootGetObject(f, formula+"/optics/g_stddev"), "l,p", heavygreen, mCi+1pt+heavygreen, "optics");
-		draw(scale(scale_x, 1), RootGetObject(f, formula+"/"+complementary+",optics/g_stddev"), "l,p", brown, mCi+1pt+brown, ""+complementary+",optics");
+		//draw(scale(scale_x, 1), RootGetObject(f, formula+"/"+complementary+",optics/g_stddev"), "l,p", brown, mCi+1pt+brown, ""+complementary+",optics");
 		prev_pic = currentpicture;
 		
+		/*
 		NewPad("$"+iq+"^{*, sim}\ung{"+unit+"}$", "std.~dev.~of $"+iq+"^{*, reco} - "+iq+"^{*, sim}\ung{\mu rad}$");
 		currentpicture.legend = prev_pic.legend;
 		scale(Linear, Linear(true));
