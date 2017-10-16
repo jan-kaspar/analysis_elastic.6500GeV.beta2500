@@ -34,8 +34,23 @@ int main()
 
 			string h_path = "elastic cuts/cut 1/h_cq1";
 			TH1D *h_in = (TH1D *) f_in->Get(h_path.c_str());
-
 			double entries = h_in->GetEntries();
+
+			/*
+			string h_path = "acceptance correction/ob-2-10-0.05/h_t_Nev_after_no_corr";
+			TH1D *h_in = (TH1D *) f_in->Get(h_path.c_str());
+
+			int bin_l = h_in->FindBin(0.0007);
+			int bin_h = h_in->FindBin(0.02);
+			//printf("    bin_l = %i\n", bin_l);
+			//printf("    bin_h = %i\n", bin_h);
+
+			double entries = 0.;
+			for (int bi = bin_l; bi <= bin_h; bi++)
+			{
+				entries += h_in->GetBinContent(bi);
+			}
+			*/
 
 			printf("    %.2E\n", entries);
 
