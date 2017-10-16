@@ -418,7 +418,7 @@ struct Environment
 	}
 
 	/// modes counted from 0 to 15
-	void ApplyOpticsPerturbationMode(int mode, double coef);
+	void ApplyOpticsPerturbationMode(unsigned int mode, double coef = 1.);
 
 	/// modes counted from 0 to 7
 	void ApplyEffectiveLengthPerturbationMode(int mode, double coef);
@@ -428,90 +428,63 @@ struct Environment
 
 void Environment::ApplyRandomOpticsPerturbations(TVectorD & /*de*/)
 {
-	printf("Environment::ApplyRandomOpticsPerturbations: not yet implemented\n");
-
-	/*
 	TVectorD r(16);
 
 	for (unsigned int i = 0; i < 16; i++)
 		r(i) = gRandom->Gaus();
-	de = opt_per_gen * r;
+	auto de = opt_per_gen * r;
 	
-	v_x_L_N += de(0) * 1E0;
-	L_x_L_N += de(1) * 1E3;
-	v_y_L_N += de(2) * 1E0;
-	L_y_L_N += de(3) * 1E3;
-	v_x_L_F += de(4) * 1E0;
-	L_x_L_F += de(5) * 1E3;
-	v_y_L_F += de(6) * 1E0;
-	L_y_L_F += de(7) * 1E3;
+	v_x_L_1_F += de(0) * 1E0;
+	L_x_L_1_F += de(1) * 1E3;
+	v_y_L_1_F += de(2) * 1E0;
+	L_y_L_1_F += de(3) * 1E3;
+	v_x_L_2_F += de(4) * 1E0;
+	L_x_L_2_F += de(5) * 1E3;
+	v_y_L_2_F += de(6) * 1E0;
+	L_y_L_2_F += de(7) * 1E3;
 
-	v_x_R_N += de(8) * 1E0;
-	L_x_R_N += de(9) * 1E3;
-	v_y_R_N += de(10) * 1E0;
-	L_y_R_N += de(11) * 1E3;
-	v_x_R_F += de(12) * 1E0;
-	L_x_R_F += de(13) * 1E3;
-	v_y_R_F += de(14) * 1E0;
-	L_y_R_F += de(15) * 1E3;
-	*/
+	v_x_R_1_F += de(8) * 1E0;
+	L_x_R_1_F += de(9) * 1E3;
+	v_y_R_1_F += de(10) * 1E0;
+	L_y_R_1_F += de(11) * 1E3;
+	v_x_R_2_F += de(12) * 1E0;
+	L_x_R_2_F += de(13) * 1E3;
+	v_y_R_2_F += de(14) * 1E0;
+	L_y_R_2_F += de(15) * 1E3;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-void Environment::ApplyOpticsPerturbationMode(int /*mode*/, double /*coef*/)
+void Environment::ApplyOpticsPerturbationMode(unsigned int mode, double coef)
 {
-	printf("Environment::ApplyOpticsPerturbationMode: not yet implemented\n");
+	//printf("Environment::ApplyOpticsPerturbationMode: mode %u, coef %.3E\n", mode, coef);
 
-	/*
-	printf(">> Environment::ApplyOpticsPerturbationMode\n");
+	TVectorD r(16);
 
-	// prepare correlation matrix
-	TMatrixDSym cor(opt_cov);
-	TMatrixDSym Sigma(opt_cov);
-	for (int i = 0; i < opt_cov.GetNrows(); i++)
-		for (int j = 0; j < opt_cov.GetNcols(); j++)
-		{
-			cor(i, j) /= sqrt( opt_cov(i, i) * opt_cov(j, j) );
-			Sigma(i, j) = (i == j) ? sqrt( opt_cov(i, i) ) : 0.;
-		}
+	for (unsigned int i = 0; i < 16; i++)
+		r(i) = (i == mode) ? coef : 0.;
+	auto de = opt_per_gen * r;
 
-	// eigen decomposition
-	TMatrixDSymEigen eig_decomp(cor);
-	TVectorD eig_values(eig_decomp.GetEigenValues());
+	//printf("* mode = %u\n", mode);
+	//de.Print();
+	
+	v_x_L_1_F += de(0) * 1E0;
+	L_x_L_1_F += de(1) * 1E3;
+	v_y_L_1_F += de(2) * 1E0;
+	L_y_L_1_F += de(3) * 1E3;
+	v_x_L_2_F += de(4) * 1E0;
+	L_x_L_2_F += de(5) * 1E3;
+	v_y_L_2_F += de(6) * 1E0;
+	L_y_L_2_F += de(7) * 1E3;
 
-	// construct mode
-	TVectorD vm(opt_cov.GetNrows());
-	for (int i = 0; i < opt_cov.GetNrows(); i++)
-	{
-		double l = eig_values(i);
-		double sl = (l > 0.) ? sqrt(l) : 0.;
-		vm(i) = (i == mode) ? sl * coef : 0.;
-	}
-
-	vm = Sigma * eig_decomp.GetEigenVectors() * vm;
-
-	printf("\tleft arm: mode %u, coefficient %+.3f\n", mode, coef);
-	vm.Print();
-
-	v_x_L_N += vm(0) * 1E0;
-	L_x_L_N += vm(1) * 1E3;
-	v_y_L_N += vm(2) * 1E0;
-	L_y_L_N += vm(3) * 1E3;
-	v_x_L_F += vm(4) * 1E0;
-	L_x_L_F += vm(5) * 1E3;
-	v_y_L_F += vm(6) * 1E0;
-	L_y_L_F += vm(7) * 1E3;
-
-	v_x_R_N += vm(8) * 1E0;
-	L_x_R_N += vm(9) * 1E3;
-	v_y_R_N += vm(10) * 1E0;
-	L_y_R_N += vm(11) * 1E3;
-	v_x_R_F += vm(12) * 1E0;
-	L_x_R_F += vm(13) * 1E3;
-	v_y_R_F += vm(14) * 1E0;
-	L_y_R_F += vm(15) * 1E3;
-	*/
+	v_x_R_1_F += de(8) * 1E0;
+	L_x_R_1_F += de(9) * 1E3;
+	v_y_R_1_F += de(10) * 1E0;
+	L_y_R_1_F += de(11) * 1E3;
+	v_x_R_2_F += de(12) * 1E0;
+	L_x_R_2_F += de(13) * 1E3;
+	v_y_R_2_F += de(14) * 1E0;
+	L_y_R_2_F += de(15) * 1E3;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -519,6 +492,7 @@ void Environment::ApplyOpticsPerturbationMode(int /*mode*/, double /*coef*/)
 void Environment::ApplyEffectiveLengthPerturbationMode(int /*mode*/, double /*coef*/)
 {
 	printf("Environment::ApplyEffectiveLengthPerturbationMode: not yet implemented\n");
+	throw 1;
 
 	/*
 
@@ -565,24 +539,24 @@ void Environment::ApplyEffectiveLengthPerturbationMode(int /*mode*/, double /*co
 void Environment::PrintOpticsUncertainties() const
 {
 	printf("optics uncertainties: left arm\n");
-	printf("\tv_x_N: %.4f\n", sqrt(opt_cov(0, 0)));
-	printf("\tL_x_N: %.4f m\n", sqrt(opt_cov(1, 1)));
-	printf("\tv_y_N: %.4f\n", sqrt(opt_cov(2, 2)));
-	printf("\tL_y_N: %.4f m\n", sqrt(opt_cov(3, 3)));
-	printf("\tv_x_F: %.4f\n", sqrt(opt_cov(4, 4)));
-	printf("\tL_x_F: %.4f m\n", sqrt(opt_cov(5, 5)));
-	printf("\tv_y_F: %.4f\n", sqrt(opt_cov(6, 6)));
-	printf("\tL_y_F: %.4f m\n", sqrt(opt_cov(7, 7)));
+	printf("\tv_x_1_F: %.4f\n", sqrt(opt_cov(0, 0)));
+	printf("\tL_x_1_F: %.4f m\n", sqrt(opt_cov(1, 1)));
+	printf("\tv_y_1_F: %.4f\n", sqrt(opt_cov(2, 2)));
+	printf("\tL_y_1_F: %.4f m\n", sqrt(opt_cov(3, 3)));
+	printf("\tv_x_2_F: %.4f\n", sqrt(opt_cov(4, 4)));
+	printf("\tL_x_2_F: %.4f m\n", sqrt(opt_cov(5, 5)));
+	printf("\tv_y_2_F: %.4f\n", sqrt(opt_cov(6, 6)));
+	printf("\tL_y_2_F: %.4f m\n", sqrt(opt_cov(7, 7)));
 
 	printf("optics uncertainties: right arm\n");
-	printf("\tv_x_N: %.4f\n", sqrt(opt_cov(8, 8)));
-	printf("\tL_x_N: %.4f m\n", sqrt(opt_cov(9, 9)));
-	printf("\tv_y_N: %.4f\n", sqrt(opt_cov(10, 10)));
-	printf("\tL_y_N: %.4f m\n", sqrt(opt_cov(11, 11)));
-	printf("\tv_x_F: %.4f\n", sqrt(opt_cov(12, 12)));
-	printf("\tL_x_F: %.4f m\n", sqrt(opt_cov(13, 13)));
-	printf("\tv_y_F: %.4f\n", sqrt(opt_cov(14, 14)));
-	printf("\tL_y_F: %.4f m\n", sqrt(opt_cov(15, 15)));
+	printf("\tv_x_1_F: %.4f\n", sqrt(opt_cov(8, 8)));
+	printf("\tL_x_1_F: %.4f m\n", sqrt(opt_cov(9, 9)));
+	printf("\tv_y_1_F: %.4f\n", sqrt(opt_cov(10, 10)));
+	printf("\tL_y_1_F: %.4f m\n", sqrt(opt_cov(11, 11)));
+	printf("\tv_x_2_F: %.4f\n", sqrt(opt_cov(12, 12)));
+	printf("\tL_x_2_F: %.4f m\n", sqrt(opt_cov(13, 13)));
+	printf("\tv_y_2_F: %.4f\n", sqrt(opt_cov(14, 14)));
+	printf("\tL_y_2_F: %.4f m\n", sqrt(opt_cov(15, 15)));
 }
 
 //----------------------------------------------------------------------------------------------------
