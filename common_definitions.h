@@ -426,13 +426,13 @@ struct Environment
 
 //----------------------------------------------------------------------------------------------------
 
-void Environment::ApplyRandomOpticsPerturbations(TVectorD & /*de*/)
+void Environment::ApplyRandomOpticsPerturbations(TVectorD & de)
 {
 	TVectorD r(16);
 
 	for (unsigned int i = 0; i < 16; i++)
 		r(i) = gRandom->Gaus();
-	auto de = opt_per_gen * r;
+	de = opt_per_gen * r;
 	
 	v_x_L_1_F += de(0) * 1E0;
 	L_x_L_1_F += de(1) * 1E3;
