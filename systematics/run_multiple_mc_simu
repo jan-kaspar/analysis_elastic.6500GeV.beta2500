@@ -17,6 +17,9 @@ configurations=(
 	"fit2-2/tilt-thx-thy"
 	"fit2-2/sc-thx"
 	"fit2-2/sc-thy"
+	"fit2-2/sc-thxy-mode1"
+	"fit2-2/sc-thxy-mode2"
+	"fit2-2/sc-thxy-mode3"
 
 	"fit2-2/sh-thx-LRasym"
 	"fit2-2/sh-thy-LRasym"

@@ -5,7 +5,8 @@ all: \
 	mc_process \
 	ni_simu \
 	ni_process \
-	matrix
+	matrix \
+	optics_scaling_matrix
 
 % : %.cc
 	g++ --std=c++11 `root-config --libs` -lMinuit `root-config --cflags` -O3 -Wall -g \

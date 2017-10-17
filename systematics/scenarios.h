@@ -241,6 +241,72 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
+	if (scenario.compare("sc-thxy-mode1") == 0)
+	{
+		const double val_L_x = -1.608E-03, val_L_y = +1.473E-03, val_R_x = -1.630E-03, val_R_y = +1.477E-03;
+
+		biases.L.sc_th_x = 1. + val_L_x;
+		biases.R.sc_th_x = 1. + val_R_x;
+		biases.L.sc_th_y = 1. + val_L_y;
+		biases.R.sc_th_y = 1. + val_R_y;
+
+		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
+		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
+
+		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
+		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
+
+		const double val_G_x = (val_L_x + val_R_x) / 2.;
+		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
+		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
+
+		return 0;
+	}
+
+	if (scenario.compare("sc-thxy-mode2") == 0)
+	{
+		const double val_L_x = -5.157E-04, val_L_y = +2.541E-05, val_R_x = +5.566E-04, val_R_y = +2.746E-05;
+
+		biases.L.sc_th_x = 1. + val_L_x;
+		biases.R.sc_th_x = 1. + val_R_x;
+		biases.L.sc_th_y = 1. + val_L_y;
+		biases.R.sc_th_y = 1. + val_R_y;
+
+		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
+		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
+
+		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
+		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
+
+		const double val_G_x = (val_L_x + val_R_x) / 2.;
+		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
+		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
+
+		return 0;
+	}
+
+	if (scenario.compare("sc-thxy-mode3") == 0)
+	{
+		const double val_L_x = +3.617E-04, val_L_y = +3.625E-04, val_R_x = +3.006E-04, val_R_y = +3.641E-04;
+
+		biases.L.sc_th_x = 1. + val_L_x;
+		biases.R.sc_th_x = 1. + val_R_x;
+		biases.L.sc_th_y = 1. + val_L_y;
+		biases.R.sc_th_y = 1. + val_R_y;
+
+		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
+		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
+
+		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
+		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
+
+		const double val_G_x = (val_L_x + val_R_x) / 2.;
+		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
+		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
+
+		return 0;
+	}
+
 	if (scenario == "dx-sigma")
 	{
 		anal_sim.si_th_x_LRdiff += 0.3E-6;
