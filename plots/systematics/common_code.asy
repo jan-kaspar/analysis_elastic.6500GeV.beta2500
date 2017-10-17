@@ -82,6 +82,8 @@ void AddAllModes()
 
 	//--------------------
 
+	// TODO: remove
+	/*
 	AddMode("\vbox{\hbox{$\th_{x}^*$ scaling}\hbox{L-R symmetric}}", heavygreen,
 		"", "sc-thx", 1,
 		"", "sc-thx", 1
@@ -100,6 +102,22 @@ void AddAllModes()
 	AddMode("\vbox{\hbox{$\th_{y}^*$ scaling}\hbox{L-R anti-symmetric}}", cyan+dashed,
 		"", "sc-thy-LRasym", 1,
 		"", "", 1
+	);
+	*/
+
+	AddMode("\vbox{\hbox{$\th_{x,y}^*$ scaling}\hbox{mode 1}}", heavygreen,
+		"", "sc-thxy-mode1", 1,
+		"", "sc-thxy-mode1", 1
+	);
+
+	AddMode("\vbox{\hbox{$\th_{x,y}^*$ scaling}\hbox{mode 2}}", heavygreen,
+		"", "sc-thxy-mode2", 1,
+		"", "sc-thxy-mode2", 1
+	);
+
+	AddMode("\vbox{\hbox{$\th_{x,y}^*$ scaling}\hbox{mode 3}}", heavygreen,
+		"", "sc-thxy-mode3", 1,
+		"", "sc-thxy-mode3", 1
 	);
 	
 	//--------------------

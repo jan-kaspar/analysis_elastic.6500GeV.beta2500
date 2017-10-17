@@ -12,7 +12,7 @@ diagonals.push("45t_56b"); diagonal_labels.push("45 top -- 56 bot");
 
 real z_t_maxs[], z_t_Steps[], z_t_steps[], z_e_maxs[], z_e_Steps[], z_e_steps[];
 z_t_maxs.push(0.004); z_t_Steps.push(0.002); z_t_steps.push(0.001); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
-z_t_maxs.push(0.2); z_t_Steps.push(0.05); z_t_steps.push(0.01); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
+//z_t_maxs.push(0.2); z_t_Steps.push(0.05); z_t_steps.push(0.01); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
 z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04); z_e_Steps.push(0.01); z_e_steps.push(0.005);
 
 string t_dist_type = "fit2-2";
@@ -24,6 +24,7 @@ AddAllModes();
 //FilterModes("sh-thy", "sc-thy");
 //FilterModes("sh-thy-LRasym");
 //FilterModes("dx-non-gauss");
+//FilterModes("sc-thxy");
 
 TH1_x_min = 8e-4;
 
@@ -106,7 +107,7 @@ for (int mi : modes.keys)
 			if (!legend_drawn)
 			{
 				frame f_legend = BuildLegend();
-				NewPad(false, 0, -1);
+				NewPad(false, 1, -1);
 				add(f_legend);
 				legend_drawn = true;
 			}
