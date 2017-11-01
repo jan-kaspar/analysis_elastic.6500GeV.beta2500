@@ -191,7 +191,7 @@ int main()
 			printf("bi0 = %i\n", bi0);
 		}
 
-		if (b_left >= 0.2)
+		if (b_left >= 1.0)
 			continue;
 
 		// bin representative point statistics
