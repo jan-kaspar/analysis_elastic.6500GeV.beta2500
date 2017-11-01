@@ -320,35 +320,34 @@ int main(int argc, const char **argv)
 		Mode("sh-thx-LRasym", Mode::sNI, Mode::coFull),
 
 		Mode("sh-thy", Mode::sNI, Mode::coFull),
-		Mode("sh-thy-TBuncor", Mode::sNI, Mode::coNo),
 		Mode("sh-thy-LRasym", Mode::sNI, Mode::coFull),
+		Mode("sh-thy-TBuncor", Mode::sNI, Mode::coNo),
 
 		Mode("tilt-thx-thy", Mode::sNI, Mode::coFull),
 		Mode("tilt-thx-thy-LRasym", Mode::sMC, Mode::coFull),
 
-		Mode("sc-thx", Mode::sNI, Mode::coFull),
-		Mode("sc-thx-LRasym", Mode::sMC, Mode::coFull),
-		Mode("sc-thy", Mode::sNI, Mode::coFull),
-		Mode("sc-thy-LRasym", Mode::sMC, Mode::coFull),
+		Mode("sc-thxy-mode1", Mode::sNI, Mode::coFull),
+		Mode("sc-thxy-mode2", Mode::sNI, Mode::coFull),
+		Mode("sc-thxy-mode3", Mode::sNI, Mode::coFull),
 
 		Mode("dx-sigma", Mode::sNI, Mode::coFull),
-		Mode("dx-non-gauss", Mode::sNI, Mode::coFull),
 		Mode("dy-sigma", Mode::sNI, Mode::coFull),
-
-		Mode("mx-sigma", Mode::sNI, Mode::coFull),
-		Mode("my-sigma", Mode::sNI, Mode::coFull),
-		Mode("unsmearing-model", Mode::sNI, Mode::coFull),
+		Mode("dx-non-gauss", Mode::sNI, Mode::coFull),
 
 		Mode("eff-intercept", Mode::sNI, Mode::coFull),
 		Mode("eff-slope", Mode::sNI, Mode::coFull),
 
 		Mode("beam-mom", Mode::sNI, Mode::coFull),
 
+		Mode("mx-sigma", Mode::sNI, Mode::coFull),
+		Mode("my-sigma", Mode::sNI, Mode::coFull),
+		Mode("unsmearing-model", Mode::sNI, Mode::coFull),
+
 		Mode("norm", Mode::sExt, Mode::coFull),
 	};
 
 	// normalisation uncertainty
-	const double norm_unc = 0.04;
+	const double norm_unc = 0.05;
 
 	// load binning-reference histograms
 	vector<TH1D *> v_binning_h;
@@ -548,29 +547,28 @@ int main(int argc, const char **argv)
 		"sh-thx-LRasym",
 
 		"sh-thy",
-		"sh-thy-TBuncor",
 		"sh-thy-LRasym",
+		"sh-thy-TBuncor",
 
 		"tilt-thx-thy",
 		"tilt-thx-thy-LRasym",
 
-		"sc-thx",
-		"sc-thx-LRasym",
-		"sc-thy",
-		"sc-thy-LRasym",
+		"sc-thxy-mode1",
+		"sc-thxy-mode2",
+		"sc-thxy-mode3",
 
 		"dx-sigma",
-		"dx-non-gauss",
 		"dy-sigma",
-
-		"mx-sigma",
-		"my-sigma",
-		"unsmearing-model",
+		"dx-non-gauss",
 
 		"eff-intercept",
 		"eff-slope",
 
 		"beam-mom",
+
+		"mx-sigma",
+		"my-sigma",
+		"unsmearing-model",
 	};
 
 	BuildMatrix("all-but-norm", contributions, modes, binnings);
