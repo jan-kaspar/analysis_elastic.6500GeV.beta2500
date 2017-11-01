@@ -4,7 +4,7 @@
 \def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/}
 
 \def\section{\IfNch[{\sectionRef}{\sectionBase}}
-\def\sectionRef[#1]#2{\sectionBase{#2}\MakeRef{s:#1}{\the\nsec}}
+\def\sectionRef[#1]#2{\sectionBase{#2}\MakeRef{s:#1}{\the\nsec}\pdfdest name {s:#1} xyz}
 \def\sectionBase#1{%
 	\advance\nsec1
 	\nsubsec=0 
@@ -24,7 +24,7 @@
 }
 
 \def\subsection{\IfNch[{\subsectionRef}{\subsectionBase}}
-\def\subsectionRef[#1]#2{\subsectionBase{#2}\MakeRef{s:#1}{\the\nsec.\the\nsubsec}}
+\def\subsectionRef[#1]#2{\subsectionBase{#2}\MakeRef{s:#1}{\the\nsec.\the\nsubsec}\pdfdest name {s:#1} xyz}
 \def\subsectionBase#1{%
 	\advance\nsubsec1
 	\nssubsec=0%
@@ -41,9 +41,16 @@
 	\everypar={\parindent=\ParIndent \everypar={}}%
 }
 
-\def\sref#1{\safecom{s:#1}}
+\def\sref#1{%
+	\pdfstartlink goto name {s:#1}%
+	\linkColor%
+	\safecom{s:#1}%
+	\cBlack%
+	\pdfendlink
+}
 
 \def\linkColor{\cBlue}
+
 
 %----------------------------------------------------------------------------------------------------
 
@@ -117,9 +124,9 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section[al]{Alignment}
+\section[alignment]{Alignment}
 
-\subsection[al-det]{Determination}
+\subsection[alignment-det]{Determination}
 
 \> method: standard procedure
 \>> beam-based alignment: before data-taking
@@ -163,11 +170,11 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Optics}
+\section[optics]{Optics}
 
 \> by default matched optics is used.
 
-\subsection{Matched optics}
+\subsection[optics-matched]{Matched optics}
 
 \> optics sent by Frici on 18 July 2017:
 
@@ -188,7 +195,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 \>>> double-arm reconstruction: $\si(\de\th^*_x) = 0.00165$, $\si(\de\th^*_y) = 0.00152$, correlation factor $-90.29\un{\%}$
 
 
-\subsection{Validation}
+\subsection[optics-validation]{Validation}
 
 \> \plot{optics/optics_test_summary.pdf}: left-right differences in reconstructed scattering angles plotted as a function of the scattering angle
 \>> shifts (fit extrapolated to 0): due to misalignments
@@ -197,7 +204,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Resolutions}
+\section[resolution]{Resolution}
 
 \> method
 \>> horizontal plane
@@ -687,18 +694,21 @@ the analysis
 
 \>> alignment: shifts in $\th^*_{x,y}$, both LR symmetric and anti-symmetric
 \>>> in the vertical plane: both correlated and uncorrelated between diagonals
-\>>> uncertainty values presented in Section~\sref{al-det}
+\>>> uncertainty values presented in Section~\sref{alignment-det} bla
 
 \>> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$, both LR symmetric and anti-symmetric
-\>>> uncertainty values presented in Section~\sref{al-det}
+\>>> uncertainty values presented in Section~\sref{alignment-det}
 
 \>> optics: scaling of $\th^*_{x,y}$ based on covariance matrix by Frici
 \>>> includes correlations between $x$ and $y$, L and R
 \>>> 3 modes (out of 4) found important
+\>>> uncertainty values presented in Section~\sref{optics-matched}
 
 \>> (smearing) acceptance correction
 \>>> uncertainty of $\si(d_x)$, $\si(d_y)$
 \>>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
+\>>> uncertainty values presented in Section~\sref{resolution}
+
 
 \>> inefficiency correction (only relevant from 3/4 and 2/4): both slope and intercept
 
