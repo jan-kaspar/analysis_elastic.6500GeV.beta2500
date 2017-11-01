@@ -53,6 +53,8 @@ void AddAllModes()
 		"", "sh-thx-LRasym", 1
 	);
 
+	//--------------------
+
 	AddMode("\vbox{\hbox{shift in $\th_y^*$}\hbox{L-R symmetric}\hbox{T-B correlated}}", red,
 		"", "sh-thy", 1,
 		"", "sh-thy", 1
@@ -81,29 +83,6 @@ void AddAllModes()
 	);
 
 	//--------------------
-
-	// TODO: remove
-	/*
-	AddMode("\vbox{\hbox{$\th_{x}^*$ scaling}\hbox{L-R symmetric}}", heavygreen,
-		"", "sc-thx", 1,
-		"", "sc-thx", 1
-	);
-
-	AddMode("\vbox{\hbox{$\th_{x}^*$ scaling}\hbox{L-R anti-symmetric}}", heavygreen+dashed,
-		"", "sc-thx-LRasym", 1,
-		"", "", 1
-	);
-
-	AddMode("\vbox{\hbox{$\th_{y}^*$ scaling}\hbox{L-R symmetric}}", cyan,
-		"", "sc-thy", 1,
-		"", "sc-thy", 1
-	);
-
-	AddMode("\vbox{\hbox{$\th_{y}^*$ scaling}\hbox{L-R anti-symmetric}}", cyan+dashed,
-		"", "sc-thy-LRasym", 1,
-		"", "", 1
-	);
-	*/
 
 	AddMode("\vbox{\hbox{$\th_{x,y}^*$ scaling}\hbox{mode 1}}", heavygreen,
 		"", "sc-thxy-mode1", 1,

@@ -117,28 +117,33 @@ int main(int argc, const char **argv)
 
 	vector<Scenario> scenarios = {
 		{ "none", Scenario::mDsdt },
+
 		{ "sh-thx", Scenario::mDsdt },
 		{ "sh-thx-LRasym", Scenario::mDsdt },
+
 		{ "sh-thy", Scenario::mDsdt },
-		{ "sh-thy-TBuncor", Scenario::mDsdt },
 		{ "sh-thy-LRasym", Scenario::mDsdt },
+		{ "sh-thy-TBuncor", Scenario::mDsdt },
+
 		{ "tilt-thx-thy", Scenario::mDsdt },
 		{ "tilt-thx-thy-LRasym", Scenario::mDsdt },
-		{ "sc-thx", Scenario::mDsdt },
-		{ "sc-thx-LRasym", Scenario::mDsdt },
-		{ "sc-thy", Scenario::mDsdt },
-		{ "sc-thy-LRasym", Scenario::mDsdt },
+
 		{ "sc-thxy-mode1", Scenario::mDsdt },
 		{ "sc-thxy-mode2", Scenario::mDsdt },
 		{ "sc-thxy-mode3", Scenario::mDsdt },
+
 		{ "dx-sigma", Scenario::mDsdt },
 		{ "dy-sigma", Scenario::mDsdt },
 		{ "dx-non-gauss", Scenario::mDsdt },
-		{ "mx-sigma", Scenario::mUnsmearing },
-		{ "my-sigma", Scenario::mUnsmearing },
+
 		{ "eff-intercept", Scenario::mDsdt },
 		{ "eff-slope", Scenario::mDsdt },
+
 		{ "beam-mom", Scenario::mDsdt },
+
+		{ "mx-sigma", Scenario::mUnsmearing },
+		{ "my-sigma", Scenario::mUnsmearing },
+
 		{ "norm", Scenario::mDsdt },
 	};
 
