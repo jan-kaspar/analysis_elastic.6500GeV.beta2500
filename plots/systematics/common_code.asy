@@ -70,6 +70,11 @@ void AddAllModes()
 		"", "sh-thy-TBuncor", 1
 	);
 
+	AddMode("\vbox{\hbox{shift in $\th_y^*$}\hbox{L-R anti-symmetric}\hbox{T-B uncorrelated}}", red,
+		"", "sh-thy-TBuncor-LRasym", 1,
+		"", "sh-thy-TBuncor-LRasym", 1
+	);
+
 	//--------------------
 
 	AddMode("\vbox{\hbox{$x$-$y$ tilt}\hbox{L-R symmetric}}", darkred,

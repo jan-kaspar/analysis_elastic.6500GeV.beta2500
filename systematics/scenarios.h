@@ -107,49 +107,62 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	// ---------- y shift ----------
 
-	if (scenario == "sh-thy")
 	{
+		// sigma of the TB correlate, LR symmetric mode
 		const double v = 0.35E-6 / sqrt(2.);
 
-		biases.L.sh_th_y = v;
-		biases.R.sh_th_y = v;
-
-		anal_rec.fc_L_l.th_y_0 += v * th_y_sign; anal_rec.fc_L_h.th_y_0 += v * th_y_sign;
-		anal_rec.fc_R_l.th_y_0 += v * th_y_sign; anal_rec.fc_R_h.th_y_0 += v * th_y_sign;
-		anal_rec.fc_G_l.th_y_0 += v * th_y_sign; anal_rec.fc_G_h.th_y_0 += v * th_y_sign;
-
-		return 0;
-	}
-
-	if (scenario == "sh-thy-LRasym")
-	{
 		// typical value De^{R-L} th_y ~ 0.04 urad
-		const double v = 0.04E-6 / 2.;
+		const double v_LR_asym = 0.04E-6 / 2.;
 
-		biases.L.sh_th_y = +v;
-		biases.R.sh_th_y = -v;
+		// sigma for the TB uncorrelated modes (L, R) = (+1, +1) or (+1, -1)
+		const double v_TB_uncorr = 0.017E-6 / sqrt(2.);
 
-		anal_rec.fc_L_l.th_y_0 += +v * th_y_sign; anal_rec.fc_L_h.th_y_0 += +v * th_y_sign;
-		anal_rec.fc_R_l.th_y_0 += -v * th_y_sign; anal_rec.fc_R_h.th_y_0 += -v * th_y_sign;
+		if (scenario == "sh-thy")
+		{
+			biases.L.sh_th_y = v;
+			biases.R.sh_th_y = v;
 
-		return 0;
+			anal_rec.fc_L_l.th_y_0 += v * th_y_sign; anal_rec.fc_L_h.th_y_0 += v * th_y_sign;
+			anal_rec.fc_R_l.th_y_0 += v * th_y_sign; anal_rec.fc_R_h.th_y_0 += v * th_y_sign;
+			anal_rec.fc_G_l.th_y_0 += v * th_y_sign; anal_rec.fc_G_h.th_y_0 += v * th_y_sign;
+
+			return 0;
+		}
+
+		if (scenario == "sh-thy-LRasym")
+		{
+			biases.L.sh_th_y = +v_LR_asym;
+			biases.R.sh_th_y = -v_LR_asym;
+
+			anal_rec.fc_L_l.th_y_0 += +v_LR_asym * th_y_sign; anal_rec.fc_L_h.th_y_0 += +v_LR_asym * th_y_sign;
+			anal_rec.fc_R_l.th_y_0 += -v_LR_asym * th_y_sign; anal_rec.fc_R_h.th_y_0 += -v_LR_asym * th_y_sign;
+
+			return 0;
+		}
+
+		if (scenario == "sh-thy-TBuncor")
+		{
+			biases.L.sh_th_y = v_TB_uncorr;
+			biases.R.sh_th_y = v_TB_uncorr;
+
+			anal_rec.fc_L_l.th_y_0 += v_TB_uncorr * th_y_sign; anal_rec.fc_L_h.th_y_0 += v_TB_uncorr * th_y_sign;
+			anal_rec.fc_R_l.th_y_0 += v_TB_uncorr * th_y_sign; anal_rec.fc_R_h.th_y_0 += v_TB_uncorr * th_y_sign;
+			anal_rec.fc_G_l.th_y_0 += v_TB_uncorr * th_y_sign; anal_rec.fc_G_h.th_y_0 += v_TB_uncorr * th_y_sign;
+
+			return 0;
+		}
+
+		if (scenario == "sh-thy-TBuncor-LRasym")
+		{
+			biases.L.sh_th_y = +v_TB_uncorr;
+			biases.R.sh_th_y = -v_TB_uncorr;
+
+			anal_rec.fc_L_l.th_y_0 += +v_TB_uncorr * th_y_sign; anal_rec.fc_L_h.th_y_0 += +v_TB_uncorr * th_y_sign;
+			anal_rec.fc_R_l.th_y_0 += -v_TB_uncorr * th_y_sign; anal_rec.fc_R_h.th_y_0 += -v_TB_uncorr * th_y_sign;
+
+			return 0;
+		}
 	}
-
-	if (scenario == "sh-thy-TBuncor")
-	{
-		const double v = 0.017E-6 / sqrt(2.);
-
-		biases.L.sh_th_y = v;
-		biases.R.sh_th_y = v;
-
-		anal_rec.fc_L_l.th_y_0 += v * th_y_sign; anal_rec.fc_L_h.th_y_0 += v * th_y_sign;
-		anal_rec.fc_R_l.th_y_0 += v * th_y_sign; anal_rec.fc_R_h.th_y_0 += v * th_y_sign;
-		anal_rec.fc_G_l.th_y_0 += v * th_y_sign; anal_rec.fc_G_h.th_y_0 += v * th_y_sign;
-
-		return 0;
-	}
-
-	// TODO: in principle missing mode T-B uncorr, L-R antisym
 
 	// ---------- xy tilt ----------
 

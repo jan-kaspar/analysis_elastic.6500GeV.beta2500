@@ -14,6 +14,7 @@ configurations=(
 	"fit2-2/sh-thy"
 	"fit2-2/sh-thy-LRasym"
 	"fit2-2/sh-thy-TBuncor"
+	"fit2-2/sh-thy-TBuncor-LRasym"
 
 	"fit2-2/tilt-thx-thy"
 	"fit2-2/tilt-thx-thy-LRasym"

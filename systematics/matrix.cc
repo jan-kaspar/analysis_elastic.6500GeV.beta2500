@@ -316,12 +316,14 @@ int main(int argc, const char **argv)
 
 	// list of modes
 	vector<Mode> modes = {
+		// TODO: review correlation level
 		Mode("sh-thx", Mode::sNI, Mode::coFull),
 		Mode("sh-thx-LRasym", Mode::sNI, Mode::coFull),
 
 		Mode("sh-thy", Mode::sNI, Mode::coFull),
 		Mode("sh-thy-LRasym", Mode::sNI, Mode::coFull),
 		Mode("sh-thy-TBuncor", Mode::sNI, Mode::coNo),
+		Mode("sh-thy-TBuncor-LRasym", Mode::sNI, Mode::coNo),
 
 		Mode("tilt-thx-thy", Mode::sNI, Mode::coFull),
 		Mode("tilt-thx-thy-LRasym", Mode::sMC, Mode::coFull),
@@ -417,6 +419,7 @@ int main(int argc, const char **argv)
 
 		if (mode.source == Mode::sExt && mode.tag == "norm")
 		{
+			// TODO: why the loop over diagonal ??
 			for (const auto &diagonal : diagonals)
 			{
 				vector<TH1D *> v;
