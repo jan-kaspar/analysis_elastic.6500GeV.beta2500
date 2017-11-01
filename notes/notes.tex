@@ -147,13 +147,14 @@
 \>> shift in $\th_x^*$: $0.50\un{\mu rad}$ (single arm), $0.35\un{\mu rad}$ (double arm)
 \>> shift in $\th_y^*$ (correlated top-bottom): $0.35\un{\mu rad}$ (single arm), $0.25\un{\mu rad}$ (double arm)
 \>> shift in $\th_y^*$ (uncorrelated top-bottom): $0.017\un{\mu rad}$ (single arm), $0.012\un{\mu rad}$ (double arm)
-\>> rotation about z: total uncertainty $2.24\un{mrad}$, two possible effects:
+\>> rotation about z: total uncertainty $2.24\un{mrad}$, two effects:
 \>>> $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.013$ (single arm), $0.009$ (double arm)
 \>>> $\th_y^* \rightarrow \th_y^* + D \th_x^*$, $\si(D) = 0.00039$ (single arm), $0.00028$ (double arm)
 
-\subsection{Validation}
+\subsection[alignment-val]{Validation}
 
-\> \plot{alignment/angular_diff_vs_time.pdf}: differences (left-right, 210m-220m) in reconstructed scattering angles
+\> \plot{alignment/angular_diff_vs_time.pdf}: left-right differences in reconstructed scattering angles
+\>> typical value of $\De^{\rm R-L}\th^*_y$: $\approx 0.04\un{\mu rad}$
 
 \> \plot{alignment/mean_th_x_vs_th_y.pdf}: mean of $\th_x^*$ as a function of $\th_y^*$ -- test for residual mis-rotations
 
@@ -188,11 +189,17 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 }}}
 
 \> uncertainties sent by Frici on 13 Oct 2017
-\>> 3 leading eigenmodes reproduce the matrix sufficiently well
+\>> 3 leading eigen modes reproduce the matrix sufficiently well
 \>> propagated to relative uncertainties of scattering angles by program "reconstruction\_formulae/print\_optics\_uncertainties"
 \>>> left-arm reconstruction: $\si(\de\th^*_x) = 0.00173$, $\si(\de\th^*_y) = 0.00152$
 \>>> right-arm reconstruction: $\si(\de\th^*_x) = 0.00175$, $\si(\de\th^*_y) = 0.00152$
 \>>> double-arm reconstruction: $\si(\de\th^*_x) = 0.00165$, $\si(\de\th^*_y) = 0.00152$, correlation factor $-90.29\un{\%}$
+
+\>> single-arm perturbations decomposed to modes (program "systematics/optics\_scaling\_matrix")
+\>>> relative errors, order: $\th^*_{x,L}$, $\th^*_{y,L}$, $\th^*_{x,R}$, $\th^*_{y,R}$
+\>>> mode 1: -1.608E-03, +1.473E-03, -1.630E-03, +1.477E-03
+\>>> mode 2: -5.157E-04, +2.541E-05, +5.566E-04, +2.746E-05
+\>>> mode 3: +3.617E-04, +3.625E-04, +3.006E-04, +3.641E-04
 
 
 \subsection[optics-validation]{Validation}
@@ -462,7 +469,7 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Efficiency studies}
+\section[efficiency]{Efficiency studies}
 
 \vskip3mm
 Each event is weighted with the following correction factor
@@ -474,7 +481,7 @@ Each event is weighted with the following correction factor
 }{eff corr}
 where symbols $I$ stand for various inefficiencies discussed below.
 
-\subsection{Trigger efficiency}
+\subsection[efficiency-trigger]{Trigger efficiency}
 
 \> method:
 \>> take zero-bias (BX) data
@@ -494,7 +501,7 @@ $$1 - I_{\rm trig} = {N({\rm BX,elastic,trigger}) \over N({\rm BX,elastic})}$$
 \> this correction is not applied since it does not modify $t$-distribution shape
 
 
-\subsection{DAQ efficiency}
+\subsection[efficiency-trigger]{DAQ efficiency}
 
 \> method: per time slice calculate from the trigger block of raw data:
 $$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered events})} \equiv 1 - I_{\rm DAQ}$$
@@ -505,7 +512,7 @@ $$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered even
 
 
 
-\subsection{Pile-up}
+\subsection[efficiency-pileup]{Pile-up}
 
 \> method
 \>> take BX sample, split it into time slices
@@ -528,7 +535,7 @@ $$I_{\rm PU} = {N(\hbox{destructive signal in any 220-fr RP})\over N(\hbox{anyth
 \> this correction is not applied since it does not modify $t$-distribution shape
 
 
-\subsection{Uncorrelated single RP inefficiencies (3-out-of-4)}
+\subsection[efficiency-uncorrelated]{Uncorrelated single RP inefficiencies (3-out-of-4)}
 
 \> method: derive from results of the 4-RP analysis
 \>> transfer validation: \plot{efficiencies/eff3outof4_fits_summary_cmp_4rp_anal.pdf}
@@ -547,7 +554,7 @@ $$I_{\rm 1RP}(\th_y^*) = \sum\limits_{i \in\hbox{\SmallerFonts 220-fr}} I_{\rm 1
 \> this correction is applied since it modifies the $t$-distribution shape
 
 
-\subsection{Correlated RP inefficiencies}
+\subsection[efficiency-correlated]{Correlated RP inefficiencies}
 
 \> typical case: shower initiated upstream (210-far) propagates downstream (220-far)
 \>> this is not included in the uncorrelated single-RP inefficiency above
@@ -563,7 +570,7 @@ $$I_{2RP} = (3 \pm 1)\un{\%}$$
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Unfolding of resolution effects}
+\section[unfolding]{Unfolding of resolution effects}
 
 \> method
 \>> take a fit of data with model including both Coulomb and hadronic contributions
@@ -586,15 +593,14 @@ where the numerator comes from \Eq{sm model th corr} and therefore this correcti
 \>> effects in general small -- very small beam divergence
 \>> effects only present at low $|t|$ (strong non-linearity due to Coulomb) and at dip region
 
-\> \TODO: add comments on uncertainty
-\>> model dependence
-\>> dependence on $\si(m_x)$
-\>> dependence on $\si(m_y)$
+\> uncertainties
+\>> values of $\si(m_x)$ and $\si(m_y)$ taken from Section~\sref{resolution}, end of bullet on $m_{x,y}$
+\>> model dependence: negligible for $|t| \ls 0.2\un{GeV^2}$, see \plot{unfolding/num_int_model_cmp.pdf}
 
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Normalisation}
+\section[normalisation]{Normalisation}
 
 \> method
 \>> normalise $\d\si/\d t$ such that $I + S = 31.0\un{mb}$ (this value should be approved in a meeting on 23 Oct 2017)
@@ -604,7 +610,7 @@ where the numerator comes from \Eq{sm model th corr} and therefore this correcti
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Binning}
+\section[binning]{Binning}
 
 \> method: binning ``ob-$\langle n\rangle$-$\langle u\rangle$-$\langle w_m\rangle$`` is built as follows
 \>> at low $|t|$ ($|t| \ls 0.4\un{GeV^2}$): bin size about $n\times \si(\hbox{$t$ smearing})$
@@ -622,7 +628,7 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Validation of analysis chain}
+\section[validation]{Validation of analysis chain}
 
 \> method
 \>> simulate data in the same format (distilled ntuple) as the LHC data
@@ -650,7 +656,7 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section{$t$-distributions}
+\section[t-distributions]{$t$-distributions}
 
 \> \plot{t_distributions/t_dist_fill_cmp.pdf} : comparison of $t$-distributions from different fills and diagonals
 
@@ -663,7 +669,9 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Systematic uncertainties}
+\section[systematics]{Systematic uncertainties}
+
+\subsection[systematics-general]{General notes}
 
 \> method
 \>> per diagonal
@@ -690,31 +698,56 @@ the analysis
 \>> left-right symmetric: vary the value of $t$, do not change the value of acceptance correction
 \>> left-right anti-symmetric: do not vary the value of $t$, change the value of acceptance correction
 
-\> effects included
 
-\>> alignment: shifts in $\th^*_{x,y}$, both LR symmetric and anti-symmetric
-\>>> in the vertical plane: both correlated and uncorrelated between diagonals
-\>>> uncertainty values presented in Section~\sref{alignment-det} bla
+\subsection[systematics-effects]{Effects included}
 
-\>> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$, both LR symmetric and anti-symmetric
-\>>> uncertainty values presented in Section~\sref{alignment-det}
+\> alignment: shifts in $\th^*_{x,y}$
+\>> considered both LR symmetric and anti-symmetric modes
+\>> in the vertical plane: both correlated and uncorrelated between diagonals
+\>> uncertainty values presented in Section~\sref{alignment-det}
+\>>> for vertical LR anti-symmetric mode, the uncertainty is extracted from data, see Section~\sref{alignment-val}
+\>> TODO: missing mode TB uncorr, LR antisym
+\>> TODO: validate implementation
 
-\>> optics: scaling of $\th^*_{x,y}$ based on covariance matrix by Frici
-\>>> includes correlations between $x$ and $y$, L and R
-\>>> 3 modes (out of 4) found important
-\>>> uncertainty values presented in Section~\sref{optics-matched}
+\> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$
+\>> considered both LR symmetric and anti-symmetric
+\>> uncertainty values presented in Section~\sref{alignment-det}
+\>> TODO: validate implementation
 
-\>> (smearing) acceptance correction
-\>>> uncertainty of $\si(d_x)$, $\si(d_y)$
-\>>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
-\>>> uncertainty values presented in Section~\sref{resolution}
+\> optics: scaling of $\th^*_{x,y}$ based on covariance matrix by Frici
+\>> includes correlations between $x$ and $y$, L and R
+\>> 3 modes (out of 4) found important
+\>> uncertainty values presented in Section~\sref{optics-matched}
+\>> TODO: validate implementation
+
+\> (smearing) acceptance correction
+\>> uncertainty of $\si(d_x)$, $\si(d_y)$
+\>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
+\>> TODO: L-R asymmetry ??
+\>> uncertainty values presented in Section~\sref{resolution}, end of bullet on $d_{x,y}$
+\>> TODO: validate implementation
+
+\> inefficiency correction
+\>> only relevant from uncorrelated 3/4, Section~\sref{efficiency-uncorrelated}, and correlated upstream-downstream, Section~\sref{efficiency-correlated}
+\>> both slope and intercept considered
+\>> uncertainty values presented in the quoted sections
+\>> TODO: validate implementation
+
+\> beam momentum
+\>> considered relative uncertainty $\De p/p = 0.1\un{\%}$
+\>> TODO: validate implementation
+
+\> unsmearing
+\>> uncertainty of $\si(m_x)$, $\si(m_y)$
+\>> fit-model dependence
+\>> uncertainty values presented in Section~\sref{unfolding}
+\>> TODO: validate implementation
+
+\> normalisation
+\>> consider uncertainty of $5\un{\%}$
 
 
-\>> inefficiency correction (only relevant from 3/4 and 2/4): both slope and intercept
-
-\>> beam momentum
-
-\>> unsmearing: uncertainty of $\si(m_x)$, $\si(m_y)$, fit model dependence
+\subsection[systematics-plots]{Plots}
 
 \> \plot{systematics/cmp_mc_ni.pdf} : individual effects, per diagonal, two views (low-$|t|$ and full range)
 \>> very good agreement between MC and NI calculations

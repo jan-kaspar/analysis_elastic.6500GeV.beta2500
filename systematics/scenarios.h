@@ -66,44 +66,50 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
-	if (scenario == "sh-thx")
+	// ---------- x shift ----------
+
 	{
-		const double v = 0.5E-6;
+		// v = sigma that corresponds to modes (L, R) = (+1, +1) or (+1, -1)
+		//    this recovers single-arm sigma = 0.50 um
+		const double v = 0.50E-6 / sqrt(2.);
 
-		biases.L.sh_th_x = v;
-		biases.R.sh_th_x = v;
+		if (scenario == "sh-thx")
+		{
+			biases.L.sh_th_x = v;
+			biases.R.sh_th_x = v;
 
-		anal_rec.fc_L_l.th_x_m += v; anal_rec.fc_L_h.th_x_m += v;
-		anal_rec.fc_L_l.th_x_p += v; anal_rec.fc_L_h.th_x_p += v;
+			anal_rec.fc_L_l.th_x_m += v; anal_rec.fc_L_h.th_x_m += v;
+			anal_rec.fc_L_l.th_x_p += v; anal_rec.fc_L_h.th_x_p += v;
 
-		anal_rec.fc_R_l.th_x_m += v; anal_rec.fc_R_h.th_x_m += v;
-		anal_rec.fc_R_l.th_x_p += v; anal_rec.fc_R_h.th_x_p += v;
+			anal_rec.fc_R_l.th_x_m += v; anal_rec.fc_R_h.th_x_m += v;
+			anal_rec.fc_R_l.th_x_p += v; anal_rec.fc_R_h.th_x_p += v;
 
-		anal_rec.fc_G_l.th_x_m += v; anal_rec.fc_G_h.th_x_m += v;
-		anal_rec.fc_G_l.th_x_p += v; anal_rec.fc_G_h.th_x_p += v;
+			anal_rec.fc_G_l.th_x_m += v; anal_rec.fc_G_h.th_x_m += v;
+			anal_rec.fc_G_l.th_x_p += v; anal_rec.fc_G_h.th_x_p += v;
 
-		return 0;
+			return 0;
+		}
+
+		if (scenario == "sh-thx-LRasym")
+		{
+			biases.L.sh_th_x = +v;
+			biases.R.sh_th_x = -v;
+
+			anal_rec.fc_L_l.th_x_m += +v; anal_rec.fc_L_h.th_x_m += +v;
+			anal_rec.fc_L_l.th_x_p += +v; anal_rec.fc_L_h.th_x_p += +v;
+
+			anal_rec.fc_R_l.th_x_m += -v; anal_rec.fc_R_h.th_x_m += -v;
+			anal_rec.fc_R_l.th_x_p += -v; anal_rec.fc_R_h.th_x_p += -v;
+
+			return 0;
+		}
 	}
 
-	if (scenario == "sh-thx-LRasym")
-	{
-		const double v = 0.5E-6;
-
-		biases.L.sh_th_x = +v;
-		biases.R.sh_th_x = -v;
-
-		anal_rec.fc_L_l.th_x_m += +v; anal_rec.fc_L_h.th_x_m += +v;
-		anal_rec.fc_L_l.th_x_p += +v; anal_rec.fc_L_h.th_x_p += +v;
-
-		anal_rec.fc_R_l.th_x_m += -v; anal_rec.fc_R_h.th_x_m += -v;
-		anal_rec.fc_R_l.th_x_p += -v; anal_rec.fc_R_h.th_x_p += -v;
-
-		return 0;
-	}
+	// ---------- y shift ----------
 
 	if (scenario == "sh-thy")
 	{
-		const double v = 0.25E-6;
+		const double v = 0.35E-6 / sqrt(2.);
 
 		biases.L.sh_th_y = v;
 		biases.R.sh_th_y = v;
@@ -117,8 +123,8 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario == "sh-thy-LRasym")
 	{
-		// "typical" De^{R-L} th_y ~ 0.03 urad
-		const double v = 0.03E-6 / 2.;
+		// typical value De^{R-L} th_y ~ 0.04 urad
+		const double v = 0.04E-6 / 2.;
 
 		biases.L.sh_th_y = +v;
 		biases.R.sh_th_y = -v;
@@ -131,7 +137,7 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 
 	if (scenario == "sh-thy-TBuncor")
 	{
-		const double v = 0.012E-6;
+		const double v = 0.017E-6 / sqrt(2.);
 
 		biases.L.sh_th_y = v;
 		biases.R.sh_th_y = v;
@@ -143,15 +149,13 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
-	if (scenario.compare("tilt-thx-thy") == 0)
-	{
-		const double v_xy = 0.009;
-		biases.L.tilt_th_x_eff_prop_to_th_y = v_xy;
-		biases.R.tilt_th_x_eff_prop_to_th_y = v_xy;
+	// TODO: in principle missing mode T-B uncorr, L-R antisym
 
-		const double v_yx = 0.00028;
-		biases.L.tilt_th_y_eff_prop_to_th_x = v_yx;
-		biases.R.tilt_th_y_eff_prop_to_th_x = v_yx;
+	// ---------- xy tilt ----------
+
+	{
+		const double v_xy = 0.013 / sqrt(2.);
+		const double v_yx = 0.00039 / sqrt(2.);
 
 		// with the current values of v_xy, v_yx, the effect on the fiducial cuts in negligible
 		// low bound: th_x ~ 20 urad, th_y ~ 4 urad
@@ -159,153 +163,63 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		// high bound: th_x ~ 100 urad, th_y ~ 100 urad
 		//     th_x --> 100.9 urad, th_y --> 100.03 urad
 
-		return 0;
+		if (scenario.compare("tilt-thx-thy") == 0)
+		{
+			biases.L.tilt_th_x_eff_prop_to_th_y = v_xy;
+			biases.R.tilt_th_x_eff_prop_to_th_y = v_xy;
+
+			biases.L.tilt_th_y_eff_prop_to_th_x = v_yx;
+			biases.R.tilt_th_y_eff_prop_to_th_x = v_yx;
+
+			return 0;
+		}
+
+		if (scenario.compare("tilt-thx-thy-LRasym") == 0)
+		{
+			biases.L.tilt_th_x_eff_prop_to_th_y = +v_xy;
+			biases.R.tilt_th_x_eff_prop_to_th_y = -v_xy;
+
+			biases.L.tilt_th_y_eff_prop_to_th_x = +v_yx;
+			biases.R.tilt_th_y_eff_prop_to_th_x = -v_yx;
+
+			return 0;
+		}
 	}
 
-	if (scenario.compare("tilt-thx-thy-LRasym") == 0)
+	// ---------- xy scaling (optics) ----------
+
+	if (scenario.find("sc-thxy-mode") == 0)
 	{
-		const double v_xy = 0.009;
-		biases.L.tilt_th_x_eff_prop_to_th_y = +v_xy;
-		biases.R.tilt_th_x_eff_prop_to_th_y = -v_xy;
+		const string mode = scenario.substr(12);
 
-		const double v_yx = 0.00028;
-		biases.L.tilt_th_y_eff_prop_to_th_x = +v_yx;
-		biases.R.tilt_th_y_eff_prop_to_th_x = -v_yx;
+		double val_L_x=0., val_L_y, val_R_x, val_R_y;
 
-		return 0;
+		if (mode == "1") { val_L_x = -1.608E-03; val_L_y = +1.473E-03; val_R_x = -1.630E-03; val_R_y = +1.477E-03; }
+		if (mode == "2") { val_L_x = -5.157E-04; val_L_y = +2.541E-05; val_R_x = +5.566E-04; val_R_y = +2.746E-05; }
+		if (mode == "3") { val_L_x = +3.617E-04; val_L_y = +3.625E-04; val_R_x = +3.006E-04; val_R_y = +3.641E-04; }
+
+		if (val_L_x != 0.)
+		{
+			biases.L.sc_th_x = 1. + val_L_x;
+			biases.R.sc_th_x = 1. + val_R_x;
+			biases.L.sc_th_y = 1. + val_L_y;
+			biases.R.sc_th_y = 1. + val_R_y;
+
+			anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
+			anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
+
+			anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
+			anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
+
+			const double val_G_x = (val_L_x + val_R_x) / 2.;
+			anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
+			anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
+
+			return 0;
+		}
 	}
 
-	if (scenario.compare("sc-thx") == 0)
-	{
-		// TODO: preliminary
-		const double v = 1E-03;
-
-		biases.L.sc_th_x = 1. - v;
-		biases.R.sc_th_x = 1. - v;
-
-		anal_rec.fc_L_l.th_x_m *= (1. - v); anal_rec.fc_L_h.th_x_m *= (1. - v);
-		anal_rec.fc_L_l.th_x_p *= (1. - v); anal_rec.fc_L_h.th_x_p *= (1. - v);
-
-		anal_rec.fc_R_l.th_x_m *= (1. - v); anal_rec.fc_R_h.th_x_m *= (1. - v);
-		anal_rec.fc_R_l.th_x_p *= (1. - v); anal_rec.fc_R_h.th_x_p *= (1. - v);
-
-		anal_rec.fc_G_l.th_x_m *= (1. - v); anal_rec.fc_G_h.th_x_m *= (1. - v);
-		anal_rec.fc_G_l.th_x_p *= (1. - v); anal_rec.fc_G_h.th_x_p *= (1. - v);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thx-LRasym") == 0)
-	{
-		// TODO: preliminary
-		const double v = 1E-03;
-
-		biases.L.sc_th_x = 1. - v;
-		biases.R.sc_th_x = 1. + v;
-
-		anal_rec.fc_L_l.th_x_m *= (1. - v); anal_rec.fc_L_h.th_x_m *= (1. - v);
-		anal_rec.fc_L_l.th_x_p *= (1. - v); anal_rec.fc_L_h.th_x_p *= (1. - v);
-
-		anal_rec.fc_R_l.th_x_m *= (1. + v); anal_rec.fc_R_h.th_x_m *= (1. + v);
-		anal_rec.fc_R_l.th_x_p *= (1. + v); anal_rec.fc_R_h.th_x_p *= (1. + v);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thy") == 0)
-	{
-		// TODO: preliminary
-		const double v = 1E-03;
-
-		biases.L.sc_th_y = 1. - v;
-		biases.R.sc_th_y = 1. - v;
-
-		anal_rec.fc_L_l.th_y_0 *= (1. - v); anal_rec.fc_L_h.th_y_0 *= (1. - v);
-		anal_rec.fc_R_l.th_y_0 *= (1. - v); anal_rec.fc_R_h.th_y_0 *= (1. - v);
-		anal_rec.fc_G_l.th_y_0 *= (1. - v); anal_rec.fc_G_h.th_y_0 *= (1. - v);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thy-LRasym") == 0)
-	{
-		// TODO: preliminary
-		const double v = 1E-03;
-
-		biases.L.sc_th_y = 1. - v;
-		biases.R.sc_th_y = 1. + v;
-
-		anal_rec.fc_L_l.th_y_0 *= (1. - v); anal_rec.fc_L_h.th_y_0 *= (1. - v);
-		anal_rec.fc_R_l.th_y_0 *= (1. + v); anal_rec.fc_R_h.th_y_0 *= (1. + v);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thxy-mode1") == 0)
-	{
-		const double val_L_x = -1.608E-03, val_L_y = +1.473E-03, val_R_x = -1.630E-03, val_R_y = +1.477E-03;
-
-		biases.L.sc_th_x = 1. + val_L_x;
-		biases.R.sc_th_x = 1. + val_R_x;
-		biases.L.sc_th_y = 1. + val_L_y;
-		biases.R.sc_th_y = 1. + val_R_y;
-
-		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
-		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
-
-		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
-		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
-
-		const double val_G_x = (val_L_x + val_R_x) / 2.;
-		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
-		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thxy-mode2") == 0)
-	{
-		const double val_L_x = -5.157E-04, val_L_y = +2.541E-05, val_R_x = +5.566E-04, val_R_y = +2.746E-05;
-
-		biases.L.sc_th_x = 1. + val_L_x;
-		biases.R.sc_th_x = 1. + val_R_x;
-		biases.L.sc_th_y = 1. + val_L_y;
-		biases.R.sc_th_y = 1. + val_R_y;
-
-		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
-		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
-
-		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
-		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
-
-		const double val_G_x = (val_L_x + val_R_x) / 2.;
-		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
-		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
-
-		return 0;
-	}
-
-	if (scenario.compare("sc-thxy-mode3") == 0)
-	{
-		const double val_L_x = +3.617E-04, val_L_y = +3.625E-04, val_R_x = +3.006E-04, val_R_y = +3.641E-04;
-
-		biases.L.sc_th_x = 1. + val_L_x;
-		biases.R.sc_th_x = 1. + val_R_x;
-		biases.L.sc_th_y = 1. + val_L_y;
-		biases.R.sc_th_y = 1. + val_R_y;
-
-		anal_rec.fc_L_l.th_x_m *= (1. + val_L_x); anal_rec.fc_L_h.th_x_m *= (1. + val_L_x);
-		anal_rec.fc_L_l.th_x_p *= (1. + val_L_x); anal_rec.fc_L_h.th_x_p *= (1. + val_L_x);
-
-		anal_rec.fc_R_l.th_x_m *= (1. + val_R_x); anal_rec.fc_R_h.th_x_m *= (1. + val_R_x);
-		anal_rec.fc_R_l.th_x_p *= (1. + val_R_x); anal_rec.fc_R_h.th_x_p *= (1. + val_R_x);
-
-		const double val_G_x = (val_L_x + val_R_x) / 2.;
-		anal_rec.fc_G_l.th_x_m *= (1. + val_G_x); anal_rec.fc_G_h.th_x_m *= (1. + val_G_x);
-		anal_rec.fc_G_l.th_x_p *= (1. + val_G_x); anal_rec.fc_G_h.th_x_p *= (1. + val_G_x);
-
-		return 0;
-	}
+	// ---------- acceptance correction ----------
 
 	if (scenario == "dx-sigma")
 	{
@@ -325,6 +239,34 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
+	// TODO: what about L-R asymmetry?
+
+	// ---------- inefficiency correction ----------
+
+	if (scenario == "eff-intercept")
+	{
+		// combination from 3/4 (0.003) and 2/4 (0.01)
+		biases.eff_intercept = sqrt(0.003*0.003 + 0.01*0.01);
+		return 0;
+	}
+
+	if (scenario == "eff-slope")
+	{
+		biases.eff_slope = 15.;
+		return 0;
+	}
+
+	// ---------- beam momentum ----------
+
+	if (scenario.compare("beam-mom") == 0)
+	{
+		env_rec.p *= (1. - 0.001);
+
+		return 0;
+	}
+
+	// ---------- unsmearing ----------
+
 	if (scenario == "mx-sigma")
 	{
 		anal_sim.si_th_x_2arm += 0.04E-6;
@@ -337,29 +279,11 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
-	if (scenario == "eff-intercept")
-	{
-		// combination from 3/4 (0.003) and 2/4 (0.01)
-		biases.eff_intercept = sqrt(0.01*0.01 + 0.003*0.003);
-		return 0;
-	}
-
-	if (scenario == "eff-slope")
-	{
-		biases.eff_slope = 15.;
-		return 0;
-	}
-
-	if (scenario.compare("beam-mom") == 0)
-	{
-		env_rec.p *= (1. - 0.001);
-
-		return 0;
-	}
+	// ---------- normalisation ----------
 
 	if (scenario == "norm")
 	{
-		biases.norm = 0.1;
+		biases.norm = 0.05;
 		return 0;
 	}
 
