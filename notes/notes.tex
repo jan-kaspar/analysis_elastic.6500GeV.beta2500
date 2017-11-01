@@ -3,7 +3,9 @@
 
 \def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/}
 
-\def\section#1{%
+\def\section{\IfNch[{\sectionRef}{\sectionBase}}
+\def\sectionRef[#1]#2{\sectionBase{#2}\MakeRef{s:#1}{\the\nsec}}
+\def\sectionBase#1{%
 	\advance\nsec1
 	\nsubsec=0 
 	\nssubsec=0%
@@ -21,7 +23,9 @@
 	\everypar={\parindent=\ParIndent \everypar={}}%
 }
 
-\def\subsection#1{%
+\def\subsection{\IfNch[{\subsectionRef}{\subsectionBase}}
+\def\subsectionRef[#1]#2{\subsectionBase{#2}\MakeRef{s:#1}{\the\nsec.\the\nsubsec}}
+\def\subsectionBase#1{%
 	\advance\nsubsec1
 	\nssubsec=0%
 	\penalty-\clubpenalty
@@ -36,6 +40,8 @@
 	\parindent=0pt
 	\everypar={\parindent=\ParIndent \everypar={}}%
 }
+
+\def\sref#1{\safecom{s:#1}}
 
 \def\linkColor{\cBlue}
 
@@ -111,9 +117,9 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Alignment}
+\section[al]{Alignment}
 
-\subsection{Determination}
+\subsection[al-det]{Determination}
 
 \> method: standard procedure
 \>> beam-based alignment: before data-taking
@@ -159,11 +165,11 @@
 %----------------------------------------------------------------------------------------------------
 \section{Optics}
 
-By default, matched optics is used.
+\> by default matched optics is used.
 
 \subsection{Matched optics}
 
-Optics sent by Frici on 18 July 2017:
+\> optics sent by Frici on 18 July 2017:
 
 \centerline{\vbox{\halign{#\quad\hfil & $#$\quad\hfil & $#$\quad\hfil & $#$\quad & $#$\quad\hfil\cr\ln
 unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
@@ -174,12 +180,19 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 \ln
 }}}
 
+\> uncertainties sent by Frici on 13 Oct 2017
+\>> 3 leading eigenmodes reproduce the matrix sufficiently well
+\>> propagated to relative uncertainties of scattering angles by program "reconstruction\_formulae/print\_optics\_uncertainties"
+\>>> left-arm reconstruction: $\si(\de\th^*_x) = 0.00173$, $\si(\de\th^*_y) = 0.00152$
+\>>> right-arm reconstruction: $\si(\de\th^*_x) = 0.00175$, $\si(\de\th^*_y) = 0.00152$
+\>>> double-arm reconstruction: $\si(\de\th^*_x) = 0.00165$, $\si(\de\th^*_y) = 0.00152$, correlation factor $-90.29\un{\%}$
+
+
 \subsection{Validation}
 
 \> \plot{optics/optics_test_summary.pdf}: left-right differences in reconstructed scattering angles plotted as a function of the scattering angle
 \>> shifts (fit extrapolated to 0): due to misalignments
 \>> tilts (slope): due to optics
-\>>> within $0.1\un{\%}$ -- for the moment, use this as uncertainty estimate independently for scaling $\th_x^*$ and $\th_y^*$
 
 
 
@@ -577,7 +590,7 @@ where the numerator comes from \Eq{sm model th corr} and therefore this correcti
 \section{Normalisation}
 
 \> method
-\>> normalise $\d\si/\d t$ such that $I + S = 31.5\un{mb}$ (see Ken's analysis meeting talk on 17 Oct 2017)
+\>> normalise $\d\si/\d t$ such that $I + S = 31.0\un{mb}$ (this value should be approved in a meeting on 23 Oct 2017)
 \>> $I$ stands for $\d\si/\d t$ fit over $0.01 < |t| < 0.05\un{GeV^2}$, integrated over $0 < |t| < 0.01\un{GeV^2}$
 \>> $S$ stands for histogram integral of bins $0.01 < |t| < 0.5\un{GeV^2}$
 
@@ -671,15 +684,26 @@ the analysis
 \>> left-right anti-symmetric: do not vary the value of $t$, change the value of acceptance correction
 
 \> effects included
+
 \>> alignment: shifts in $\th^*_{x,y}$, both LR symmetric and anti-symmetric
 \>>> in the vertical plane: both correlated and uncorrelated between diagonals
+\>>> uncertainty values presented in Section~\sref{al-det}
+
 \>> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$, both LR symmetric and anti-symmetric
-\>> optics: preliminary treatment -- scaling of $\th^*_{x,y}$, both LR symmetric and anti-symmetric
+\>>> uncertainty values presented in Section~\sref{al-det}
+
+\>> optics: scaling of $\th^*_{x,y}$ based on covariance matrix by Frici
+\>>> includes correlations between $x$ and $y$, L and R
+\>>> 3 modes (out of 4) found important
+
 \>> (smearing) acceptance correction
 \>>> uncertainty of $\si(d_x)$, $\si(d_y)$
 \>>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
+
 \>> inefficiency correction (only relevant from 3/4 and 2/4): both slope and intercept
+
 \>> beam momentum
+
 \>> unsmearing: uncertainty of $\si(m_x)$, $\si(m_y)$, fit model dependence
 
 \> \plot{systematics/cmp_mc_ni.pdf} : individual effects, per diagonal, two views (low-$|t|$ and full range)
