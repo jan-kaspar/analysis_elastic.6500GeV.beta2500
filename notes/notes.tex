@@ -1,58 +1,11 @@
-\input article
 \input macros
 
 \def\baseDir{/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/}
 
-\def\section{\IfNch[{\sectionRef}{\sectionBase}}
-\def\sectionRef[#1]#2{\sectionBase{#2}\MakeRef{s:#1}{\the\nsec}\pdfdest name {s:#1} xyz}
-\def\sectionBase#1{%
-	\advance\nsec1
-	\nsubsec=0 
-	\nssubsec=0%
-	\penalty-\clubpenalty
-	\vskip2\baselineskip
-	{%
-		\baselineskip15pt
-		\vbox{%
-			\noindent\SetFontSizesXII\bf\the\nsec. #1%
-		}%
-	}%
-	\penalty\clubpenalty
-	\vskip0\baselineskip
-	\parindent=0pt
-	\everypar={\parindent=\ParIndent \everypar={}}%
-}
-
-\def\subsection{\IfNch[{\subsectionRef}{\subsectionBase}}
-\def\subsectionRef[#1]#2{\subsectionBase{#2}\MakeRef{s:#1}{\the\nsec.\the\nsubsec}\pdfdest name {s:#1} xyz}
-\def\subsectionBase#1{%
-	\advance\nsubsec1
-	\nssubsec=0%
-	\penalty-\clubpenalty
-	\vskip2\baselineskip
-	{%
-		\vbox{%
-			\noindent\bf\the\nsec.\the\nsubsec. #1%
-		}%
-	}%
-	\penalty\clubpenalty
-	\vskip0\baselineskip
-	\parindent=0pt
-	\everypar={\parindent=\ParIndent \everypar={}}%
-}
-
-\def\sref#1{%
-	\pdfstartlink goto name {s:#1}%
-	\linkColor%
-	\safecom{s:#1}%
-	\cBlack%
-	\pdfendlink
-}
-
-\def\linkColor{\cBlue}
-
-
 %----------------------------------------------------------------------------------------------------
+
+\hbox{}
+\vskip-10mm
 
 \centerline{\SetFontSizesXX Elastic analysis, $\sqrt s = 13\un{TeV}$, $\be^* = 2500\un{m}$}
 \vskip2mm
@@ -60,15 +13,23 @@
 \vskip2mm
 \centerline{version: {\it \number\day. \number\month. \number\year}}
 
+\vfil
+\InsertToc
+
+\vfil
+\eject
+
+\BeginText
+
 %----------------------------------------------------------------------------------------------------
-\section{Analysis approach}
+\chapter{Analysis approach}
 
 \> RPs used (track required): 220-fr unit in both arms
 
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Datasets}
+\chapter{Datasets}
 
 \> fills: 5313, 5314, 5317, 5321
 
@@ -79,7 +40,7 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Ntuples}
+\chapter{Ntuples}
 
 \> current: /eos/totem/data/offline/2016/2500m/version2/
 \>> planes without alignment excluded from reconstruction
@@ -93,7 +54,7 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Beam conditions}
+\chapter{Beam conditions}
 
 \> naming
 \>> ``unresolved'' activity: event where RP has sufficient number of planes on, but no track is reconstructed
@@ -103,7 +64,7 @@
 \>> \plot{common/multitrack_rates_vs_time.pdf}: details for the unresolved category
 
 %----------------------------------------------------------------------------------------------------
-\section{Reconstruction formulae}
+\chapter{Reconstruction formulae}
 
 \> \plot{reconstruction_formulae/plot_formulae_graphs.pdf} : study of performance of various reconstruction formulae
 \>> formulae
@@ -124,9 +85,9 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section[alignment]{Alignment}
+\chapter[alignment]{Alignment}
 
-\subsection[alignment-det]{Determination}
+\section[alignment-det]{Determination}
 
 \> method: standard procedure
 \>> beam-based alignment: before data-taking
@@ -151,7 +112,7 @@
 \>>> $\th_x^* \rightarrow \th_x^* + C \th_y^*$, $\si(C) = 0.013$ (single arm), $0.009$ (double arm)
 \>>> $\th_y^* \rightarrow \th_y^* + D \th_x^*$, $\si(D) = 0.00039$ (single arm), $0.00028$ (double arm)
 
-\subsection[alignment-val]{Validation}
+\section[alignment-val]{Validation}
 
 \> \plot{alignment/angular_diff_vs_time.pdf}: left-right differences in reconstructed scattering angles
 \>> typical value of $\De^{\rm R-L}\th^*_y$: $\approx 0.04\un{\mu rad}$
@@ -171,11 +132,11 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\section[optics]{Optics}
+\chapter[optics]{Optics}
 
 \> by default matched optics is used.
 
-\subsection[optics-matched]{Matched optics}
+\section[optics-matched]{Matched optics}
 
 \> optics sent by Frici on 18 July 2017:
 
@@ -202,7 +163,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 \>>> mode 3: +3.617E-04, +3.625E-04, +3.006E-04, +3.641E-04
 
 
-\subsection[optics-validation]{Validation}
+\section[optics-validation]{Validation}
 
 \> \plot{optics/optics_test_summary.pdf}: left-right differences in reconstructed scattering angles plotted as a function of the scattering angle
 \>> shifts (fit extrapolated to 0): due to misalignments
@@ -211,7 +172,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 
 
 %----------------------------------------------------------------------------------------------------
-\section[resolution]{Resolution}
+\chapter[resolution]{Resolution}
 
 \> method
 \>> horizontal plane
@@ -254,7 +215,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Cuts/elastic tagging}
+\chapter{Cuts/elastic tagging}
 
 \> event selection
 \>> track in 220-fr units of a diagonal
@@ -277,16 +238,16 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Hit distributions}
+\chapter{Hit distributions}
 
 \> \plot{hit_distributions/hit_distributions.pdf}: hit distribution after elastic event selection
 
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Efficiency and purity of cuts, background}
+\chapter{Efficiency and purity of cuts, background}
 
-\subsection{Background studies}
+\section{Background studies}
 
 \> background: non-elastic events passing the tagging cuts
 
@@ -318,7 +279,7 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 \> additional material
 \>> \plot{background,cut_efficiency/t_distributions_cuts.pdf}: $t$-distributions under various cut combinations
 
-\subsection{Study of signal loss due to cuts}
+\section{Study of signal loss due to cuts}
 
 \> method
 \>> plot $t$ distributions at different cut levels ($n_\si$)
@@ -341,9 +302,9 @@ unit & v_x & L_x\unp{m} & v_y & L_y\unp{m} \cr\ln
 
 
 %----------------------------------------------------------------------------------------------------
-\section{Acceptance correction}
+\chapter{Acceptance correction}
 
-\subsection{Theory}
+\section{Theory}
 
 \vskip3mm
 
@@ -399,7 +360,7 @@ where $\Om(\th)$ is a set of $\ph$ values with non-zero acceptance. In order to 
 \eqref{A_{\ph}(\th) = {1\over 2\pi} \int\limits_{\Om(\th)} \ \d\ph\ .}{A phi}
 This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is typically slightly broken due to different smearing in $\th_x$ and $\th_y$. The error induced is typically absorbed into the ``unfolding correction'' which is applied in the final step of the analysis.
 
-\subsection{Fiducial cuts}
+\section{Fiducial cuts}
 
 \> there two types of fiducial cuts
 \>> separately in left and right arm
@@ -419,14 +380,14 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 \> \plot{acceptance_correction/fiducial_cut_cmp.pdf}: comparison of fiducial cuts
 
 
-\subsection{Smearing correction}
+\section{Smearing correction}
 
 \> ``smearing correction'' denotes the factor $1/F_{\rm acc}$
 \>> it is calculated according to \Eq{acc model}, assuming Gaussian distributions of $d_{x,y}$, using numerical integration (GSL library)
 \>> it is applied as described below \Eq{acc model}
 
 
-\subsection{$\ph$ correction}
+\section{$\ph$ correction}
 
 \> ``$\ph$ correction'' refers to $1 / A_{\ph}$
 \>> it is calculated according to \Eq{A phi}
@@ -436,7 +397,7 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 \> \plot{acceptance_correction/acc_cmp_fill.pdf} : verification of the assumed $\ph$ symmetry
 
 
-\subsection{Program implementation, validation}
+\section{Program implementation, validation}
 
 \> there are two implementations of \Eq{acc model}
 \>> ``old''
@@ -469,7 +430,7 @@ This correction assumes azimuthal ($\ph$) symmetry of $h_{\rm smear}$ which is t
 
 
 %----------------------------------------------------------------------------------------------------
-\section[efficiency]{Efficiency studies}
+\chapter[efficiency]{Efficiency studies}
 
 \vskip3mm
 Each event is weighted with the following correction factor
@@ -481,7 +442,7 @@ Each event is weighted with the following correction factor
 }{eff corr}
 where symbols $I$ stand for various inefficiencies discussed below.
 
-\subsection[efficiency-trigger]{Trigger efficiency}
+\section[efficiency-trigger]{Trigger efficiency}
 
 \> method:
 \>> take zero-bias (BX) data
@@ -501,7 +462,7 @@ $$1 - I_{\rm trig} = {N({\rm BX,elastic,trigger}) \over N({\rm BX,elastic})}$$
 \> this correction is not applied since it does not modify $t$-distribution shape
 
 
-\subsection[efficiency-trigger]{DAQ efficiency}
+\section[efficiency-trigger]{DAQ efficiency}
 
 \> method: per time slice calculate from the trigger block of raw data:
 $$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered events})} \equiv 1 - I_{\rm DAQ}$$
@@ -512,7 +473,7 @@ $$\hbox{DAQ efficiency} = {N(\hbox{recorded events})\over N(\hbox{triggered even
 
 
 
-\subsection[efficiency-pileup]{Pile-up}
+\section[efficiency-pileup]{Pile-up}
 
 \> method
 \>> take BX sample, split it into time slices
@@ -535,7 +496,7 @@ $$I_{\rm PU} = {N(\hbox{destructive signal in any 220-fr RP})\over N(\hbox{anyth
 \> this correction is not applied since it does not modify $t$-distribution shape
 
 
-\subsection[efficiency-uncorrelated]{Uncorrelated single RP inefficiencies (3-out-of-4)}
+\section[efficiency-uncorrelated]{Uncorrelated single RP inefficiencies (3-out-of-4)}
 
 \> method: derive from results of the 4-RP analysis
 \>> transfer validation: \plot{efficiencies/eff3outof4_fits_summary_cmp_4rp_anal.pdf}
@@ -554,7 +515,7 @@ $$I_{\rm 1RP}(\th_y^*) = \sum\limits_{i \in\hbox{\SmallerFonts 220-fr}} I_{\rm 1
 \> this correction is applied since it modifies the $t$-distribution shape
 
 
-\subsection[efficiency-correlated]{Correlated RP inefficiencies}
+\section[efficiency-correlated]{Correlated RP inefficiencies}
 
 \> typical case: shower initiated upstream (210-far) propagates downstream (220-far)
 \>> this is not included in the uncorrelated single-RP inefficiency above
@@ -570,7 +531,7 @@ $$I_{2RP} = (3 \pm 1)\un{\%}$$
 
 
 %----------------------------------------------------------------------------------------------------
-\section[unfolding]{Unfolding of resolution effects}
+\chapter[unfolding]{Unfolding of resolution effects}
 
 \> method
 \>> take a fit of data with model including both Coulomb and hadronic contributions
@@ -600,7 +561,7 @@ where the numerator comes from \Eq{sm model th corr} and therefore this correcti
 
 
 %----------------------------------------------------------------------------------------------------
-\section[normalisation]{Normalisation}
+\chapter[normalisation]{Normalisation}
 
 \> method
 \>> normalise $\d\si/\d t$ such that $I + S = 31.0\un{mb}$ (this value should be approved in a meeting on 23 Oct 2017)
@@ -610,7 +571,7 @@ where the numerator comes from \Eq{sm model th corr} and therefore this correcti
 
 
 %----------------------------------------------------------------------------------------------------
-\section[binning]{Binning}
+\chapter[binning]{Binning}
 
 \> method: binning ``ob-$\langle n\rangle$-$\langle u\rangle$-$\langle w_m\rangle$`` is built as follows
 \>> at low $|t|$ ($|t| \ls 0.4\un{GeV^2}$): bin size about $n\times \si(\hbox{$t$ smearing})$
@@ -628,7 +589,7 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section[validation]{Validation of analysis chain}
+\chapter[validation]{Validation of analysis chain}
 
 \> method
 \>> simulate data in the same format (distilled ntuple) as the LHC data
@@ -656,7 +617,7 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section[t-distributions]{$t$-distributions}
+\chapter[t-distributions]{$t$-distributions}
 
 \> \plot{t_distributions/t_dist_fill_cmp.pdf} : comparison of $t$-distributions from different fills and diagonals
 
@@ -669,9 +630,9 @@ the analysis
 
 
 %----------------------------------------------------------------------------------------------------
-\section[systematics]{Systematic uncertainties}
+\chapter[systematics]{Systematic uncertainties}
 
-\subsection[systematics-general]{General notes}
+\section[systematics-general]{General notes}
 
 \> method
 \>> per diagonal
@@ -699,14 +660,13 @@ the analysis
 \>> left-right anti-symmetric: do not vary the value of $t$, change the value of acceptance correction
 
 
-\subsection[systematics-effects]{Effects included}
+\section[systematics-effects]{Effects included}
 
 \> alignment: shifts in $\th^*_{x,y}$
 \>> considered both LR symmetric and anti-symmetric modes
 \>> in the vertical plane: both correlated and uncorrelated between diagonals
 \>> uncertainty values presented in Section~\sref{alignment-det}
 \>>> for vertical LR anti-symmetric mode, the uncertainty is extracted from data, see Section~\sref{alignment-val}
-\>> TODO: missing mode TB uncorr, LR antisym
 \>> TODO: validate implementation
 
 \> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$
@@ -747,7 +707,7 @@ the analysis
 \>> consider uncertainty of $5\un{\%}$
 
 
-\subsection[systematics-plots]{Plots}
+\section[systematics-plots]{Plots}
 
 \> \plot{systematics/cmp_mc_ni.pdf} : individual effects, per diagonal, two views (low-$|t|$ and full range)
 \>> very good agreement between MC and NI calculations
@@ -758,4 +718,7 @@ the analysis
 
 \> \plot{systematics/dgn_combination_matrix.pdf} : correlation matrix
 
+%----------------------------------------------------------------------------------------------------
+
+\EndText
 \bye
