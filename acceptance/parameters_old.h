@@ -6,6 +6,7 @@ void Init_base()
 {
 	// load global settings
 	Init_global();
+	env.UseMatchedOptics();
 
 	// selection of bunches
 	keepAllBunches = true;
