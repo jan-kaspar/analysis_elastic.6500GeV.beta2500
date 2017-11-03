@@ -37,6 +37,10 @@ struct Biases
 	bool use_non_gaussian_d_x = false;
 	bool use_non_gaussian_d_y = false;
 
+	// d-m correlation
+	double d_m_corr_coef_x = 0.;
+	double d_m_corr_coef_y = 0.;
+
 	void Print() const
 	{
 		printf("left arm:\n");
@@ -54,6 +58,8 @@ struct Biases
 		printf("    norm = %.3E\n", norm);
 		printf("    use_non_gaussian_d_x = %u\n", use_non_gaussian_d_x);
 		printf("    use_non_gaussian_d_y = %u\n", use_non_gaussian_d_y);
+		printf("    d_m_corr_coef_x = %.3f\n", d_m_corr_coef_x);
+		printf("    d_m_corr_coef_y = %.3f\n", d_m_corr_coef_y);
 	}
 };
 
@@ -252,7 +258,17 @@ int SetScenario(const string &scenario, Biases &biases, Environment &env_sim, An
 		return 0;
 	}
 
-	// TODO: what about L-R asymmetry?
+	if (scenario == "dx-mx-corr")
+	{
+		biases.d_m_corr_coef_x = +0.12;
+		return 0;
+	}
+
+	if (scenario == "dy-my-corr")
+	{
+		biases.d_m_corr_coef_y = -0.26;
+		return 0;
+	}
 
 	// ---------- inefficiency correction ----------
 

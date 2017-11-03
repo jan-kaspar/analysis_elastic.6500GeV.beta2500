@@ -115,11 +115,20 @@ void AddAllModes()
 		"", "dy-sigma", 1,
 		"", "dy-sigma", 1
 	);
-
 	
 	AddMode("\vbox{\hbox{non-gaussianity of $d_x$}}", blue+dashed,
 		"", "dx-non-gauss", 1,
 		"", "dx-non-gauss", 1
+	);
+
+	AddMode("\vbox{\hbox{correlation $d_x$ vs.~$m_x$}}", red+dashed,
+		"", "dx-mx-corr", 1,
+		"", "dx-mx-corr", 1
+	);
+
+	AddMode("\vbox{\hbox{correlation $d_y$ vs.~$m_y$}}", red+dashed,
+		"", "dy-my-corr", 1,
+		"", "dy-my-corr", 1
 	);
 
 	//--------------------

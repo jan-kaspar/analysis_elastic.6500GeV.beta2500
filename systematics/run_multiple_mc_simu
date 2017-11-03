@@ -29,6 +29,8 @@ configurations=(
 	"fit2-2/dx-sigma"
 	"fit2-2/dy-sigma"
 	"fit2-2/dx-non-gauss"
+	"fit2-2/dx-mx-corr"
+	"fit2-2/dy-my-corr"
 
 	"fit2-2/eff-intercept"
 	"fit2-2/eff-slope"

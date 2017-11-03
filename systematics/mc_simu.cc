@@ -14,10 +14,42 @@
 
 #include "command_line_tools.h"
 
+#include "TMatrixD.h"
+#include "TVectorD.h"
+#include "TMatrixDSymEigen.h"
+
 #include <vector>
 #include <string>
 
 using namespace std;
+
+//----------------------------------------------------------------------------------------------------
+
+TMatrixD BuildGeneratorMatrix(const TMatrixDSym &m_cov)
+{
+	unsigned int dim = m_cov.GetNrows();
+
+	TMatrixDSymEigen eig_decomp(m_cov);
+	TVectorD eig_values(eig_decomp.GetEigenValues());
+	TMatrixDSym S(dim);
+	for (unsigned int i = 0; i < dim; i++)
+		S(i, i) = (eig_values(i) >= 0.) ? sqrt(eig_values(i)) : 0.;
+
+	TMatrixD m_gen = eig_decomp.GetEigenVectors() * S;
+	return m_gen;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+TVectorD GenerateRandomVector(const TMatrixD m_gen)
+{
+	unsigned int dim = m_gen.GetNrows();
+	TVectorD g(dim);
+	for (unsigned int i = 0; i < dim; i++)
+		g(i) = gRandom->Gaus();
+
+	return m_gen * g;
+}
 
 //----------------------------------------------------------------------------------------------------
 
@@ -138,6 +170,19 @@ int main(int argc, const char **argv)
 	AcceptanceCalculator accCalc;
 	accCalc.Init(th_y_sign, anal_rec);
 
+	// build generating matrices for d and m
+	TMatrixDSym m_cov_dx_mx(2);
+	m_cov_dx_mx(0, 0) = anal_sim.si_th_x_LRdiff * anal_sim.si_th_x_LRdiff;
+	m_cov_dx_mx(0, 1) = m_cov_dx_mx(1, 0) = anal_sim.si_th_x_LRdiff * anal_sim.si_th_x_2arm * biases.d_m_corr_coef_x;
+	m_cov_dx_mx(1, 1) = anal_sim.si_th_x_2arm * anal_sim.si_th_x_2arm;
+	const TMatrixD &m_gen_dx_mx = BuildGeneratorMatrix(m_cov_dx_mx);
+
+	TMatrixDSym m_cov_dy_my(2);
+	m_cov_dy_my(0, 0) = anal_sim.si_th_y_LRdiff * anal_sim.si_th_y_LRdiff;
+	m_cov_dy_my(0, 1) = m_cov_dy_my(1, 0) = anal_sim.si_th_y_LRdiff * anal_sim.si_th_y_2arm * biases.d_m_corr_coef_y;
+	m_cov_dy_my(1, 1) = anal_sim.si_th_y_2arm * anal_sim.si_th_y_2arm;
+	const TMatrixD &m_gen_dy_my = BuildGeneratorMatrix(m_cov_dy_my);
+
 	// output file	
 	TFile *f_out = new TFile(outFileName.c_str(), "recreate");
 
@@ -212,8 +257,11 @@ int main(int argc, const char **argv)
 
 		// ----- smearing -----
 
-		double d_x = gRandom->Gaus() * anal_sim.si_th_x_LRdiff;
-		double d_y = gRandom->Gaus() * anal_sim.si_th_y_LRdiff;
+		const TVectorD &vec_dx_mx = GenerateRandomVector(m_gen_dx_mx);
+		const double d_x = vec_dx_mx(0), m_x = vec_dx_mx(1);
+
+		const TVectorD &vec_dy_my = GenerateRandomVector(m_gen_dy_my);
+		const double d_y = vec_dy_my(0), m_y = vec_dy_my(1);
 
 		double d_x_reweight = 1.;
 		if (biases.use_non_gaussian_d_x)
@@ -225,9 +273,6 @@ int main(int argc, const char **argv)
 			d_x_reweight = w_des / w_gen;
 			w *= d_x_reweight;
 		}
-
-		double m_x = gRandom->Gaus() * anal_sim.si_th_x_2arm;
-		double m_y = gRandom->Gaus() * anal_sim.si_th_y_2arm;
 
 		h_d_x->Fill(d_x, d_x_reweight);
 		h_d_y->Fill(d_y);
