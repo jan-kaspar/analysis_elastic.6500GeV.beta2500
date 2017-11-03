@@ -146,6 +146,33 @@ int main(int argc, char **argv)
 	// initialise environments
 	Environment env_nom = env;		// nominal values from parameters.h
 
+	// two options for x resolution
+	if (true)
+	{
+		printf(">> x resolution: case 1\n");
+		env_nom.si_vtx_x = 480E-3;							// mm
+		env_nom.si_th_x_L = env_nom.si_th_x_R = 0.27E-6;	// rad
+		env_nom.si_de_P_L = env_nom.si_de_P_R = 11E-3;		// mm
+	} else {
+		printf(">> x resolution: case 2\n");
+		env_nom.si_vtx_x = 680E-3;							// mm
+		env_nom.si_th_x_L = env_nom.si_th_x_R = 0.39E-6;	// rad
+		env_nom.si_de_P_L = env_nom.si_de_P_R = 12E-3;		// mm
+	}
+
+	// set beam-divergence asymmetries
+	const double bd_asymmetry_x = +0.;	// typical: 0.10
+	const double si_bd_1arm_x = sqrt(env_nom.si_th_x_L*env_nom.si_th_x_L + env_nom.si_th_x_R*env_nom.si_th_x_R) / sqrt(2.);
+	env_nom.si_th_x_L = si_bd_1arm_x * sqrt(1. + bd_asymmetry_x);
+	env_nom.si_th_x_R = si_bd_1arm_x / sqrt(1. + bd_asymmetry_x);
+	printf(">> bd_asymmetry_x = %.3f\n", bd_asymmetry_x);
+
+	const double bd_asymmetry_y = 0.;	// typical: -0.25
+	const double si_bd_1arm_y = sqrt(env_nom.si_th_y_L*env_nom.si_th_y_L + env_nom.si_th_y_R*env_nom.si_th_y_R) / sqrt(2.);
+	env_nom.si_th_y_L = si_bd_1arm_y * sqrt(1. + bd_asymmetry_y);
+	env_nom.si_th_y_R = si_bd_1arm_y / sqrt(1. + bd_asymmetry_y);
+	printf(">> bd_asymmetry_y = %.3f\n", bd_asymmetry_y);
+
 	// initialise analysis objects
 	anal.BuildCuts();
 	Analysis anal_nom = anal;
