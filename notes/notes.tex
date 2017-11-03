@@ -31,7 +31,11 @@
 %----------------------------------------------------------------------------------------------------
 \chapter{Datasets}
 
-\> fills: 5313, 5314, 5317, 5321
+\> LHC fills (year 2016)
+\>> 5313: 20 Sep 1am to 9am
+\>> 5314: 20 Sep 2pm to 11pm
+\>> 5317: 21 Sep 6am to 22 Sep  10am
+\>> 5321: 23 Sep 2am to 7am
 
 \> \plot{time_dependences/rate_vs_time.pdf}: in run 5317 there are 2 periods where diagonal 45 top -- 56 bottom doesn't get (all) data
 \>> reason: 1 problematic RP in that diagonal
@@ -54,7 +58,33 @@
 
 
 %----------------------------------------------------------------------------------------------------
-\chapter{Beam conditions}
+\chapter[beam-cond]{Beam conditions}
+
+\section[beam-cond-emittance]{Beam emittances}
+
+\> source: OP logbook
+\>> 5313
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079619
+\>> 5314
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079629
+\>> 5317
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079660
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079693
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079705
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079713
+\>> 5321
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079735
+\>>> http://elogbook.cern.ch/eLogbook/eLogbook.jsp?shiftId=1079745
+
+\> summary: \summary{emittances.ods}
+\>> beam divergence in $x$
+\>>> value well compatible with the estimate from 4-RP analysis
+\>>> L-R asymmetry: within $10\un{\%}$
+\>> beam divergence in $y$
+\>>> value well compatible with \plot{resolutions/resolutions_vs_time.pdf}
+\>>> L-R asymmetry: mean $\approx 25\un{\%}$ (single measurement at $58\un{\%}$)
+
+\section[beam-cond-rates]{Rates}
 
 \> naming
 \>> ``unresolved'' activity: event where RP has sufficient number of planes on, but no track is reconstructed
@@ -681,11 +711,9 @@ the analysis
 \>> TODO: validate implementation
 
 \> (smearing) acceptance correction
-\>> uncertainty of $\si(d_x)$, $\si(d_y)$
-\>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed)
-\>> TODO: L-R asymmetry ??
-\>> uncertainty values presented in Section~\sref{resolution}, end of bullet on $d_{x,y}$
-\>> TODO: validate implementation
+\>> uncertainty of $\si(d_x)$, $\si(d_y)$; see Section~\sref{resolution}, bullet on $d_{x,y}$
+\>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed); see Section~\sref{resolution}, end of bullet ``non-gaussianity''
+\>> beam divergence L-R asymmetry, TODO: uncertainty values
 
 \> inefficiency correction
 \>> only relevant from uncorrelated 3/4, Section~\sref{efficiency-uncorrelated}, and correlated upstream-downstream, Section~\sref{efficiency-correlated}
