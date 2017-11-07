@@ -97,7 +97,7 @@ double GetNormalisation(TGraph *g)
 	double t_fit_min = 0.01, t_fit_max = 0.05;
 	double t_sum_min = 0.01, t_sum_max = 0.5;
 
-	double si_el_ref = 29.7;	// mb
+	double si_el_ref = 31.0;	// mb
 
 	// fit
 	TF1 *ff = new TF1("ff", "[0] * exp(-[1]*x)");
