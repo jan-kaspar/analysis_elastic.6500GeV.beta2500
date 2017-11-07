@@ -19,7 +19,7 @@ struct shist
 
 //----------------------------------------------------------------------------------------------------
 
-TH1D* Merge(const vector<shist> &hists, bool sumBins = true)
+TH1D* Merge(const vector<shist> &hists, bool sumBins)
 {
 	// prepare merged histogram
 	TH1D *m = new TH1D(*hists[0].hist);
@@ -67,23 +67,6 @@ TH1D* Merge(const vector<shist> &hists, bool sumBins = true)
 
 			double v = (Sw > 0.) ? Svw / Sw : 0.;
 			double e = (Sw > 0.) ? 1. / sqrt(Sw) : 0.;
-
-			// TODO
-			/*
-			double S1 = 0., Sv = 0., Su2 = 0.;
-			for (unsigned int hi = 0; hi < hists.size(); hi++)
-			{
-				double v = hists[hi].hist->GetBinContent(bi);
-				double u = hists[hi].hist->GetBinError(bi) * hists[hi].scale;
-
-				S1 += 1.;
-				Sv += v;
-				Su2 += u*u;
-			}
-
-			double v = (S1 > 0.) ? Sv / S1 : 0.;
-			double e = (S1 > 0.) ? sqrt(Su2) / S1 : 0.;
-			*/
 
 			m->SetBinContent(bi, v);
 			m->SetBinError(bi, e);
@@ -163,7 +146,6 @@ int main()
 					return 1;
 				}
 
-				//string on = "normalization/"+binnings[bi]+"/h_t_normalized";
 				string on = "normalization+unfolding/"+binnings[bi]+"/h_t_normalized_unsmeared";
 				TH1D *h_norm_L = (TH1D *) f_in->Get(on.c_str());
 				if (!h_norm_L)
