@@ -45,7 +45,7 @@ struct Mode
 TH1D* BuildHistogramWithoutOffset(const TH1D *h_in)
 {
 	TH1D *h_out = new TH1D(* h_in);
-	for (int bi = 0; bi < h_out->GetNbinsX(); bi++)
+	for (int bi = 1; bi <= h_out->GetNbinsX(); bi++)
 	{
 		const double l = h_out->GetBinLowEdge(bi);
 		const double r = l + h_out->GetBinWidth(bi);
@@ -118,7 +118,8 @@ TH1D* BuildHistogramFromGraph(const TGraph *g_in, const TH1D *h_binning)
 		double v = 0.;
 		if (r > t_min && l < t_max)
 		{
-			// TODO: this algorithm ignores variation of cross-section over the bin width
+			// this algorithm ignores the variation of cross-section over the bin width
+			// but it is not expected to make a big effect
 
 			const unsigned int n_div = 100;
 			const double w = (r - l) / n_div;
@@ -316,7 +317,6 @@ int main(int argc, const char **argv)
 
 	// list of modes
 	vector<Mode> modes = {
-		// TODO: review correlation level
 		Mode("sh-thx", Mode::sNI, Mode::coFull),
 		Mode("sh-thx-LRasym", Mode::sNI, Mode::coFull),
 
@@ -421,8 +421,7 @@ int main(int argc, const char **argv)
 
 		if (mode.source == Mode::sExt && mode.tag == "norm")
 		{
-			// TODO: why the loop over diagonal ??
-			for (const auto &diagonal : diagonals)
+			for (unsigned int dgni = 0; dgni < diagonals.size(); ++dgni)
 			{
 				vector<TH1D *> v;
 				for (unsigned int bi = 0; bi < binnings.size(); bi++)
@@ -439,7 +438,6 @@ int main(int argc, const char **argv)
 				mode.vh_input.push_back(v);
 			}
 		}
-
 	}
 
 	// process
@@ -480,9 +478,10 @@ int main(int argc, const char **argv)
 				double eff_45b = mode.vh_input[0][bidx]->GetBinContent(bin);
 				double eff_45t = mode.vh_input[1][bidx]->GetBinContent(bin);
 
-				// TODO: the algorithm below assumes that the diagonals are merged with
+				// For real data the diagonal combination (merging) is done with weight proportional to 1/sigma_stat^2.
+				// However, in all datasets, both diagonals have very similar statistics and so the weights.
+				// Consequently, one may assume that the merging is done as:
 				//   merged = value_45 + value_56
-				// while the current merging is done with weight proportional to 1/sigma_stat^2
 
 				if (mode.correlationType == Mode::coNo)
 				{
