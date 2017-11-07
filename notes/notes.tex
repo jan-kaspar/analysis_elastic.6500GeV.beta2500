@@ -681,8 +681,9 @@ the analysis
 \>>> apply unsmearing correction and normalisation procedure
 \>>> compare results with and without bias $\Rightarrow$ systematic effect given by the ratio of the 2 distributions
 \>>> respect the correlations in procedure: e.g.~in case of misalignment, also the fiducial cuts move
-\>> diagonal combination: TODO the same merging as for data
-\>>> respect the correlations between diagonals
+\>> diagonal combination
+\>>> effectively the same merging as for data
+\>>> respects the correlations between diagonals
 
 \> 2 methods of simulation
 \>> Monte-Carlo (MC): simple implementation, slow ($\gs 10^9$ samples needed), works for all bias types
@@ -707,40 +708,33 @@ the analysis
 \>> in the vertical plane: both correlated and uncorrelated between diagonals
 \>> uncertainty values presented in Section~\sref{alignment-det}
 \>>> for vertical LR anti-symmetric mode, the uncertainty is extracted from data, see Section~\sref{alignment-val}
-\>> TODO: validate implementation
 
 \> $x-y$ tilts: mixing between $\th^*_{x}$ and $\th^*_{y}$
 \>> considered both LR symmetric and anti-symmetric
 \>> uncertainty values presented in Section~\sref{alignment-det}
-\>> TODO: validate implementation
 
 \> optics: scaling of $\th^*_{x,y}$ based on covariance matrix by Frici
 \>> includes correlations between $x$ and $y$, L and R
 \>> 3 modes (out of 4) found important
 \>> uncertainty values presented in Section~\sref{optics-matched}
-\>> TODO: validate implementation
 
 \> (smearing) acceptance correction
 \>> uncertainty of $\si(d_x)$, $\si(d_y)$; see Section~\sref{resolution}, bullet on $d_{x,y}$
 \>> non-gaussianity of $d_x$ distribution (in $d_y$ no relevant non-gaussianity observed); see Section~\sref{resolution}, end of bullet ``non-gaussianity''
 \>> beam divergence L-R asymmetry, see Section~\sref{resolution}, bullet on correlation between $d$ and $m$
-\>> TODO: validate implementation
 
 \> inefficiency correction
 \>> only relevant from uncorrelated 3/4, Section~\sref{efficiency-uncorrelated}, and correlated upstream-downstream, Section~\sref{efficiency-correlated}
 \>> both slope and intercept considered
 \>> uncertainty values presented in the quoted sections
-\>> TODO: validate implementation
 
 \> beam momentum
 \>> considered relative uncertainty $\De p/p = 0.1\un{\%}$
-\>> TODO: validate implementation
 
 \> unsmearing
 \>> uncertainty of $\si(m_x)$, $\si(m_y)$
 \>> fit-model dependence
 \>> uncertainty values presented in Section~\sref{unfolding}
-\>> TODO: validate implementation
 
 \> normalisation
 \>> consider uncertainty of $5\un{\%}$
