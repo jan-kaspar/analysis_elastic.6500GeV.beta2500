@@ -368,10 +368,8 @@ int main(int argc, const char **argv)
 		Mode("dx-sigma", Mode::sNI, Mode::coFull),
 		Mode("dy-sigma", Mode::sNI, Mode::coFull),
 		Mode("dx-non-gauss", Mode::sNI, Mode::coFull),
-		// these two modes give contributions compatible with 0, but are "noisy" a create visually
-		// unpleasant effects in the summary (envelope), therefore they are left out
-		//Mode("dx-mx-corr", Mode::sMC, Mode::coFull),
-		//Mode("dy-my-corr", Mode::sMC, Mode::coFull),
+		Mode("dx-mx-corr", Mode::sMC, Mode::coFull),
+		Mode("dy-my-corr", Mode::sMC, Mode::coFull),
 
 		Mode("eff-intercept", Mode::sNI, Mode::coFull),
 		Mode("eff-slope", Mode::sNI, Mode::coFull),
@@ -601,6 +599,8 @@ int main(int argc, const char **argv)
 		"dx-sigma",
 		"dy-sigma",
 		"dx-non-gauss",
+		// these two modes give contributions compatible with 0, but are "noisy" a create visually
+		// unpleasant effects in the summary (envelope), therefore they are left out
 		//"dx-mx-corr",
 		//"dy-my-corr",
 
