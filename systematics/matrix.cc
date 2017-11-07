@@ -335,6 +335,8 @@ int main(int argc, const char **argv)
 		Mode("dx-sigma", Mode::sNI, Mode::coFull),
 		Mode("dy-sigma", Mode::sNI, Mode::coFull),
 		Mode("dx-non-gauss", Mode::sNI, Mode::coFull),
+		Mode("dx-mx-corr", Mode::sMC, Mode::coFull),
+		Mode("dy-my-corr", Mode::sMC, Mode::coFull),
 
 		Mode("eff-intercept", Mode::sNI, Mode::coFull),
 		Mode("eff-slope", Mode::sNI, Mode::coFull),
@@ -552,6 +554,7 @@ int main(int argc, const char **argv)
 		"sh-thy",
 		"sh-thy-LRasym",
 		"sh-thy-TBuncor",
+		"sh-thy-TBuncor-LRasym",
 
 		"tilt-thx-thy",
 		"tilt-thx-thy-LRasym",
@@ -563,6 +566,8 @@ int main(int argc, const char **argv)
 		"dx-sigma",
 		"dy-sigma",
 		"dx-non-gauss",
+		"dx-mx-corr",
+		"dy-my-corr",
 
 		"eff-intercept",
 		"eff-slope",
