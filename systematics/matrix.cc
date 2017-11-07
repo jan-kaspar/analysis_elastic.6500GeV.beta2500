@@ -63,31 +63,64 @@ TH1D* BuildHistogramWithoutOffset(const TH1D *h_in)
 
 //----------------------------------------------------------------------------------------------------
 
-void RegularizeFirstBin(TH1D *h)
+const TGraph* RegularizeGraph(const TGraph *g_in, const string &label)
 {
-	int b0 = h->FindBin(0.00081);
+	// determine region which needs regularisation
+	signed int idx_min = -1, idx_max = -1;
+	double t_min_fit = 0.;
 
-	double diff = h->GetBinContent(b0) - h->GetBinContent(b0 + 1);
-
-	if (fabs(diff) > 0.05)
+	for (signed int idx = 0; idx < g_in->GetN(); ++idx)
 	{
-		// direct histogram fit doesn't work, a workaround here
+		double x, y;
+		g_in->GetPoint(idx, x, y);
 
-		TGraph *g = new TGraph();
-		int bm = h->FindBin(0.002);
-		for (int b = b0 + 1; b < bm; ++b)
-			g->SetPoint(g->GetN(), h->GetBinCenter(b), h->GetBinContent(b));
+		if (x < t_min)
+			continue;
 
-		TF1 *ff = new TF1("rf", "1 ++ x ++ x*x ++ x*x*x");
-		g->Fit(ff, "Q", "");
+		if (y > 0.)
+		{
+			t_min_fit = x;
+			break;
+		}
 
-		h->SetBinContent(b0, ff->Eval(h->GetBinCenter(b0)));
+		if (idx_min < 0)
+			idx_min = idx;
 
-		printf("        bin %u regularised to %.4f\n", b0, ff->Eval(h->GetBinCenter(b0)));
-
-		delete ff;
-		delete g;
+		idx_max = idx;
 	}
+
+	// stop, if nothing to be regularised
+	if (idx_min < 0)
+		return g_in;
+
+	TGraph *g = new TGraph(*g_in);
+
+	const double t_max_fit = 0.0015;
+
+	printf(">> RegularizeGraph: %s\n", label.c_str());
+	printf("    idx_min = %i, idx_max = %i\n", idx_min, idx_max);
+	printf("    t_min_fit = %.4f, t_max_fit = %.4f\n", t_min_fit, t_max_fit);
+
+	// make fit
+	TF1 *ff = new TF1("rf", "1 ++ x ++ x*x ++ x*x*x");
+	g->Fit(ff, "Q", "", t_min_fit, t_max_fit);
+
+	// apply regularisation
+	for (signed int idx = idx_min; idx <= idx_max; ++idx)
+	{
+		double x, y;
+		g->GetPoint(idx, x, y);
+
+		g->SetPoint(idx, x, ff->Eval(x));
+	}
+
+	// save control plot
+	g->Write(("regularization:" + label).c_str());
+
+	// clean up
+	delete ff;
+
+	return g;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -367,6 +400,9 @@ int main(int argc, const char **argv)
 		delete f_in;
 	}
 
+	// open output
+	TFile *f_out = TFile::Open(outputFile.c_str(), "recreate");
+
 	// load input
 	printf(">> loading input\n");
 	for (auto &mode : modes)
@@ -401,14 +437,15 @@ int main(int argc, const char **argv)
 				
 				TGraph *g_in = (TGraph *) f_in->Get((mode.tag + "/g_eff").c_str());
 
+				gDirectory = f_out;
+				const TGraph *g_reg = RegularizeGraph(g_in, mode.tag + ":" + diagonal);
+
 				vector<TH1D *> v;
 				for (unsigned int bi = 0; bi < binnings.size(); bi++)
 				{
 					gDirectory = NULL;
 
-					TH1D *h = BuildHistogramFromGraph(g_in, v_binning_h[bi]);
-
-					RegularizeFirstBin(h);
+					TH1D *h = BuildHistogramFromGraph(g_reg, v_binning_h[bi]);
 
 					v.push_back(h);
 				}
@@ -506,9 +543,6 @@ int main(int argc, const char **argv)
 			}
 		}
 	}
-
-	// open output
-	TFile *f_out = TFile::Open(outputFile.c_str(), "recreate");
 
 	// save modes
 	TDirectory *d_contributions = f_out->mkdir("contributions");
