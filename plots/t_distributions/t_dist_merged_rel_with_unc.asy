@@ -9,8 +9,8 @@ string dataset = "merged";
 string diagonal = "combined";
 string binning = "ob-3-5-0.05";
 
-string fit_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root";
-string fit_obj = "variant 2/g_dsdt_CH";
+string fit_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits/2500-2rp-ob-2-10-0.05/exp3,t_max=0.15/fit.root";
+string fit_obj = "g_fit_CH";
 
 string unc_file = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/systematics/matrix.root";
 string unc_types[], unc_labels[];
@@ -21,7 +21,7 @@ unc_types.push("all-but-norm"); unc_pens.push(green); unc_labels.push("all excep
 xSizeDef = 8cm;
 ySizeDef = 6cm;
 
-A_ref = 606.;
+A_ref = 632.;
 B_ref = 20.4;
 ref_str = MakeRefStr();
 
