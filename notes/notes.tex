@@ -740,16 +740,31 @@ the analysis
 \>> consider uncertainty of $5\un{\%}$
 
 
-\section[systematics-plots]{Plots}
+\section[systematics-results]{Results}
 
 \> \plot{systematics/cmp_mc_ni.pdf} : individual effects, per diagonal, two views (low-$|t|$ and full range)
 \>> very good agreement between MC and NI calculations
 
 \> \plot{systematics/dgn_combination.pdf} : individual effects, combination from the two diagonals
+\>> for effect with no correlation between diagonals, there are two combined modes, each corresponding to one diagonal
 
-\> \plot{systematics/dgn_combination_summary.pdf} : combination from the two diagonals, all contributions in one plot
+\> \plot{systematics/dgn_combination_summary.pdf} : combination from the two diagonals, all contributions in one plot, several $|t|$ ranges
 
-\> \plot{systematics/dgn_combination_matrix.pdf} : correlation matrix
+\> \plot{systematics/dgn_combination_matrix.pdf} : correlation matrix for relative uncertainties
+
+\> leading contributions at very low $|t|$
+\>> vertical alignment
+\>> uncertainty of vertical beam divergence
+
+\> leading contributions at medium $|t|$ ($< 0.2\un{GeV^2}$)
+\>> beam momentum
+\>> optics mode 3
+
+\> full uncertainty at low $|t|$ -- comparison to $1\un{km}$
+\>> $1\un{km}$: $\approx 6\un{\%}$, here $\approx 1.7\un{\%}$
+\>> in both cases the leading uncertainty is vertical misalignment
+\>> for $1\un{km}$ only 1 diagonal available at low $|t|$ and thus the compensation between diagonal can not occur
+
 
 %----------------------------------------------------------------------------------------------------
 
