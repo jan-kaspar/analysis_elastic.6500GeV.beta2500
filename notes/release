@@ -30,6 +30,9 @@ cat "notes.tex" | sed "\
 		s|\\\\def\\\\baseDir.*$|\\\\def\\\\baseDir{.}|; \
 	" > "$release_dir/notes.tex"
 cd "$release_dir"
+touch "notes.toc"
+touch "notes.ref"
+pdftex "notes.tex"
 pdftex "notes.tex"
 
 # make tarball
