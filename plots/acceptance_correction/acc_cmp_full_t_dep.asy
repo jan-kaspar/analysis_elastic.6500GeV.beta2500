@@ -32,8 +32,11 @@ for (int dsi : datasets.keys)
 		string f = topDir + datasets[dsi] + "/distributions_" + diagonals[dgni] + ".root";
 
 		NewPad("$|t|\ung{GeV^2}$", "full acceptance correction");
+		scale(Log, Linear);
 
 		draw(RootGetObject(f, "acceptance correction/" + binning + "/p_t_full_corr"), "eb", red);
+
+		limits((8e-4, 1), (1, 15), Crop);
 
 		AttachLegend(diagonal_labels[dgni]);
 	}
