@@ -185,15 +185,16 @@ void MakeGraphs()
 	for (double t = 5E-4; t <= 1.; )
 	{
 		// evaluate distributions
-		double d_t_true = dist_t_true(t);
-		double d_t_sm = dist_t_sm(t);
+		const double d_t_true = dist_t_true(t);
+		const double d_t_sm = dist_t_sm(t);
+		const double corr = (d_t_sm > 0) ? d_t_true / d_t_sm : 0.;
 
 		// fill plots
 		int idx = g_t_tr->GetN();
 		g_t_tr->SetPoint(idx, t, d_t_true);
 		g_t_sm->SetPoint(idx, t, d_t_sm);
 
-		g_t_corr->SetPoint(idx, t, d_t_true / d_t_sm);
+		g_t_corr->SetPoint(idx, t, corr);
 
 		// advance t
 		double dt = 0.01;
