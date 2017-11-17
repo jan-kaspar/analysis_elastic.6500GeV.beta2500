@@ -19,8 +19,8 @@ vector<TGraph *> fit_graphs;
 void AddFit(const string &fn)
 {
 	TFile *f = new TFile(fn.c_str());
-	fit_data.push_back( (TGraphErrors *) f->Get("data_diff, final") );
-	fit_graphs.push_back( (TGraphErrors *) f->Get("ff_T, final") );
+	fit_data.push_back( (TGraphErrors *) f->Get("g_data_coll_unc_stat") );
+	fit_graphs.push_back( (TGraphErrors *) f->Get("g_fit_CH") );
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -110,37 +110,38 @@ int main()
 	TH1D *h_data = (TH1D *) f_data_in->Get((binning + "/" + dataset + "/" + diagonal + "/h_dsdt").c_str());
 	printf("h_data = %p\n", h_data);
 
-	// get uncertainty
-	string f_unc_name = "../systematics/DS2b/matrix_numerical_integration.root";
+	// get uncertainties
+	string f_unc_name = "../systematics/matrix.root";
 	TFile *f_unc_in = new TFile(f_unc_name.c_str());
 
-	TH1D *h_unc_all = (TH1D *) f_unc_in->Get(("matrices/all/"+diagonal+"/"+binning+"/h_stddev").c_str());
-	
-	TH1D *h_unc_all_anal = (TH1D *) f_unc_in->Get(("matrices/all-anal/"+diagonal+"/"+binning+"/h_stddev").c_str());
+	TH1D *h_unc_all = (TH1D *) f_unc_in->Get(("matrices/all/"+binning+"/h_stddev").c_str());
+	TH1D *h_unc_all_anal = (TH1D *) f_unc_in->Get(("matrices/all-but-norm/"+binning+"/h_stddev").c_str());
 	
 	printf("h_unc_all = %p\n", h_unc_all);
 	printf("h_unc_all_anal = %p\n", h_unc_all_anal);
+
+	// get uncertainty modes
+	vector<TH1D *> v_h_unc_mode = {
+		(TH1D *) f_unc_in->Get(("contributions/norm/combined/"+binning+"/combination0").c_str()),
+		(TH1D *) f_unc_in->Get(("contributions/sh-thy/combined/"+binning+"/combination0").c_str()),
+		(TH1D *) f_unc_in->Get(("contributions/sc-thxy-mode3/combined/"+binning+"/combination0").c_str()),
+		(TH1D *) f_unc_in->Get(("contributions/dy-sigma/combined/"+binning+"/combination0").c_str()),
+		(TH1D *) f_unc_in->Get(("contributions/beam-mom/combined/"+binning+"/combination0").c_str()),
+	};
 	
-	TGraph *g_unc_vec_norm = (TGraph *) f_unc_in->Get("contributions/norm/g_eff_comb1");
-	TGraph *g_unc_vec_opt1 = (TGraph *) f_unc_in->Get("contributions/opt-scale-m1/g_eff_comb1");
-	TGraph *g_unc_vec_opt2 = (TGraph *) f_unc_in->Get("contributions/opt-scale-m2/g_eff_comb1");
-	TGraph *g_unc_vec_bmom = (TGraph *) f_unc_in->Get("contributions/beam-mom/g_eff_comb1");
-	TGraph *g_unc_vec_al_shx = (TGraph *) f_unc_in->Get("contributions/alig-sh-thx/g_eff_comb1");
-	//TGraph *g_unc_vec_al_shy_R = (TGraph *) ((TDirectory *) f_unc_in->Get("contributions/alig-sh-thy:D+0,R+1"))->Get("g_eff_comb1");
-	//TGraph *g_unc_vec_accor_si = (TGraph *) f_unc_in->Get("contributions/acc-corr-sigma-unc/g_eff_comb1");
-
 	// fits
-	string fit_base = "../coulomb_analysis/data/" + binning + "/" + dataset + "/" + diagonal + "/";
-	AddFit(fit_base + "fit:1,KL,con,chisq,,st+sy/dsdt.root");
-	AddFit(fit_base + "fit:2,KL,con,chisq,,st+sy/dsdt.root");
-	AddFit(fit_base + "fit:3,KL,con,chisq,,st+sy/dsdt.root");
+	string fit_base = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits/2500-2rp-" + binning;
+	AddFit(fit_base + "/exp1,t_max=0.15/fit.root");
+	AddFit(fit_base + "/exp2,t_max=0.15/fit.root");
+	AddFit(fit_base + "/exp3,t_max=0.15/fit.root");
 
-	// TODO
 	TGraph *ref_fit = fit_graphs.back();
 
 	// output
 	TFile *f_out = new TFile("tabulate.root", "recreate");
 
+	// TODO
+	/*
 	TGraphErrors *g_data = new TGraphErrors(); g_data->SetName("g_data");
 	TGraph *g_unc_all_pl = new TGraph(); g_unc_all_pl->SetName("g_unc_all_pl"); g_unc_all_pl->SetLineColor(2);
 	TGraph *g_unc_all_mi = new TGraph(); g_unc_all_mi->SetName("g_unc_all_mi"); g_unc_all_mi->SetLineColor(2);
@@ -168,6 +169,7 @@ int main()
 	TGraph *g_rel0_unc_anal_all_mi = new TGraph(); g_rel0_unc_anal_all_mi->SetName("g_rel0_unc_anal_all_mi"); g_rel0_unc_anal_all_mi->SetLineColor(4);
 	TGraph *g_rel0_unc_anal_lead_pl = new TGraph(); g_rel0_unc_anal_lead_pl->SetName("g_rel0_unc_anal_lead_pl"); g_rel0_unc_anal_lead_pl->SetLineColor(8);
 	TGraph *g_rel0_unc_anal_lead_mi = new TGraph(); g_rel0_unc_anal_lead_mi->SetName("g_rel0_unc_anal_lead_mi"); g_rel0_unc_anal_lead_mi->SetLineColor(8);
+	*/
 
 	// print out
 	int bi0 = 0;
@@ -191,12 +193,10 @@ int main()
 			printf("bi0 = %i\n", bi0);
 		}
 
-		if (b_left >= 1.0)
+		if (b_left >= 0.2)
 			continue;
 
 		// bin representative point statistics
-		// TODO
-		/*
 		int gi = bi - bi0;
 		Stat st_x_rep(1);
 		for (unsigned int fi = 0; fi < fit_data.size(); fi++)
@@ -211,65 +211,55 @@ int main()
 
 		if (b_rep_mean < b_left || b_rep_mean > b_right)
 		{
-			printf("ERROR: bad synchronisation betweeen data histogram and fit graph, bin %u.\n", bi);
+			//printf("ERROR: bad synchronisation betweeen data histogram and fit graph, bin %u.\n", bi);
+
+			b_rep_mean = h_data->GetBinCenter(bi);
 		}
-		*/
-		double b_rep_mean = h_data->GetBinCenter(bi);
-		double b_rep_mean_unc = 0.;
 
 		// reference bin content
-		// TODO
-		//double v_ref = ref_fit->Eval(b_rep_mean);
-		double v_ref = 0.;
+		double v_ref = ref_fit->Eval(b_rep_mean);
 
 		// systematics
-		// TODO
-		/*
 		double v_unc_syst_all = h_unc_all->GetBinContent(bi) * v_ref;
 		double v_unc_syst_all_anal = h_unc_all_anal->GetBinContent(bi) * v_ref;
 
-		double v_unc_syst_norm = g_unc_vec_norm->Eval(b_rep_mean) * v_ref;
-		double v_unc_syst_opt1 = g_unc_vec_opt1->Eval(b_rep_mean) * v_ref;
-		double v_unc_syst_opt2 = g_unc_vec_opt2->Eval(b_rep_mean) * v_ref;
-		double v_unc_syst_bmom = g_unc_vec_bmom->Eval(b_rep_mean) * v_ref;
-		double v_unc_syst_al_shx = g_unc_vec_al_shx->Eval(b_rep_mean) * v_ref;
-		double v_unc_syst_al_shy_R = g_unc_vec_al_shy_R->Eval(b_rep_mean) * v_ref;
-		*/
+		vector<double> v_unc_mode(v_h_unc_mode.size());
+		double v_unc_syst_anal_lead_sqr = 0.;
+		for (unsigned int i = 0; i < v_h_unc_mode.size(); i++)
+		{
+			v_unc_mode[i] = v_h_unc_mode[i]->GetBinContent(bi) * v_ref;
+			v_unc_syst_anal_lead_sqr += v_unc_mode[i] * v_unc_mode[i];
+		}
 
-		double v_unc_syst_all = 0.;
-		double v_unc_syst_all_anal = 0.;
-		double v_unc_syst_norm = 0.;
-		double v_unc_syst_opt1 = 0.;
-		double v_unc_syst_opt2 = 0.;
-		double v_unc_syst_bmom = 0.;
-		double v_unc_syst_al_shx = 0.;
-		double v_unc_syst_al_shy_R = 0.;
-
-		double v_unc_syst_anal_lead = sqrt(
-			v_unc_syst_opt1*v_unc_syst_opt1
-			+ v_unc_syst_opt2*v_unc_syst_opt2
-			+ v_unc_syst_bmom*v_unc_syst_bmom
-			+ v_unc_syst_al_shx*v_unc_syst_al_shx
-			+ v_unc_syst_al_shy_R * v_unc_syst_al_shy_R
-		);
+		double v_unc_syst_anal_lead = sqrt(v_unc_syst_anal_lead_sqr);
 
 		// print formatted line
-		// short
-		printf("%.4E, %.4E | %.4E, %.4E\n",
-			b_left, b_right,
-			v, v_unc_stat
-		);
-
-		// full
 		/*
-		printf("%.6f, %.6f, %.6f | %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f\n",
+		printf("%.6f, %.6f, %.6f | %.3f, %.3f, %.3f",
 			b_left, b_right, b_rep_mean,
 			v, v_unc_stat,
-			v_unc_syst_all, v_unc_syst_norm, v_unc_syst_opt1, v_unc_syst_opt2, v_unc_syst_bmom, v_unc_syst_al_shx, v_unc_syst_al_shy_R
+			v_unc_syst_all
 		);
+
+		for (unsigned int i = 0; i < v_unc_mode.size(); i++)
+			printf(", %+.3f", v_unc_mode[i]);
+
+		printf("\n");
 		*/
 
-		// TeX
+		// TeX simple
+		printf("$%.6f$ & $%.6f$ & $%.6f$ & $%.3f$ & $%.3f$ & $%.3f$",
+			b_left, b_right, b_rep_mean,
+			v, v_unc_stat,
+			v_unc_syst_all
+		);
+
+		for (unsigned int i = 0; i < v_unc_mode.size(); i++)
+			printf(" & $%+.3f$", v_unc_mode[i]);
+
+		printf(" \\cr\n");
+
+		// TeX fancy
 		// & $%8.3f$ & $%+5.3f$ & $%+5.3f$ & $%+5.3f$
 
 		/*
@@ -300,6 +290,8 @@ int main()
 		*/
 
 		// fill output
+		// TODO
+		/*
 		int idx = g_data->GetN();
 
 		g_data->SetPoint(idx, b_rep_mean, v);
@@ -348,8 +340,10 @@ int main()
 
 		g_rel0_unc_anal_lead_pl->SetPoint(idx, b_rep_mean, v_unc_syst_anal_lead / v_rel_ref);
 		g_rel0_unc_anal_lead_mi->SetPoint(idx, b_rep_mean, v_unc_syst_anal_lead / v_rel_ref);
+		*/
 	}
 
+	/*
 	g_data->Write();
 	g_unc_all_pl->Write();
 	g_unc_all_mi->Write();
@@ -410,6 +404,7 @@ int main()
 	g_rel0_unc_anal_lead_mi->Draw("l");
 
 	c_rel0->Write();
+	*/
 
 	delete f_out;
 
