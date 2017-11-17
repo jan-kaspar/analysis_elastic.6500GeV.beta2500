@@ -265,20 +265,15 @@ bool SkipTime(unsigned int timestamp, const Analysis &anal)
 
 //----------------------------------------------------------------------------------------------------
 
-// map: run number (8372) --> list of triggered bunches
-typedef std::map<unsigned int, std::vector<unsigned int> > BunchMap;
-
 bool keepAllBunches;
-BunchMap bunchMap;
+vector<unsigned int> bunchList;
 
-bool SkipBunch(unsigned int run, unsigned bunch)
+bool SkipBunch(unsigned int /*run*/, unsigned bunch)
 {
 	if (keepAllBunches)
 		return false;
 
-	const std::vector<unsigned int> &bunches = bunchMap[run];
-	
-	return (find(bunches.begin(), bunches.end(), bunch) == bunches.end());
+	return (find(bunchList.begin(), bunchList.end(), bunch) == bunchList.end());
 }
 
 //----------------------------------------------------------------------------------------------------
