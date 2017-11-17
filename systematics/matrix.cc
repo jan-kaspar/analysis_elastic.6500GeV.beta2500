@@ -581,6 +581,18 @@ int main(int argc, const char **argv)
 	vector<string> contributions;
 
 	contributions = {
+		"sh-thy",
+
+		"sc-thxy-mode3",
+
+		"dy-sigma",
+
+		"beam-mom",
+	};
+
+	BuildMatrix("leading", contributions, modes, binnings);
+
+	contributions = {
 		"sh-thx",
 		"sh-thx-LRasym",
 
