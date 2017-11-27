@@ -10,7 +10,7 @@ string datasets[] = {
 string diagonals[] = { "45b_56t", "45t_56b" };
 string diagonal_labels[] = { "45b -- 56t", "45t -- 56b" };
 
-string model = "fit2-2";
+string model = "fit3-2";
 
 string binning = "ob-3-5-0.05";
 

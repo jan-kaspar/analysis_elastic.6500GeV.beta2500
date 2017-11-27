@@ -7,9 +7,9 @@ string diagonals[] = { "45t_56b" };
 string diagonal_labels[] = { "45t -- 56b" };
 
 string models[] = {
-	"fit2-1",
-	"fit2-2",
-	"fit2-4",
+	"fit3-1",
+	"fit3-2",
+	"fit3-4",
 };
 
 string dataset = "DS-fill5313";

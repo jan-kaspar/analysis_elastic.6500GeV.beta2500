@@ -300,9 +300,9 @@ int main(int argc, const char **argv)
 
 	// models
 	vector<Model> models = {
-		{ "fit2-1", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 1/g_dsdt_CH" },
-		{ "fit2-2", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 2/g_dsdt_CH" },
-		{ "fit2-4", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/first_fits/2/do_fit.root", "variant 4/g_dsdt_CH" }
+		{ "fit3-1", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits_for_corr/2500-2rp-ob-2-10-0.05/exp3,t_max=0.15,htv=1/fit.root", "g_fit_CH" },
+		{ "fit3-2", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits_for_corr/2500-2rp-ob-2-10-0.05/exp3,t_max=0.15,htv=1/fit.root", "g_fit_CH" },
+		{ "fit3-4", "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits_for_corr/2500-2rp-ob-2-10-0.05/exp3,t_max=0.15,htv=1/fit.root", "g_fit_CH" },
 	};
 
 	// print info
