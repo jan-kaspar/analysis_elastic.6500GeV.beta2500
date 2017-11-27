@@ -404,6 +404,25 @@ int main(int argc, char **argv)
 		}
 	}
 
+	// get background correction
+	TGraph *g_background_corr = NULL;
+	{
+		const string path = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/beta2500/2rp/background_studies/correction.root";
+		TFile *f_bckg_corr_in = TFile::Open(path.c_str());
+		if (f_bckg_corr_in == NULL)
+		{
+			printf("ERROR: file `%s' cannot be opened.\n", path.c_str());
+			return 101;
+		}
+
+		g_background_corr = (TGraph *) f_bckg_corr_in->Get("g_corr");
+		if (g_background_corr == NULL)
+		{
+			printf("ERROR: background correction cannot be loaded.\n");
+			return 102;
+		}
+	}
+
 	// get unsmearing corrections
 	bool apply_unsmearing = (unsmearing_file != "");
 
@@ -1026,7 +1045,9 @@ int main(int argc, char **argv)
 		p_norm_corr->Fill(ev.timestamp, norm_corr);
 		p_3outof4_corr->Fill(k.th_y, inefficiency_3outof4);
 
-		double normalization = anal.bckg_corr * norm_corr / anal.L_int;
+		double bckg_corr = 1. - g_background_corr->Eval(k.t);
+
+		double normalization = bckg_corr * norm_corr / anal.L_int;
 
 		// data for alignment
 		// (SHOULD use hit positions WITHOUT alignment corrections, i.e. ev.h)
