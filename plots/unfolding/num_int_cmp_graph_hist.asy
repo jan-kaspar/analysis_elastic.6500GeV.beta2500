@@ -6,7 +6,7 @@ string topDir = "../../";
 string diagonals[] = { "45t_56b" };
 string diagonal_labels[] = { "45t -- 56b" };
 
-string model = "fit3-2";
+string model = "fitN-2";
 
 string dataset = "DS-fill5313";
 

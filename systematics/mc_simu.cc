@@ -72,7 +72,7 @@ int main(int argc, const char **argv)
 	// defaults
 	string diagonalStr = "";
 	string scenario = "none";
-	string model = "fit2-2";
+	string model = "fitN-2";
 
 	unsigned int n_events = (unsigned int) 1e5;
 	unsigned int seed = 1;

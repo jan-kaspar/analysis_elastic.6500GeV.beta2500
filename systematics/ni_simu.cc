@@ -353,7 +353,7 @@ int main(int argc, const char **argv)
 	// defaults
 	string diagonalStr = "";
 	string scenario = "none";
-	string model = "fit2-2";
+	string model = "fitN-2";
 
 	string outFileName = "ouput.root";
 

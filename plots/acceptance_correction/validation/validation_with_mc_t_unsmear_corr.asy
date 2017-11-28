@@ -16,7 +16,7 @@ string rows[] = {
 };
 
 string ref_file = topDir + "DS-fill5313/unfolding_cf_ni_45b_56t.root";
-string ref_obj = "fit2-2/g_t_corr";
+string ref_obj = "fitN-2/g_t_corr";
 TGraph_x_min = 8e-4;
 
 //----------------------------------------------------------------------------------------------------

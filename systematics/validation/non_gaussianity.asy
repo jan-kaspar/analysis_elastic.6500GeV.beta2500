@@ -1,7 +1,7 @@
 import root;
 import pad_layout;
 
-string file1 = "../data-mc/1E7/45b_56t/fit2-2/dx-non-gauss.root";
+string file1 = "../data-mc/1E7/45b_56t/fitN-2/dx-non-gauss.root";
 string obj1 = "h_d_x";
 
 string file2 = "../../non-gaussianity/fit_dx.root";

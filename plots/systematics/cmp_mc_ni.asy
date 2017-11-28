@@ -15,8 +15,6 @@ z_t_maxs.push(0.004); z_t_Steps.push(0.002); z_t_steps.push(0.001); z_e_maxs.pus
 //z_t_maxs.push(0.2); z_t_Steps.push(0.05); z_t_steps.push(0.01); z_e_maxs.push(0.02); z_e_Steps.push(0.005); z_e_steps.push(0.001);
 z_t_maxs.push(1.0); z_t_Steps.push(0.2); z_t_steps.push(0.1); z_e_maxs.push(0.04); z_e_Steps.push(0.01); z_e_steps.push(0.005);
 
-string t_dist_type = "fit2-2";
-
 string mc_source = "systematics/data-mc/1E9";
 
 AddAllModes();
@@ -69,9 +67,8 @@ for (int mi : modes.keys)
 			if (os.valid)
 				draw(shift(0, -modes[mi].mc_ref), os, "eb", heavygreen, "Monte-Carlo");
 
-
 			// ----- numerical integration, full -----
-	
+
 			string ni_f = topDir + "systematics/data-ni/" + diagonals[dgni] + "/ni_process.root";
 
 			string objPath = modes[mi].ni_tag + "/g_eff";
@@ -79,7 +76,6 @@ for (int mi : modes.keys)
 			RootObject os = RootGetObject(ni_f, objPath, error=false);
 			if (os.valid)
 				draw(shift(0, -modes[mi].ni_ref), os, "l,d0", red+2pt, "numerical intergration");
-
 
 			// ----- finalisation -----
 

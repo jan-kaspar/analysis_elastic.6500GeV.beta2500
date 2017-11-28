@@ -98,7 +98,7 @@ void Init_global_45b_56t()
 
 	// unfolding settings
 	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
-	unsmearing_object = "fit3-2/<binning>";
+	unsmearing_object = "fitN-2/<binning>";
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -117,5 +117,5 @@ void Init_global_45t_56b()
 
 	// unfolding settings
 	unsmearing_file = "unfolding_cf_ni_45t_56b.root";
-	unsmearing_object = "fit3-2/<binning>";
+	unsmearing_object = "fitN-2/<binning>";
 }

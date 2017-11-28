@@ -6,38 +6,38 @@ diagonals=(
 )
 
 configurations=(
-	"fit2-2/none"
+	"fitN-2/none"
 
-	"fit2-2/sh-thx"
-	"fit2-2/sh-thx-LRasym"
+	"fitN-2/sh-thx"
+	"fitN-2/sh-thx-LRasym"
 
-	"fit2-2/sh-thy"
-	"fit2-2/sh-thy-LRasym"
-	"fit2-2/sh-thy-TBuncor"
-	"fit2-2/sh-thy-TBuncor-LRasym"
+	"fitN-2/sh-thy"
+	"fitN-2/sh-thy-LRasym"
+	"fitN-2/sh-thy-TBuncor"
+	"fitN-2/sh-thy-TBuncor-LRasym"
 
-	"fit2-2/tilt-thx-thy"
-	"fit2-2/tilt-thx-thy-LRasym"
+	"fitN-2/tilt-thx-thy"
+	"fitN-2/tilt-thx-thy-LRasym"
 
-	"fit2-2/sc-thxy-mode1"
-	"fit2-2/sc-thxy-mode2"
-	"fit2-2/sc-thxy-mode3"
+	"fitN-2/sc-thxy-mode1"
+	"fitN-2/sc-thxy-mode2"
+	"fitN-2/sc-thxy-mode3"
 
-	"fit2-2/dx-sigma"
-	"fit2-2/dy-sigma"
-	"fit2-2/dx-non-gauss"
+	"fitN-2/dx-sigma"
+	"fitN-2/dy-sigma"
+	"fitN-2/dx-non-gauss"
 
-	"fit2-2/eff-intercept"
-	"fit2-2/eff-slope"
+	"fitN-2/eff-intercept"
+	"fitN-2/eff-slope"
 
-	"fit2-2/beam-mom"
+	"fitN-2/beam-mom"
 
-	"fit2-2/mx-sigma"
-	"fit2-2/my-sigma"
+	"fitN-2/mx-sigma"
+	"fitN-2/my-sigma"
 
-	"fit2-2/norm"
+	"fitN-2/norm"
 
-	"fit2-4/none"
+	"fitN-4/none"
 )
 
 use_lxbatch="n"
