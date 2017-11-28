@@ -32,4 +32,8 @@ NewPad("$|t|\ung{GeV^2}$", "B / (S+B)");
 DrawAll();
 limits((0, 0), (0.2, 0.005), Crop);
 
+NewPad("$|t|\ung{GeV^2}$", "B / (S+B)");
+DrawAll();
+limits((0, 0), (0.02, 0.005), Crop);
+
 AttachLegend(NW, NE);
