@@ -384,7 +384,7 @@ int main(int argc, const char **argv)
 	};
 
 	// normalisation uncertainty
-	const double norm_unc = 0.05;
+	const double norm_unc = 0.055;
 
 	// load binning-reference histograms
 	vector<TH1D *> v_binning_h;
