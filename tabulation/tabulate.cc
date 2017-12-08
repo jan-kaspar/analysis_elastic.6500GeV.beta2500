@@ -13,14 +13,44 @@ using namespace std;
 
 //----------------------------------------------------------------------------------------------------
 
-vector<TGraphErrors *> fit_data;
 vector<TGraph *> fit_graphs;
 
 void AddFit(const string &fn)
 {
 	TFile *f = new TFile(fn.c_str());
-	fit_data.push_back( (TGraphErrors *) f->Get("g_data_coll_unc_stat") );
 	fit_graphs.push_back( (TGraphErrors *) f->Get("g_fit_CH") );
+}
+
+//----------------------------------------------------------------------------------------------------
+
+double GetBinRepresentativePoint(TGraph *g_fit, double l, double r)
+{
+	double w = r - l;
+
+	// calculate integral mean
+	const unsigned int n_div = 1000;
+	double V = 0.;
+	for (unsigned int i = 0; i < n_div; i++)
+	{
+		double x = l + (0.5 + i) * w / n_div;
+		V += g_fit->Eval(x) / n_div;
+	}
+
+	// find representative point
+	double xr;
+	while (r - l > w/10000)
+	{
+		xr = (r+l)/2.;
+		if (g_fit->Eval(xr) < V)
+		{
+			r -= (r-l)/2.;
+		} else {
+			l += (r-l)/2.;
+		}
+	}
+	xr = (r+l)/2.;
+
+	return xr;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -131,7 +161,6 @@ int main()
 	
 	// fits
 	string fit_base = "/afs/cern.ch/work/j/jkaspar/analyses/elastic/6500GeV/combined/coulomb_analysis_1/fits/2500-2rp-" + binning;
-	AddFit(fit_base + "/exp1,t_max=0.15/fit.root");
 	AddFit(fit_base + "/exp2,t_max=0.15/fit.root");
 	AddFit(fit_base + "/exp3,t_max=0.15/fit.root");
 
@@ -196,14 +225,11 @@ int main()
 		if (b_left >= 0.2)
 			continue;
 
-		// bin representative point statistics
-		int gi = bi - bi0;
+		// determine representative point
 		Stat st_x_rep(1);
-		for (unsigned int fi = 0; fi < fit_data.size(); fi++)
+		for (unsigned int fi = 0; fi < fit_graphs.size(); fi++)
 		{
-			double x=0, y;
-			fit_data[fi]->GetPoint(gi, x, y);
-			st_x_rep.Fill(x);
+			st_x_rep.Fill(GetBinRepresentativePoint(fit_graphs[fi], b_left, b_right));
 		}
 
 		double b_rep_mean = st_x_rep.GetMean(0);
@@ -211,9 +237,7 @@ int main()
 
 		if (b_rep_mean < b_left || b_rep_mean > b_right)
 		{
-			//printf("ERROR: bad synchronisation betweeen data histogram and fit graph, bin %u.\n", bi);
-
-			b_rep_mean = h_data->GetBinCenter(bi);
+			printf("ERROR: problem in calculation of representative point, bin %u.\n", bi);
 		}
 
 		// reference bin content
