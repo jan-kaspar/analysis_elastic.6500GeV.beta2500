@@ -234,6 +234,7 @@ int main(int argc, const char **argv)
 		TGraph *g_re_ref = GetGraph(inputDirectory, model_base, ref_scenario, "g_dsdt_reco");
 
 		// get histogram with effect
+		TGraph *g_tr = GetGraph(inputDirectory, model_base, scenario.label, "g_dsdt_true");
 		TGraph *g_re = GetGraph(inputDirectory, model_base, scenario.label, "g_dsdt_reco");
 
 		// validate input
@@ -255,10 +256,10 @@ int main(int argc, const char **argv)
 
 		if (scenario.mode == Scenario::mUnsmearing)
 		{
-			TGraph *g_unsm_corr = Divide(g_tr_ref, g_re);
+			TGraph *g_unsm_corr = Divide(g_tr, g_re);
 			g_1 = Multiply(g_re_ref, g_unsm_corr);
 
-			g_0 = new TGraph(*g_re_ref);
+			g_0 = new TGraph(*g_tr_ref);
 
 			delete g_unsm_corr;
 		}
