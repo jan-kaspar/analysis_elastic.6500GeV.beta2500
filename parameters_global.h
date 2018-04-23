@@ -96,6 +96,15 @@ void Init_global_45b_56t()
 	anal.fc_G_l = FiducialCut(4.6E-6, -50E-6, 0., -20E-6, 0.045);
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
 
+	// default tagging settings
+	anal.cut1_a = 1.; anal.cut1_c = +0.097E-6; anal.cut1_si = 2.0E-6;
+	anal.cut2_a = 1.; anal.cut2_c = -0.011E-6; anal.cut2_si = 0.39E-6;
+
+	anal.cut5_a = 0.157370; anal.cut5_c = -0.006; anal.cut5_si = 0.0185;
+	anal.cut6_a = 0.156567; anal.cut6_c = -0.006; anal.cut6_si = 0.023;
+
+	anal.cut7_a = 495.; anal.cut7_c = -0.003; anal.cut7_si = 0.20;
+
 	// unfolding settings
 	unsmearing_file = "unfolding_cf_ni_45b_56t.root";
 	unsmearing_object = "fit2-2/<binning>";
@@ -114,6 +123,15 @@ void Init_global_45t_56b()
 
 	anal.fc_G_l = FiducialCut(4.6E-6, 20E-6, -0.045, 50E-6, 0.);
 	anal.fc_G_h = FiducialCut(100E-6, 0., 0., 0., 0.);
+
+	// default tagging settings
+	anal.cut1_a = 1.; anal.cut1_c = -0.235E-6; anal.cut1_si = 1.9E-6;
+	anal.cut2_a = 1.; anal.cut2_c = +0.002E-6; anal.cut2_si = 0.39E-6;
+
+	anal.cut5_a = 0.157848; anal.cut5_c = +0.001; anal.cut5_si = 0.019;
+	anal.cut6_a = 0.156191; anal.cut6_c = -0.004; anal.cut6_si = 0.020;
+
+	anal.cut7_a = 609.; anal.cut7_c = +0.004; anal.cut7_si = 0.19;
 
 	// unfolding settings
 	unsmearing_file = "unfolding_cf_ni_45t_56b.root";
