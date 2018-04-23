@@ -319,7 +319,7 @@ int main(int argc, char **argv)
 			continue;
 
 		// check time - selected?
-		if (anal.SkipTime(ev.timestamp))
+		if (SkipTime(ev.timestamp))
 			continue;
 
 		// diagonal cut
